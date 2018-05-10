@@ -103,7 +103,7 @@ public class SiteLoader {
      *  from the cantocore directory in the classpath.</li>
      */
     public void load() {
-        String configPath = "/config.can";
+        String configPath = "/config.canto";
         Class<?> c = getClass();
         URL url = null;
         if (externalUrl != null) {

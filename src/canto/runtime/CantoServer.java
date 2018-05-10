@@ -163,7 +163,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             System.out.println("-s, --site <name>              Specifies the site name.  If present, this must");
             System.out.println("                               correspond to the name of a site defined in the");
             System.out.println("                               canto code.  If not present, the site name must");
-            System.out.println("                               be defined elsewhere, e.g. in site_config.can.\n");
+            System.out.println("                               be defined elsewhere, e.g. in site_config.canto.\n");
             System.out.println("-a, --address <addr>[:<port>]  Sets the address and port which the server");
             System.out.println("                               listens on.\n");
             System.out.println("-p, --port <port>              Sets the port which the server listens on.\n");
@@ -191,7 +191,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             System.out.println("                               specify either files or directories.  At");
             System.out.println("                               startup, for each pathname, the Canto server");
             System.out.println("                               loads either the indicated file (if the pathname");
-            System.out.println("                               specifies a file) or all the files with a .can");
+            System.out.println("                               specifies a file) or all the files with a .canto");
             System.out.println("                               extension in the indicated directory (if the");
             System.out.println("                               pathname specifies a directory).\n");
             System.out.println("-r, --recursive                Recursive cantopath option.\n");
