@@ -695,7 +695,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
      */
     public canto_domain compile(String siteName, String cantopath, boolean recursive, boolean autoloadCore) {
         CantoSite site = new CantoSite(siteName, this);
-        site.load(cantopath, "*.can", recursive, multithreaded, autoloadCore, sharedCore);
+        site.load(cantopath, "*.canto", recursive, multithreaded, autoloadCore, sharedCore);
         return site;
     }
 

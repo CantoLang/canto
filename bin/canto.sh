@@ -43,7 +43,7 @@ then
         CANTO_HOME="$HOME/canto"
 
     else
-      echo "ERROR: CANTO_HOME not set and Fun not installed in a standard location"
+      echo "ERROR: CANTO_HOME not set and Canto not installed in a standard location"
       exit 1
     fi
 fi
