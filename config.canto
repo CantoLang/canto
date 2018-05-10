@@ -50,7 +50,7 @@
     /--- configuration variables queried by the server ---/
     file_base = main_site.filepath
     boolean files_first = main_site.files_first
-    funpath = main_site.funpath
+    cantopath = main_site.cantopath
     sitename = main_site.name
     sitepath = main_site.sitepath
     
@@ -61,7 +61,7 @@
     /--- fun language test site ---/
     site_config test_config {
         name = "test"
-        funpath = "./sites/test"
+        cantopath = "./sites/test"
         filepath = "."
     }    
 
@@ -69,28 +69,28 @@
     site_config site_org_test_config {
         name = "site_org_test"
 
-        funpath = "./sites/test/site_org_test"
+        cantopath = "./sites/test/site_org_test"
     }
 
     /--- multisite test site 1 ---/ 
     site_config site1_config {
         name = "site_1"
 
-        funpath = "./sites/test/site1/site_1.fun"
+        cantopath = "./sites/test/site1/site_1.canto"
     }
     
     /--- multisite test site 2 ---/ 
     site_config site2_config {
         name = "site_2"
 
-        funpath = "./sites/test/site2/site_2.fun"
+        cantopath = "./sites/test/site2/site_2.canto"
     }
     
     /--- multisite test site 3 ---/ 
     site_config site3_config {
         name = "site_3"
 
-        funpath = "./sites/test/site3/site_3.fun"
+        cantopath = "./sites/test/site3/site_3.canto"
     }
     
 }

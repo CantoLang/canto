@@ -1,9 +1,9 @@
 /-----------------------------------------------------------------------------
- --  core_js.fun                                                          --
+ --  core_js.canto                                                          --
  --                                                                         --
- --  Core JavaScript definitions for Fun.                                 --
+ --  Core JavaScript definitions for Canto.                                 --
  --                                                                         --
- --  Copyright (c) 2006-2017 by fundev.org.  All rights reserved.         --
+ --  Copyright (c) 2018 by cantolang.org.  All rights reserved.             --
  --                                                                         --
  -----------------------------------------------------------------------------/
 

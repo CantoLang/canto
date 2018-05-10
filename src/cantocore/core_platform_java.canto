@@ -1,10 +1,10 @@
 /-----------------------------------------------------------------------------
- --  core_platform_java.fun                                               --
+ --  core_platform_java.canto                                               --
  --                                                                         --
  --  platform-dependent core definitions                                    --
  --  Java version                                                           --
  --                                                                         --
- --  Copyright (c) 2002-2016 by fundev.org.  All rights reserved.         --
+ --  Copyright (c) 2018 by cantolang.org.  All rights reserved.             --
  --                                                                         --
  -----------------------------------------------------------------------------/
 
@@ -12,7 +12,7 @@ core {
 
     extern java java.**
     extern java javax.**
-    extern java fun.**
+    extern java canto.**
 
     /------ Redirection ------/
     
@@ -32,20 +32,20 @@ core {
 
     /------ Processor and Domain ------/
 
-    /** The fun_processor which created the current fun_domain. **/
-    global fun_processor this_processor [&]
+    /** The canto_processor which created the current canto_domain. **/
+    global canto_processor this_processor [&]
 
-    /** The fun_server responsible for the current context, if running on a
-     *  fun_server, else null.  If it is not null, it will generally be the 
-     *  same as the fun_processor.
+    /** The canto_server responsible for the current context, if running on a
+     *  canto_server, else null.  If it is not null, it will generally be the 
+     *  same as the canto_processor.
      **/
-    global fun_server this_server [&]
+    global canto_server this_server [&]
 
-    /** The fun_domain in which objects in the current context are being constructed. **/
-    global fun_domain this_domain [&]
+    /** The canto_domain in which objects in the current context are being constructed. **/
+    global canto_domain this_domain [&]
     
     /** convenience function to get the local context **/
-    dynamic fun_context this_context = this_domain.context
+    dynamic canto_context this_context = this_domain.context
 
 	/-- file_base = this_server.file_base
 	boolean files_first = this_server.files_first --/

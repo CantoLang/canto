@@ -1,9 +1,9 @@
 /-----------------------------------------------------------------------------
- --  core_sandbox.fun                                                     --
+ --  core_sandbox.canto                                                     --
  --                                                                         --
- --  Sandbox for writing and running Fun code interactively.              --
+ --  Sandbox for writing and running Canto code interactively.              --
  --                                                                         --
- --  Copyright (c) 2014 by fundev.org.  All rights reserved.              --
+ --  Copyright (c) 2018 by cantodev.org.  All rights reserved.              --
  --                                                                         --
  -----------------------------------------------------------------------------/
 
@@ -46,11 +46,11 @@ core {
     /** templated sandbox contents **/
     dynamic sandbox_source = src_template(sandbox_editor_contents)
 
-    /** create a fun domain from a string **/
-    dynamic fun_domain domain_from_string(name, str) = this_domain.child_domain(name, "site", str, false)
+    /** create a canto domain from a string **/
+    dynamic canto_domain domain_from_string(name, str) = this_domain.child_domain(name, "site", str, false)
 
     /** create the sandbox domain **/
-    dynamic fun_domain sandbox_domain = domain_from_string(SANDBOX_SITE, sandbox_source)
+    dynamic canto_domain sandbox_domain = domain_from_string(SANDBOX_SITE, sandbox_source)
 
 
     /---- the UI ----/

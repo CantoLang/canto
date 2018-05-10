@@ -1,9 +1,9 @@
 /-----------------------------------------------------------------------------
- --  core_ui.fun                                                          --
+ --  core_ui.canto                                                          --
  --                                                                         --
- --  Core user interface definitions for Fun.                             --
+ --  Core user interface definitions for Canto.                             --
  --                                                                         --
- --  Copyright (c) 2006-2012 by fundev.org.  All rights reserved.         --
+ --  Copyright (c) 2018 by cantolang.org.  All rights reserved.             --
  --                                                                         --
  -----------------------------------------------------------------------------/
 

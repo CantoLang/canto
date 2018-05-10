@@ -1,15 +1,15 @@
 /-----------------------------------------------------------------------------
- --  Fun Core
+ --  Canto Core
  --  
- --  $Id: core.fun,v 1.24 2015/04/23 16:52:16 sthippo Exp $                                                             --
+ --  core.canto                                                            --
  --                                                                         --
  --  This file contains core definitions -- ones that are broadly useful,   --
  --  needed by many applications and therefore worth making accessible to   --
  --  all by default.  In many languages this takes the form of standard     --
- --  libraries.  The equivalent of a library in Fun is a site that        --
+ --  libraries.  The equivalent of a library in Canto is a site that        --
  --  you adopt.                                                             --
  --                                                                         --
- --  core is also a fun keyword, denoting the root of a site's            --
+ --  core is also a Canto keyword, denoting the root of a site's            --
  --  definition tree.  For a site to access another site, the two sites     --
  --  must share the same definition tree.                                   -- 
  --                                                                         --
@@ -57,7 +57,7 @@ core {
     site_config {
         name [?]
 
-        funpath [?]
+        cantopath [?]
                 
         boolean recursive = false;
 
@@ -74,27 +74,27 @@ core {
     
     /--- runtime system reflection and identification ---/
     
-    /** Abstract Fun processor.  A Fun processor is capable of parsing Fun source
-     *  code and creating fun_site objects.
+    /** Abstract Canto processor.  A Canto processor is capable of parsing Canto source
+     *  code and creating canto_site objects.
      */
-    fun_processor {
+    canto_processor {
         name [?]
         version [?]
         props{} = {}
         
-        /** Compile Fun source code and return a fun_domain object. **/
-        fun_domain compile(funpath, boolean recursive, boolean autoload_core),
-                            (fun_source_text, boolean autoload_core) [&]
+        /** Compile Canto source code and return a canto_domain object. **/
+        canto_domain compile(cantopath, boolean recursive, boolean autoload_core),
+                            (canto_source_text, boolean autoload_core) [&]
 
         /** Returns the domain type.  The default for the primary domain is "site". **/
         domain_type [?]
     }
 
 
-    fun_processor fun_server {
+    canto_processor canto_server {
 
         /** The URL prefix that this server uses to filter requests.  This allows an
-         *  HTTP server to dispatch requests among multiple Fun servers, using the
+         *  HTTP server to dispatch requests among multiple Canto servers, using the
          *  first part of the URL to differentiate among them.
          *
          *  If null, this server accepts all requests.
@@ -121,29 +121,29 @@ core {
         /** Requests data from the server. **/
         dynamic get(requestName, requestParams{}) [/]
 
-        /-- support for launching of fun_servers --/
+        /-- support for launching of canto_servers --/
 
-        /** Launches a new fun_server, initialized with the passed parameters, 
+        /** Launches a new canto_server, initialized with the passed parameters, 
          *  unless a server with the passed name has been launched already by this
          *  server.  (To launch a new server even if it has already been launched,
          *  use relaunch_server.)
          **/
-        dynamic fun_server launch_server(name, params{}) [/]
+        dynamic canto_server launch_server(name, params{}) [/]
         
-        /** Launches a new fun_server, initialized with the passed parameters, after
+        /** Launches a new canto_server, initialized with the passed parameters, after
          *  stopping any previously launched server with the passed name.
          */
-        dynamic fun_server relaunch_server(name, params{}) [/]
+        dynamic canto_server relaunch_server(name, params{}) [/]
     
-        /** Returns the fun_server with the specified name that was launched by this server, or null if
-         *  no such fun_server exists.
+        /** Returns the canto_server with the specified name that was launched by this server, or null if
+         *  no such canto_server exists.
          **/
-        dynamic fun_server get_server(name) [/] 
+        dynamic canto_server get_server(name) [/] 
     }
   
-    fun_domain {
-        fun_site{} sites = {}
-        fun_domain{} domains = {}
+    canto_domain {
+        canto_site{} sites = {}
+        canto_domain{} domains = {}
         main_site [?]
         name [?]
         
@@ -153,14 +153,14 @@ core {
         dynamic get_array(expr)[] = []
         dynamic get_table(expr){} = {}
 
-        fun_context context [&]
-        fun_domain child_domain(name),
+        canto_context context [&]
+        canto_domain child_domain(name),
                                  (name, src, boolean is_url),
                                  (name, path, filter, boolean recursive) [&]
     }
 
     /** A context for constructing objects **/
-    fun_context {
+    canto_context {
 
         /** The name of the current site **/
         site_name [?]
@@ -177,17 +177,17 @@ core {
         construct(name),(name, arg[] args) [&]
         
         /** Returns the context associated with the container of the current context. **/
-        fun_context container_context [&]
+        canto_context container_context [&]
     }
 
-    fun_domain complex_domain {
-        fun_domain[] domains = []
+    canto_domain complex_domain {
+        canto_domain[] domains = []
     }
 
  
-    /** A Fun statement; base class for the various types of statements. **/
-    fun_node {
-        fun_node[] children = []
+    /** A Canto statement; base class for the various types of statements. **/
+    canto_node {
+        canto_node[] children = []
     }
 
    /** Interface for statements that include names. **/
@@ -220,7 +220,7 @@ core {
         reference [/]
         
         arg[] args = []
-        value(fun_context context) [?]
+        value(canto_context context) [?]
     }
 
     /** Interface for owners of child definitions. **/
@@ -230,7 +230,7 @@ core {
         definition[] descendants_of_type(type_name) = [&]
     }
    
-    fun_node,
+    canto_node,
     named,
     parameterized,
     construction_owner,
@@ -248,10 +248,10 @@ core {
         dynamic instantiate(arg[] args) [&] 
         dynamic instantiate_array[] = []
         dynamic instantiate_table{} = {}
-        fun_context owner_context [?]
+        canto_context owner_context [?]
     }
 
-    definition fun_site {
+    definition canto_site {
         definition definition_of_type(type_name) [&]
     }
 
@@ -370,7 +370,7 @@ core {
 
 
     /** A context stack.  **/
-    fun_continuation {
+    canto_continuation {
         entry {
             definition defn [/]
             param[] params = []
@@ -472,7 +472,7 @@ core {
     /--------- platform-independent superclasses of platform-dependent types ---------/
 
     /** request describes an HTTP request. This is an optional parameter passed to
-     *  pages when they are instantiated by the Fun server.
+     *  pages when they are instantiated by the Canto server.
      */
     request {
 
@@ -541,7 +541,7 @@ core {
 
 
     dynamic reinit {
-        log("Initializing core, Fun version " + version);
+        log("Initializing core, Canto version " + version);
     }
 
 
@@ -550,7 +550,7 @@ core {
     static boolean db_enabled(driver, url, user, password) = database(driver, url, user, password).enabled
 
     /** The database interface definition.  The concrete database is defined in
-     *  the platform-dependent core definition file (e.g. core_platform_java.fun).
+     *  the platform-dependent core definition file (e.g. core_platform_java.canto).
      */
     database_interface {
         driver [/]
@@ -562,7 +562,7 @@ core {
         boolean init [?]
         boolean enabled [?]
         
-        /------- Fun/database table mapping --------/
+        /------- Canto/database table mapping --------/
         string table(record, key){} = {}        
 
         /------- direct sql functions -------/
@@ -576,7 +576,7 @@ core {
 
     /** The base database for sites to subclass.  The superclass, db_impl, is a concrete
      *  database implementation defined in the platform-dependent core definition file
-     *  (e.g. core_platform_java.fun), and is a subclass of database_interface.
+     *  (e.g. core_platform_java.canto), and is a subclass of database_interface.
      */
     db_impl(driver, url, user, password) database(driver, url, user, password) {
 
@@ -1026,9 +1026,9 @@ core {
      * Base class for errors.
      */
     
-    error(int stat, msg, fun_context ctx),
+    error(int stat, msg, canto_context ctx),
          (int stat, msg),
-         (msg, fun_context ctx),
+         (msg, canto_context ctx),
          (msg) {
          
         int status = stat ?? stat : 200
@@ -1070,6 +1070,6 @@ core {
             No additional information available.
         |]
 
-        [| </h3><p><i>Fun version {= version; =}</i></p> |]
+        [| </h3><p><i>Canto version {= version; =}</i></p> |]
     }
 }
