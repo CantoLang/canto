@@ -1,0 +1,2803 @@
+/* canto.jjt
+ *
+ * Grammar for canto
+ *
+ * Copyright (c) 2018 by cantolang.org
+ * All rights reserved.
+ *
+ */
+
+options {
+    LOOKAHEAD = 1;
+    JAVA_UNICODE_ESCAPE = true;
+    STATIC = false;
+    MULTI = true;
+    VISITOR = true;
+    BUILD_NODE_FILES = true;    // the node files we have are fine; don't overwrite unless necessary
+    NODE_PREFIX = "Parsed";
+    NODE_PACKAGE = "canto.parser";
+    NODE_USES_PARSER = false;
+    NODE_FACTORY = false;
+    DEBUG_PARSER = false;
+    DEBUG_TOKEN_MANAGER = false;
+    JDK_VERSION = "1.8";
+}
+
+PARSER_BEGIN(CantoParser)
+
+package canto.parser;
+
+import java.io.*;
+import java.util.*;
+import canto.lang.*;
+
+public class CantoParser {
+
+    public static void parseFile(File file) throws FileNotFoundException, ParseException {
+        CantoParser parser;
+        String filename = file.getName();
+        long initTime = 0;
+        long parseTime = 0;
+        long startTime = 0;
+        long stopTime = 0;
+
+        startTime = System.currentTimeMillis();
+        parser = new CantoParser(new java.io.FileInputStream(file));
+        stopTime = System.currentTimeMillis();
+        initTime = stopTime - startTime;
+        startTime = System.currentTimeMillis();
+        parser.parse(filename);
+        stopTime = System.currentTimeMillis();
+        parseTime = stopTime - startTime;
+        System.out.println("   Canto file " + filename + " parsed successfully in " + (initTime + parseTime) + " milliseconds.");
+        System.out.println("      parser initialization time was " + initTime + " ms.");
+        System.out.println("      parser parse time was " + parseTime + " ms.");
+    }
+
+    public static void main(String args[]) {
+        CantoParser parser;
+
+        if (args.length == 0) {
+            System.out.println("Reading canto from standard input.\n\n {");
+            parser = new CantoParser(System.in);
+        } else if (args.length == 1) {
+            String filename = args[0];
+            try {
+                System.out.println("Canto Parser Version $version$");
+                parseFile(new File(filename));
+            } catch (FileNotFoundException e) {
+                System.out.println("Canto file " + filename + " not found.");
+            } catch (ParseException e) {
+                System.out.println("Error parsing Canto file " + filename + ": " + e);
+            }
+
+        } else {
+            System.out.println("Usage:\n");
+            System.out.println("     java canto.parser.CantoParser < cantofile");
+            System.out.println("  or java canto.parser.CantoParser cantofile");
+        }
+    }
+
+    void jjtreeOpenNodeScope(Node n) {
+        ((AbstractNode) n).setFirstToken(getToken(1));
+    }
+
+    void jjtreeCloseNodeScope(Node n) {
+        ((AbstractNode) n).setLastToken(getToken(0));
+    }
+}
+
+
+PARSER_END(CantoParser)
+
+TOKEN_MGR_DECLS :
+{
+    final Integer DEFAULT_STATE = new Integer( DEFAULT );
+    final Integer STATIC_STATE = new Integer( IN_STATIC_TEXT );
+    final Integer LITERAL_STATE = new Integer( IN_LITERAL_TEXT );
+    final Integer COMMENT_STATE = new Integer( IN_COMMENT );
+    final Integer DOC_COMMENT_STATE = new Integer( IN_DOC_COMMENT );
+
+    /** lexical state for nested chunks */
+    java.util.Stack stateStack = new java.util.Stack();
+    Integer currentState = DEFAULT_STATE;
+    int commentLevel = 0;           // comment nesting level
+}
+
+/** White space and comments */
+SKIP :
+{
+  " "
+| "\n"
+| "\r"
+| "\t"
+| "\f"
+| "/--" { commentLevel = 1; stateStack.push(currentState); currentState = COMMENT_STATE; } : IN_COMMENT
+| "/*"  { commentLevel = 1; stateStack.push(currentState); currentState = DOC_COMMENT_STATE; } : IN_DOC_COMMENT
+}
+
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "//" (~["\n", "\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+
+// comments
+<IN_COMMENT>
+MORE :
+{
+    < ~[] >
+}
+
+<IN_COMMENT>
+SKIP :
+{
+    < "--/" > { commentLevel--; currentState = (Integer) stateStack.pop(); SwitchTo(currentState.intValue()); }
+  |
+    < "/--" > { commentLevel++; stateStack.push(currentState); }
+  |
+    < "/*" >  { commentLevel++; stateStack.push(currentState); currentState = DOC_COMMENT_STATE; SwitchTo(IN_DOC_COMMENT); }
+}
+
+// comments
+<IN_DOC_COMMENT>
+MORE :
+{
+    < ~[] >
+}
+
+<IN_DOC_COMMENT>
+SKIP :
+{
+    < "*/" >  { commentLevel--; currentState = (Integer) stateStack.pop(); SwitchTo(currentState.intValue()); }
+  |
+    < "/*" >  { commentLevel++; stateStack.push(currentState); }
+  |
+    < "/--" > { commentLevel++; stateStack.push(currentState); currentState = COMMENT_STATE; SwitchTo(IN_COMMENT); }
+}
+
+// tokens
+TOKEN :
+{
+    // special names
+    <CONTAINER: "container"> |
+    <COUNT: "count"> |
+    <DEF: "def"> |
+    <KEYS: "keys"> |
+    <MY: "my"> |
+    <NEXT: "next"> |
+    <OWNER: "owner"> |
+    <SOURCE: "source"> |
+    <SUB: "sub"> |
+    <SUPER: "super"> |
+    <THIS: "this"> |
+
+
+    // combined keyword/special names
+    <CORE: "core"> |
+    <DEFAULT_KEYWORD: "default"> |
+    <SITE: "site"> |
+
+
+    // keywords
+    <ADOPT: "adopt"> |
+    <AND: "and"> |
+    <AS: "as"> |
+    <BREAK: "break"> |      // not used yet
+    <BY: "by"> |
+    <CATCH: "catch"> |
+    <CONTINUE: "continue"> |
+    <CREATE: "create"> |
+    <DYNAMIC: "dynamic"> |
+    <ELSE: "else"> |
+    <EXTERN: "extern"> |
+    <FINAL: "final"> |
+    <FOR: "for"> |
+    <FROM: "from"> |
+    <GLOBAL: "global"> |
+    <HERE: "here"> |
+    <IF: "if"> |
+    <IN: "in"> |
+    <KEEP: "keep"> |
+    <LOCAL: "local"> |
+    <ON: "on" > |
+    <OR: "or"> |
+    <PUBLIC: "public"> |
+    <REDIRECT: "redirect"> |
+    <STATIC: "static"> |
+    <THROUGH: "through"> |
+    <TO: "to"> |
+    <TYPE: "type"> |
+    <UNTIL: "until"> |
+    <WHERE: "where"> |
+    <WITH: "with"> |
+    <WITHOUT: "without"> |
+
+    // operators
+
+    <ISA: "isa"> |
+
+    // types
+
+    <BOOLEAN: "boolean"> |
+    <BYTE: "byte"> |
+    <CHAR: "char"> |
+    <DOUBLE: "double"> |
+    <FLOAT: "float"> |
+    <INT: "int"> |
+    <LONG: "long"> |
+    <NUMBER: "number"> |
+    <SHORT: "short"> |
+    <STRING: "string"> |
+    <VOID: "void"> |
+
+    // values
+
+    <FALSE: "false"> |
+    <NULL: "null"> |
+    <TRUE: "true">
+}
+
+// numeric literals as in Java, string literals as in Javascript
+
+TOKEN :
+{
+  < INTEGER_LITERAL: <DECIMAL_LITERAL> (["l","L"])? | <HEX_LITERAL> (["l","L"])? | <OCTAL_LITERAL> (["l","L"])? >
+|
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
+|
+  < #HEX_LITERAL: ("0" ["x","X"] | "#") (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+  < CHAR_LITERAL:
+      "'"
+      ( (~["'","\\","\n","\r"])
+        | ("\\" ( ["n","t","b","r","f","\\","'","\""]
+                | ["0"-"7"] ( ["0"-"7"] )? | ["0"-"3"] ["0"-"7"] ["0"-"7"] ) )
+      )
+      "'"
+  >
+|
+  < SQ_STRING_LITERAL:
+      "'"
+      ( (~["'","\\","\n","\r"])
+        | ("\\" ( ["n","t","b","r","f","\\","'","\""]
+                | ["0"-"7"] ( ["0"-"7"] )? | ["0"-"3"] ["0"-"7"] ["0"-"7"] ) )
+      )
+      ( (~["'","\\","\n","\r"])
+        | ("\\" ( ["n","t","b","r","f","\\","'","\""]
+                | ["0"-"7"] ( ["0"-"7"] )? | ["0"-"3"] ["0"-"7"] ["0"-"7"] ) )
+      )+
+      "'"
+  >
+|
+  < DQ_STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )? | ["0"-"3"] ["0"-"7"] ["0"-"7"] ) )
+      )*
+      "\""
+  >
+}
+
+/* IDENTIFIERS */
+
+TOKEN :
+{
+  < IDENTIFIER: ( <LETTER> (<LETTER>|<DIGIT>)* ) | <BQ_STRING_LITERAL> >
+|
+  < #BQ_STRING_LITERAL:
+      "`"
+      (   (~["`","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","`","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )? | ["0"-"3"] ["0"-"7"] ["0"-"7"] ) )
+      )*
+      "`"
+  >
+|
+  < #LETTER:
+      [
+       "\u0024",               // $
+       "\u0041"-"\u005a",      // A-Z
+       "\u005f",               // _
+       "\u0061"-"\u007a",      // a-z
+       "\u00c0"-"\u00d6",
+       "\u00d8"-"\u00f6",
+       "\u00f8"-"\u00ff",
+       "\u0100"-"\u1fff",
+       "\u3040"-"\u318f",
+       "\u3300"-"\u337f",
+       "\u3400"-"\u3d2d",
+       "\u4e00"-"\u9fff",
+       "\uf900"-"\ufaff"
+      ]
+  >
+|
+  < #DIGIT:
+      [
+       "\u0030"-"\u0039",
+       "\u0660"-"\u0669",
+       "\u06f0"-"\u06f9",
+       "\u0966"-"\u096f",
+       "\u09e6"-"\u09ef",
+       "\u0a66"-"\u0a6f",
+       "\u0ae6"-"\u0aef",
+       "\u0b66"-"\u0b6f",
+       "\u0be7"-"\u0bef",
+       "\u0c66"-"\u0c6f",
+       "\u0ce6"-"\u0cef",
+       "\u0d66"-"\u0d6f",
+       "\u0e50"-"\u0e59",
+       "\u0ed0"-"\u0ed9",
+       "\u1040"-"\u1049"
+      ]
+  >
+}
+
+/* SEPARATORS */
+
+TOKEN :
+{
+      < LSTATIC: "[|" > {   stateStack.push(currentState); currentState = STATIC_STATE; } : IN_STATIC_TEXT
+    | < RSTATIC: "|]" > {   if (stateStack.size() > 0) {
+                                currentState = (Integer) stateStack.pop();
+                                SwitchTo(currentState.intValue());
+                            } else {
+                                // this is a mismatched delimiter error
+                                SwitchTo(DEFAULT);
+                            }
+                        }
+    | < LSTATICW: "[/" > {  stateStack.push(currentState); currentState = STATIC_STATE; } : IN_STATIC_TEXT
+    | < RSTATICW: "/]" > {   if (stateStack.size() > 0) {
+                                currentState = (Integer) stateStack.pop();
+                                SwitchTo(currentState.intValue());
+                            } else {
+                                // this is a mismatched delimiter error
+                                SwitchTo(DEFAULT);
+                            }
+                        }
+
+    | < LLITERAL: "[``" > {   stateStack.push(currentState); currentState = LITERAL_STATE; } : IN_LITERAL_TEXT
+    | < RLITERAL: "``]" > {   if (stateStack.size() > 0) {
+                                  currentState = (Integer) stateStack.pop();
+                                  SwitchTo(currentState.intValue());
+                              } else {
+                                  // this is a mismatched delimiter error
+                                  SwitchTo(DEFAULT);
+                              }
+                          }
+
+    | < LCODE: "{" >  { stateStack.push(currentState); currentState = DEFAULT_STATE; }
+    | < RCODE: "}" >  { if (stateStack.size() > 0) {
+                                currentState = (Integer) stateStack.pop();
+                                SwitchTo(currentState.intValue());
+                            } else {
+                                // this is a mismatched delimiter error
+                                SwitchTo(DEFAULT);
+                            }
+                          }
+
+    | < LEMBEDCODE: "{=" >  { stateStack.push(currentState); currentState = DEFAULT_STATE; }
+    | < REMBEDCODE: "=}" >  { if (stateStack.size() > 0) {
+                                currentState = (Integer) stateStack.pop();
+                                SwitchTo(currentState.intValue());
+                             } else {
+                                // this is a mismatched delimiter error
+                                SwitchTo(DEFAULT);
+                             }
+                           }
+
+    // concurrency brackets don't change the lexical state, so they don't
+    // need the logic that the code and static brackets have
+    | < LCONCURRENT: "{+" >
+    | < RCONCURRENT: "+}" >
+
+    | < ARRAYTYPE: "[]" >
+    | < STREAMTYPE: "[^]" >
+    | < APPENDTYPE: "[+]" >
+    | < TABLETYPE: "{}" >
+
+    | < LPAREN: "(" >
+    | < RPAREN: ")" >
+    | < LDYNAMICPAREN: "(:" >
+    | < RDYNAMICPAREN: ":)" >
+    | < LCONCURRENTPAREN: "(+" >
+    | < RCONCURRENTPAREN: "+)" >
+    | < LBRACKET: "[" >
+    | < RBRACKET: "]" >
+    | < SEMICOLON: ";" >
+    | < COMMA: "," >
+    | < DOT: "." >
+    | < HASH: "#" >
+}
+
+/* OPERATORS */
+
+TOKEN :
+{
+      < ASSIGN: "=" >
+    | < GT: ">" >
+    | < LT: "<" >
+    | < THPPPT_DING: "!" >
+    | < TILDE: "~" >
+    | < QMARK: "?" >
+    | < QQMARK: "??" >
+    | < COLON: ":" >
+    | < EQ: "==" >
+    | < LE: "<=" >
+    | < GE: ">=" >
+    | < NE: "!=" >
+    | < EQ_IGNORE_CASE: "~==" >
+    | < LE_IGNORE_CASE: "~<=" >
+    | < LT_IGNORE_CASE: "~<" >
+    | < GE_IGNORE_CASE: "~>=" >
+    | < GT_IGNORE_CASE: "~>" >
+    | < NE_IGNORE_CASE: "~!=" >
+    | < LOGICAL_AND: "&&" >
+    | < LOGICAL_OR: "||" >
+    | < PLUS: "+" >
+    | < MINUS: "-" >
+    | < TIMES: "*" >
+    | < DIVIDED_BY: "/" >
+    | < BITWISE_AND: "&" >
+    | < BITWISE_OR: "|" >
+    | < CARET: "^" >
+    | < MOD: "%" >
+    | < LSHIFT: "<<" >
+    | < RSIGNEDSHIFT: ">>" >
+    | < RUNSIGNEDSHIFT: ">>>" >
+}
+
+/* VALUES */
+
+TOKEN :
+{
+      < NULL_BLOCK: "[/]" >
+    | < ABSTRACT_NULL: "[?]" >
+    | < EXTERNAL_BLOCK: "[&]" >
+    | < ELLIPSIS: "..." >
+    | < INDEFINITE_NAMERANGE: "**" >
+}
+
+/* TYPES */
+
+TOKEN :
+{
+      < CONTEXT: "@" >
+}
+
+<IN_STATIC_TEXT>
+MORE :
+{
+    < ~[] >
+
+}
+
+<IN_STATIC_TEXT>
+TOKEN :
+{
+      <STATIC_0: "[``" > { input_stream.backup(3); } : DEFAULT
+    |
+      <STATIC_1: "[|" > { input_stream.backup(2); } : DEFAULT
+    |
+      <STATIC_2: "{=" > { input_stream.backup(2); } : DEFAULT
+    |
+      <STATIC_3: "|]" > { input_stream.backup(2); } : DEFAULT
+    |
+      <STATIC_4: "[/" > { input_stream.backup(2); } : DEFAULT
+    |
+      <STATIC_5: "/]" > { input_stream.backup(2); } : DEFAULT
+}
+
+//<IN_STATIC_TEXT>
+//TOKEN :
+//{
+//    <PURE_STATIC_TEXT: ( ~[ "[","|"] | "[" ~[ "|","=","/" ] | "|" ~[ "]" ] )>
+//}
+
+<IN_LITERAL_TEXT>
+MORE :
+{
+    < ~[] >
+
+}
+
+<IN_LITERAL_TEXT>
+TOKEN :
+{
+    <LITERAL_1: "``]" > { input_stream.backup(3); } : DEFAULT
+}
+
+//<IN_LITERAL_TEXT>
+//TOKEN :
+//{
+//    <PURE_LITERAL_TEXT: ( ~[ "|"] | "|" ~[ "|" ] | "||" ~[ "]" ] )>
+//}
+
+// overall document structure
+
+Node parse(String filename) #Root:
+{
+    canto.runtime.SiteBuilder.log("Parsing " + filename + "...");
+}
+{
+    ( SiteStatement() | CoreStatement() | LOOKAHEAD( Name() ) DomainStatement() | DefaultStatement() )+ <EOF>
+    {
+        canto.runtime.SiteBuilder.log("Parsing completed.");
+        return jjtThis;
+    }
+}
+
+// pure static text is all the text up to but not including the next box delimiter
+Node StaticText() :
+{ Token t;
+  String str;
+}
+{
+    (
+      (t = <STATIC_1> | t = <STATIC_2> | t = <STATIC_3> | t = <STATIC_4>) {
+            // chop off box delimiter which is part of the token due to the
+            // lex logic (see <IN_STATIC_TEXT>)
+            str = t.image.substring(0, t.image.length() - 2);
+            jjtThis.setText(str);
+      }
+    |
+      t = <STATIC_5> {
+            // we have a |], which means preserve trailing whitespace 
+            str = t.image.substring(0, t.image.length() - 2);
+            jjtThis.setText(str);
+            jjtThis.setPreserveTrailing(true);
+      }
+    | 
+      t = <STATIC_0> {
+            str = t.image.substring(0, t.image.length() - 3);
+            jjtThis.setText(str);
+            jjtThis.setPreserveLeading(true);
+            jjtThis.setPreserveTrailing(true);
+      }
+    )
+    {
+        return jjtThis;
+    }
+}
+
+// leading static text is static text with leading whitespace preserved
+void LeadingStaticText() #StaticText:
+{ Token t;
+  String str;
+}
+{
+    (t = <STATIC_1> | t = <STATIC_2> | t = <STATIC_3> | t = <STATIC_4>) {
+            // chop off box delimiter which is part of the token due to the
+            // lex logic (see <IN_STATIC_TEXT>)
+            str = t.image.substring(0, t.image.length() - 2);
+            jjtThis.setText(str);
+            jjtThis.setPreserveLeading(true);
+        }
+    |
+      t = <STATIC_5> {
+            // we have a |], which means preserve trailing whitespace 
+            str = t.image.substring(0, t.image.length() - 2);
+            jjtThis.setText(str);
+            jjtThis.setPreserveLeading(true);
+            jjtThis.setPreserveTrailing(true);
+      }
+     | t = <STATIC_0> {
+            str = t.image.substring(0, t.image.length() - 3);
+            jjtThis.setText(str);
+            jjtThis.setPreserveLeading(true);
+        }
+}
+
+// literal static text is all the text up to but not including the closing literal text delimiter
+void LiteralText() :
+{ Token t; }
+{
+    (t = <LITERAL_1>)
+    {
+        // chop off box delimiter which is part of the token due to the
+        // lex logic (see <IN_LITERAL_TEXT>)
+        String str = t.image.substring(0, t.image.length() - 3);
+        jjtThis.setText(str);
+    }
+}
+
+void SiteStatement() :
+{}
+{
+    "site" Name() SiteBlock()
+}
+
+
+void CoreStatement() :
+{}
+{
+    "core" SiteBlock()
+}
+
+void DomainStatement() #SiteStatement :
+{}
+{    Name() Name() SiteBlock()
+}
+
+void DefaultStatement() :
+{}
+{
+    SiteBlock()
+}
+
+//
+// Site level directives, which can only appear at the start of site and core blocks
+//
+void Directive() #void:
+{}
+{
+    ExternStatement() | AdoptStatement()
+}
+
+void ExternStatement() :
+{ Token t = null; }
+{
+    "extern"  t = <IDENTIFIER> { jjtThis.setBinding(t.image); }  NameRange()
+}
+
+void AdoptStatement() :
+{}
+{
+    "adopt" NameRange()
+}
+
+
+KeepStatement KeepPrefix() #KeepStatement:
+{}
+{
+    "keep"
+    [
+        "as" ( TypeName() { jjtThis.setHasAs(true); } | "this" { jjtThis.setHasAsThis(true); } )
+      |
+        "by" TypeName() { jjtThis.setHasBy(true); }
+    ]
+    [ "in" InstanceExpression() ]
+    ":" { jjtThis.setIsPrefix(true); }     
+    {
+        jjtThis.setPersist(true);
+        return jjtThis;
+    }
+}
+
+
+void RedirectStatement() :
+{}
+{
+    "redirect"
+    (
+        "(" ValueInstanceExpression() ")" {  jjtThis.setDynamic(true); }
+      |         LOOKAHEAD(Name() ("." | "[" | "(:" | "("))
+        Instance()
+      | 
+        ComplexName()
+    ) [";"]
+}
+
+void ContinueStatement() :
+{}
+{
+    "continue" InstanceExpression() [";"]
+}
+
+// two kinds of blocks, static and code, with special notation for null blocks
+void Block() #void:
+{}
+{
+    StaticBlock() | CodeBlock() | NullBlock()
+}
+
+// code blocks can be normal, concurrent or dynamically generated
+void CodeBlock() #void:
+{}
+{
+    CantoBlock() | ConcurrentCantoBlock()
+}
+
+// static blocks can have embedded blocks
+Block StaticBlock() :
+{
+    Block catchBlock;
+}
+{
+    (
+      LOOKAHEAD(2)
+      ("[|" | "[/") ("|]" | "/]")
+    |
+      "[|" ( StaticText() | Block() )+ ("|]" | "/]") [ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    |
+      "[/" LeadingStaticText() ( StaticText() | Block() )*  ("|]" | "/]") [ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    |
+      "[``" LiteralText() "``]" [ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    )
+    {
+        return jjtThis;
+    }
+}
+
+Block CantoBlock() :
+{
+    Block catchBlock;
+}
+{
+    (      ("{" ( DeepStatement() )* "}")
+    | 
+      ("{=" ( DeepStatement() )* "=}")
+    )
+    [ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+Block EmbeddedCantoBlock() #CantoBlock: 
+{
+    Block catchBlock;
+}
+{
+    ("{=" ( DeepStatement() )* "=}")
+    [ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+CantoBlock generateCantoBlock() #CantoBlock:
+{}
+{
+    ( DeepStatement() )*
+    {
+        return jjtThis;
+    }
+}
+
+
+Block CatchBlock() #void:
+{
+    Block block = null;
+    Name redirName = null;
+}
+{
+    "catch" [ redirName = parseComplexName() ]
+    ( block = StaticBlock() | block = CantoBlock() | NullBlock() )
+    {
+        if (redirName != null) {            block.setCatchIdentifier(redirName);
+        }
+        return block;
+    }
+}
+
+
+Block ConcurrentCantoBlock() :
+{
+    Block catchBlock;
+}
+{
+    ("{+" ( DeepStatement() )* "+}")[ catchBlock = CatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+
+// site blocks are canto blocks in site or core statements; they allow directives
+void SiteBlock() #CantoBlock:
+{}
+{
+    (      ("{" ( Directive() )* ( SiteLevelStatement() )* "}")
+    | 
+      ("{=" ( Directive() )* ( SiteLevelStatement() )* "=}")
+    )    
+}
+
+
+// SiteLevelStatements are statements which may appear at the site level, including
+// definitions, which may also appear below the site level, as well as extern and adopt
+// directives, which can only appear at the site level.
+void SiteLevelStatement() #void:
+{}
+{
+    (
+      LOOKAHEAD( KeepPrefix() )
+      KeepPrefixedDefinition()
+    | 
+      LOOKAHEAD( "site" Name() ("{" | "{=") )
+      SiteStatement()
+    |
+      LOOKAHEAD( ModifiedExternalDefinition() )
+      ModifiedExternalDefinition()
+    |
+      ModifiedDefinition()
+    |
+      LOOKAHEAD( TypedOrNamedExternalDefinition(-1, -1) )
+      TypedOrNamedExternalDefinition(-1, -1)
+    |
+      TypedOrNamedDefinition()
+    )
+}
+
+void KeepPrefixedDefinition() #void:
+{
+    KeepStatement keep;
+    Scoped def;
+}{    keep = KeepPrefix()
+    (      LOOKAHEAD( ModifiedExternalDefinition() )
+      def = ModifiedExternalDefinition()
+    |
+      def = ModifiedDefinition()
+    |
+      LOOKAHEAD( TypedOrNamedExternalDefinition(-1, -1) )
+      def = TypedOrNamedExternalDefinition(-1, -1)
+    |
+      def = TypedOrNamedDefinition()
+    )
+    {        keep.setDefName(def.getDefName());
+    } 
+      
+}
+
+// DeepStatements are statements which may appear below the site level, including
+// directives and definitions, which may appear at the site level as well, and
+// constructions and logic, which can only appear below the site level.
+void DeepStatement() #void:
+{}
+{
+       LOOKAHEAD( KeepPrefix() )
+       KeepPrefixedDefinition()
+     | 
+       CantoExpression()
+     |
+       LOOKAHEAD( ModifiedExternalDefinition() )
+       ModifiedExternalDefinition()
+     |
+       ModifiedDefinition()
+     |
+       AnonymousConstruction()
+     |
+       LOOKAHEAD("sub" ";")
+       SubConstruction()
+     |
+       LOOKAHEAD("super" ";")
+       SuperConstruction()
+     |
+       LOOKAHEAD("next" ";")
+       NextConstruction()
+     |
+       NamedExpression()
+}
+
+
+void NamedExpression() #void:
+{}
+{
+    (      LOOKAHEAD(TypedOrNamedExternalDefinition(-1, -1))  
+      TypedOrNamedExternalDefinition(-1, -1)
+    |
+      LOOKAHEAD((CollectionType() | SuperType()) (DefElementName() | DefTypeName() | DefCollectionName()))
+      TypedDefinition()
+    |
+      LOOKAHEAD( NamedDefinition() )
+      NamedDefinition()
+    | 
+      NamedConstruction()
+    )
+}
+
+
+//
+// Definitions
+//
+
+void Definition() #void:
+{}
+{
+      AnonymousDefinition()
+    |
+      LOOKAHEAD( TypedDefinition() )
+      TypedDefinition()
+    |
+      NamedDefinition()
+}
+
+Scoped ModifiedDefinition() #void:
+{
+  Scoped def;
+  int access = Definition.SITE_ACCESS;
+  int dur = Definition.IN_CONTEXT;
+}
+{
+    (
+      access = AccessModifier() [ dur = DurabilityModifier() ] def = TypedOrNamedDefinition()
+    |
+      dur = DurabilityModifier() [ access = AccessModifier() ] def = TypedOrNamedDefinition()
+    )
+    {
+        def.setModifiers(access, dur);
+        return def;
+    }
+}
+
+Scoped TypedOrNamedDefinition() #void:
+{
+  Scoped def;
+}
+{
+    (
+      LOOKAHEAD(TypedDefinition())
+      def = TypedDefinition()
+    |
+      def = NamedDefinition()
+    )
+    { return def; }
+}
+
+Scoped ModifiedExternalDefinition() #void:
+{
+  Scoped def;
+  int access = Definition.SITE_ACCESS;
+  int dur = Definition.IN_CONTEXT;
+}
+{
+    (
+      access = AccessModifier() [ dur = DurabilityModifier() ] def = TypedOrNamedExternalDefinition(access, dur)
+    |
+      dur = DurabilityModifier() [ access = AccessModifier() ] def = TypedOrNamedExternalDefinition(access, dur)
+    )
+    {
+        def.setModifiers(access, dur);
+        return def;
+    }
+}
+
+
+void TypedOrNamedExternalDefinitionLookahead() #void:
+{}
+{
+    (
+      LOOKAHEAD(DefTypeName() "[&]")
+      NameComponent()
+    |       
+      LOOKAHEAD(CollectionType() | (StandardType() DefCollectionName()) ("[&]" | "=" "[&]"))
+      NameComponent()
+    |
+      LOOKAHEAD(ExternalTypedDefinition())
+      NameComponent()
+    |
+      LOOKAHEAD(ExternalCollectionDefinition())
+      NameComponent()
+    )
+}
+
+Scoped TypedOrNamedExternalDefinition(int access, int dur) #void:
+{
+  Scoped def;
+}
+{
+    (
+      LOOKAHEAD(DefTypeName() "[&]")
+      def = ExternalDefinition(access, dur)
+    |       
+      LOOKAHEAD(CollectionType() | StandardType() DefCollectionName() ("[&]" | "=" "[&]"))
+      def = ExternalTypedCollectionDefinition(access, dur)
+    |
+      LOOKAHEAD(ExternalTypedDefinition())
+      def = ExternalTypedDefinition(access, dur)
+    |
+      LOOKAHEAD(ExternalCollectionDefinition())
+      def = ExternalCollectionDefinition(access, dur)
+    )
+    {
+        return def;
+    }
+}
+
+Scoped ExternalCollectionDefinition(int access, int dur) :
+{}
+{
+    {
+        if (access >= 0) {
+            jjtThis.setModifiers(access, dur);
+        }
+    }
+    DefCollectionName() ["="] "[&]"
+    {
+        return jjtThis;
+    }
+}
+
+
+Scoped ExternalDefinition(int access, int dur) :
+{}
+{
+    {
+        if (access >= 0) {
+            jjtThis.setModifiers(access, dur);
+        }
+    }
+    DefTypeName() "[&]"
+    {
+        return jjtThis;
+    }
+}
+
+
+Scoped ExternalTypedCollectionDefinition(int access, int dur) #ExternalCollectionDefinition:
+{}
+{
+    {
+        if (access >= 0) {
+            jjtThis.setModifiers(access, dur);
+        }
+    }
+    (LOOKAHEAD(CollectionType()) CollectionType() DefTypeName() | StandardType() DefCollectionName()) ["="] "[&]"
+    {
+        return jjtThis;
+    }
+}
+
+
+Scoped ExternalTypedDefinition(int access, int dur) #ExternalDefinition:
+{}
+{
+    {
+        if (access >= 0) {
+            jjtThis.setModifiers(access, dur);
+        }
+    }
+    SuperType() DefTypeName() "[&]"
+    {
+        return jjtThis;
+    }
+}
+
+
+void AnonymousDefinition() :
+{}
+{
+    [ ParameterList() ( "," ParameterList() )* ] Block()
+}
+
+Scoped NamedDefinition() #void:
+{ Scoped def; }
+{
+    (
+      LOOKAHEAD(CollectionDefinition())
+      def = CollectionDefinition()
+    |
+      LOOKAHEAD((DefElementName() | DefTypeName()) "=")
+      def = ElementDefinition()
+    |
+      def = ComplexDefinition()
+    )
+    {
+        return def;
+    }
+}
+
+ 
+
+void TypedDefinitionLookahead() #void:
+{}
+{
+    (
+      LOOKAHEAD((CollectionType() | SuperType()) (DefElementName() | DefTypeName() | DefCollectionName()))
+      NameComponent()
+    |
+      LOOKAHEAD(SuperType() (DefElementName() | DefTypeName()))
+      NameComponent()
+    )
+}
+
+Scoped TypedDefinition() #void:
+{ Scoped def; }
+{
+    (
+      LOOKAHEAD(TypedCollectionDefinition())
+      def = TypedCollectionDefinition()
+    |
+      LOOKAHEAD(SuperType() (DefElementName() | DefTypeName()) "=")
+      def = TypedElementDefinition()
+    |
+      def = TypedComplexDefinition()
+    )
+    {
+        return def;
+    }
+}
+
+Scoped CollectionDefinition() :
+{}
+{
+    (
+      LOOKAHEAD(DefCollectionName() "=" ("[" | "[]") )
+      DefCollectionName() "=" ArrayInitExpression() [ ";" ] { jjtThis.setIsTable(false); }
+    |
+      LOOKAHEAD(DefCollectionName() "=" ("{" | "{}") )
+      DefCollectionName() "=" TableInitExpression() [ ";" ] { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(DefTypeName() "=" ("[" | "[]") )
+      DefTypeName() "=" ArrayInitExpression() [ ";" ] { jjtThis.setIsTable(false); }
+    |
+      LOOKAHEAD(DefTypeName() "=" ("{" | "{}") )
+      DefTypeName() "=" TableInitExpression() [ ";" ] { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(DefTypeName() (IndefiniteDim())+ "=")
+      DefTypeName() (IndefiniteDim())+ "=" ValueInstanceExpression() [ ";" ]
+    )
+    {
+        return jjtThis;
+    }
+}
+
+
+Scoped ComplexDefinition() :
+{}
+{
+    (LOOKAHEAD(2) DefElementName() | DefTypeName()) Block()
+    {
+        return jjtThis;
+    }
+}
+
+Scoped ElementDefinition() :
+{}
+{
+    (
+      LOOKAHEAD( DefElementName() )
+      DefElementName()
+    |
+      DefTypeName()
+    )
+     "=" ElementExpression() [ ";" ]
+    {
+        return jjtThis;
+    }
+}
+
+Scoped TypedCollectionDefinition() #CollectionDefinition:
+{}
+{
+    (
+      LOOKAHEAD(CollectionType() DefCollectionName() "=" ("[" | "[]"))
+      CollectionType() DefCollectionName() "=" ArrayInitExpression() { jjtThis.setIsTable(false); }
+    |
+      LOOKAHEAD(CollectionType() DefCollectionName() "=" ("{" | "{}"))
+      CollectionType() DefCollectionName() "=" TableInitExpression() { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(IndefiniteCollectionType() DefTypeName() "=" ValueInstanceExpression())
+      IndefiniteCollectionType() DefTypeName() "=" ValueInstanceExpression() [ ";" ]
+    |
+      LOOKAHEAD(IndefiniteCollectionType() DefTypeName() Block())
+      IndefiniteCollectionType() DefTypeName() Block()
+    |
+      LOOKAHEAD(CollectionType() DefTypeName() "=" ("[" | "[]"))
+      CollectionType() DefTypeName() "=" ArrayInitExpression() { jjtThis.setIsTable(false); }
+    |
+      LOOKAHEAD(CollectionType() DefTypeName() "=" ("{" | "{}"))
+      CollectionType() DefTypeName() "=" TableInitExpression() { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(SuperType() DefCollectionName() "=" ("[" | "[]"))
+      SuperType() DefCollectionName() "=" ArrayInitExpression() { jjtThis.setIsTable(false); }
+    | 
+      LOOKAHEAD(SuperType() DefCollectionName() "=" ("{" | "{}"))
+      SuperType() DefCollectionName() "=" TableInitExpression() { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(SuperType() DefTypeName() "=" ("[" | "[]"))
+      SuperType() DefTypeName() "=" ArrayInitExpression() { jjtThis.setIsTable(false); }
+    | 
+      LOOKAHEAD(SuperType() DefTypeName() "=" ("{" | "{}"))
+      SuperType() DefTypeName() "=" TableInitExpression() { jjtThis.setIsTable(true); }
+    |
+      LOOKAHEAD(SuperType() DefTypeName() (IndefiniteDim())+ "=")
+      SuperType() DefTypeName() (IndefiniteDim())+ "=" ValueInstanceExpression() [ ";" ]
+    )
+    {
+        return jjtThis;
+    }
+}
+
+void ArrayInitExpression() #Arguments(>0):
+{}
+{
+   (
+      (
+        "[]"       // empty array
+      |
+        LOOKAHEAD(2)
+        "[" ( Ellipsis() [","] ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] "]" )
+      |
+        "[" ( ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ LOOKAHEAD(2) "," Ellipsis() ( LOOKAHEAD(2) "," ArrayElementExpression() )* ] [ "," ] "]" )
+      )
+   )
+   {
+       jjtThis.setArray();
+   }
+}
+
+/** An ellipsis works like a super statement, except that it refers to a collection 
+ *  rather than a definition.  When a collection is extended, by default the additional
+ *  elements are added to the end of the collection.  But they can also be added before
+ *  collection, or partially before and partially after, by including an ellipsis in 
+ *  the definition of the extension.  When the collection is instantiated, the base
+ *  collection is spliced into the extended collection at the ellipsis.  
+ **/
+void Ellipsis() :
+{}
+{
+    (
+      "..."
+    )
+}
+
+AbstractNode AnonymousArray() :
+{}
+{
+   (
+      (
+        "[]"       // empty array
+      |
+        "[" ( ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] "]" )
+      )
+   )
+   {       return jjtThis;
+   }
+}
+
+
+void TableInitExpression() #Arguments(>0):
+{}
+{
+   (
+      (
+        "{}"       // empty table
+      |
+        LOOKAHEAD(2)
+        "{" ( Ellipsis() [","] TableElementExpression() ( LOOKAHEAD(2) "," TableElementExpression() )* [ "," ] "}" )
+      |
+        "{" ( TableElementExpression() ( LOOKAHEAD(2) "," TableElementExpression() )* [ "," ] "}" )
+      )
+   )
+   {
+       jjtThis.setTable();
+   }
+}
+
+AbstractNode AnonymousTable() :
+{}
+{
+    (
+      (
+        "{}"       // empty table
+      |
+        "{" ( TableElementExpression() ( LOOKAHEAD(2) "," TableElementExpression() )* [ "," ] "}" )
+      )
+    )
+    {
+        return jjtThis;
+    }
+}
+
+Scoped TypedElementDefinition() #ElementDefinition:
+{}
+{
+    SuperType()
+    (
+      LOOKAHEAD( DefElementName() )
+      DefElementName()
+    |
+      DefTypeName()
+    )
+    "=" ElementExpression() [ ";" ]
+    {
+        return jjtThis;
+    }
+}
+
+Scoped TypedComplexDefinition() #ComplexDefinition:
+{}
+{
+    SuperType() (LOOKAHEAD(2) DefElementName() | DefTypeName()) Block()
+    {
+        return jjtThis;
+    }
+}
+
+
+void ArrayElementExpression() #void:
+{}
+{
+    (
+      LOOKAHEAD("{=" ArrayElementExpression() ("," | "]"))
+      ArrayInitBlock()
+    |
+      LOOKAHEAD(ArrayDynamicInitExpression())
+      ArrayDynamicInitExpression()
+    | 
+      ElementExpression() 
+    )
+}
+
+
+void ElementExpression() #void:
+{}
+{
+    (
+      StaticBlock()
+    |
+      EmbeddedCantoBlock()
+    |
+      NullBlock()
+    |
+      ValueExpression()
+    |
+      AnonymousTable()
+    |
+      AnonymousArray()
+    )
+}
+
+AbstractNode generateElementExpression() #void:
+{ AbstractNode node; }
+{    (
+      node = StaticBlock()
+    |
+      node = EmbeddedCantoBlock()
+    |
+      node = NullBlock()
+    |
+      node = ValueExpression()
+    |
+      node = AnonymousTable()
+    |
+      node = AnonymousArray()
+    )
+    {        return node;
+    }
+}
+  
+
+
+
+void TableElementExpression() #void:
+{}
+{
+    (
+      TableDynamicInitExpression()
+    | 
+      TableElement()
+    )
+}
+
+void TableDynamicElementExpression() #void:
+{}
+{
+    (
+      LOOKAHEAD(TableDynamicInitExpression())
+      TableDynamicInitExpression()
+    | 
+      TableDynamicElement()
+    )
+}
+
+
+void TableElement() :
+{}
+{
+    (      PureComplexName()
+    |
+      CharLiteral()
+    | 
+      SingleQuoteStringLiteral()
+    |
+      DoubleQuoteStringLiteral()
+    |
+      "(" ValueExpression() ")"
+    )
+    ":" ElementExpression() 
+}
+
+void TableDynamicElement() #TableElement:
+{}
+{
+    ValueExpression() ":" ElementExpression() 
+}
+
+
+int AccessModifier() #void:
+{ int modifier = Definition.SITE_ACCESS; }
+{
+    (
+      "local" { modifier = Definition.LOCAL_ACCESS; }
+    |
+      "public" { modifier = Definition.PUBLIC_ACCESS; }
+    )
+    {
+        return modifier;
+    }
+}
+
+int DurabilityModifier() #void:
+{ int modifier; }
+{
+    (
+      "static" { modifier = Definition.STATIC; }
+    |
+      "global" { modifier = Definition.GLOBAL; }
+    |
+      "dynamic" { modifier = Definition.DYNAMIC; }
+    )
+    {
+        return modifier;
+    }
+}
+
+void SimpleType() #void:
+{}
+{
+    PrimitiveType() | Type()
+}
+
+void StandardType() #void:
+{}
+{
+    PrimitiveType() | Type() | CorrespondingSuperType()
+}
+
+void SuperType() #TypeList(>1):
+{}
+{
+    ( CorrespondingSuperType() | PrimitiveType() |  LOOKAHEAD(TypeName() "(") TypeWithArguments() | Type() )
+    ( "," ( CorrespondingSuperType() | PrimitiveType() |  LOOKAHEAD(TypeName() "(") TypeWithArguments() | Type() ) )*
+}
+
+void CorrespondingSuperType() #Type:
+{}
+{    CorrespondingSuperName()
+}
+
+void CorrespondingSuperName() #Name:
+{}
+{
+    (      "this" { jjtThis.setName(Name.THIS); }
+    )
+}
+
+void TypeWithArguments() #Type:
+{}
+{
+    TypeName()
+    (
+      LOOKAHEAD("(" Any())
+      "(" Any() ")"
+    |
+      Arguments()
+    ) 
+}
+
+void Type() :
+{}
+{
+    TypeName()
+}
+
+void CollectionType() #Type:
+{}
+{
+    (
+       PrimitiveType()
+    |
+       LOOKAHEAD(TypeName() "(")
+       TypeWithArguments()
+    |
+       TypeName()
+    )
+    ( Dim() )+
+}
+
+void IndefiniteCollectionType() #Type:
+{}
+{
+    (
+       PrimitiveType()
+    |
+       LOOKAHEAD(TypeName() "(")
+       TypeWithArguments()
+    |
+       TypeName()
+    )
+    ( IndefiniteDim() )+
+}
+
+void Dim() #void:
+{}
+{
+    ArrayDim() | TableDim()
+}
+
+void ArrayDim() #Dim:
+{}
+{
+    (
+      "[]"                 { jjtThis.setDimType(Dim.TYPE.INDEFINITE); }
+    |
+      "[+]"                { jjtThis.setDimType(Dim.TYPE.APPEND); }
+    |
+      "[^]"                { jjtThis.setDimType(Dim.TYPE.STREAM); }
+    |
+      "[" ValueExpression() "]"  { jjtThis.setDimType(Dim.TYPE.DEFINITE); }
+    )
+}
+
+void DefiniteDim() #Dim:
+{}
+{
+    { jjtThis.setDimType(Dim.TYPE.DEFINITE); }
+    "[" ValueExpression() "]"
+}
+
+void IndefiniteDim() #Dim:
+{}
+{
+    { jjtThis.setDimType(Dim.TYPE.INDEFINITE); }
+    (
+      "[]"
+    |
+      "{}" { jjtThis.setTable(true); }
+    )
+}
+
+void TableDim() #Dim:
+{}
+{
+    {
+      jjtThis.setTable(true);
+      jjtThis.setDimType(Dim.TYPE.INDEFINITE);
+    }
+    (
+      "{}"
+    )
+}
+
+//
+// Names
+//
+
+void TypeName() #void:
+{}
+{
+    Name() ( LOOKAHEAD(2) "." Name() )*
+}
+
+void DefCollectionName() :
+{ Token t; }
+{
+    ( t = <IDENTIFIER> ) { jjtThis.setName(t.image); } [ ParameterList() ( "," ParameterList() )* ] ( Dim() )+
+}
+
+void DefCollectionParamName() #DefCollectionName:
+{ Token t; }
+{
+    ( t = <IDENTIFIER> ) { jjtThis.setName(t.image); } ( IndefiniteDim() )+
+}
+
+void DefTypeName() :
+{ Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.setName(t.image); } [ ParameterList() ( "," ParameterList() )* ]
+}
+
+void DefElementName() :
+{ Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.setName(t.image); }
+    (
+      LOOKAHEAD("[")
+      DefiniteDim()
+    )+
+}
+
+
+void ParameterList() :
+{}
+{
+    "(" [ DefParameter() ( "," DefParameter() )* [ Ellipsis() ] ] ")"
+}
+
+
+void DefParameter() :
+{}
+{
+    (
+      LOOKAHEAD( SimpleType() DefCollectionParamName() )
+      SimpleType() DefCollectionParamName()
+    |
+      LOOKAHEAD( SimpleType() <IDENTIFIER> )
+      SimpleType() Name() [ ParameterList() ]
+    |
+      LOOKAHEAD( IndefiniteCollectionType() Name() )
+      IndefiniteCollectionType()  Name() [ ParameterList() ]
+    |
+      LOOKAHEAD( <IDENTIFIER> ("[]" | "{}") )
+      DefCollectionParamName()
+    |
+      Name()  [ ParameterList() ]
+    |
+      "*"
+    )
+}
+
+//
+// Canto Expressions (other than SiteExpresssion, defined above)
+//
+void CantoExpression() #void:
+{}
+{
+      ConditionalExpression()
+    |
+      ForExpression()
+    |
+      RedirectStatement()
+    |
+      ContinueStatement()
+}
+
+// syntax of names specified in adopt and extern statements
+void NameRange() #void:
+{}
+{
+    Name() ( LOOKAHEAD(2) "." (Name() | RegExp()) )*  [ "." AnyAny() ]
+}
+
+
+void RegExp() #void:
+{}
+{
+    // for now, the only regexp is *
+    Any()
+}
+
+void Any() :
+{}
+{
+    "*"
+}
+
+void AnyAny() :
+{}
+{
+    "**"
+}
+
+void PrimitiveType() :
+{}
+{
+      "boolean"  { jjtThis.makeBoolean(); }
+    |
+      "char"  { jjtThis.makeChar(); }
+    |
+      "byte"  { jjtThis.makeByte(); }
+    |
+      "short"  { jjtThis.makeShort(); }
+    |
+      "int"  { jjtThis.makeInt(); }
+    |
+      "long"  { jjtThis.makeLong(); }
+    |
+      "float"  { jjtThis.makeFloat(); }
+    |
+      "double"  { jjtThis.makeDouble(); }
+    |
+      "string"  { jjtThis.makeString(); }
+    |
+      "number"  { jjtThis.makeNumber(); }
+    |
+      "@"  { jjtThis.makeContinuation(); }
+    |
+      "void"  { jjtThis.makeVoid(); }}
+
+//
+// Constructions
+//
+
+void ConditionalExpression() :
+{}
+{
+    ( IfExpression() | WithExpression() )
+    (
+        LOOKAHEAD(2)
+        ElseIfOrWithExpression()
+    )*
+    [ ElseExpression() ]
+}
+
+void IfExpression() #void:
+{}
+{
+    "if" ValueExpression()
+        Block()
+}
+
+void WithExpression() #void:
+{}
+{
+    (
+      "with" WithPredicateExpression()
+    |
+      "without" WithoutPredicateExpression()
+    )
+    Block()
+}
+
+void WithPredicateExpression() #void:
+{}
+{
+    ( "(" WithPredicateExpression() ")" | WithPredicate())
+}
+
+void WithPredicate() :
+{}
+{
+    LOOKAHEAD(Name() "[") NameWithIndexes() { jjtThis.setElementPresent(true); }
+  | 
+    Name()}
+
+void WithoutPredicateExpression() #void:
+{}
+{
+    ( "(" WithoutPredicateExpression() ")" | WithoutPredicate())
+}
+
+void WithoutPredicate() :
+{}
+{
+    LOOKAHEAD(Name() "[") NameWithIndexes() { jjtThis.setElementPresent(true); }
+  | 
+    Name()
+}
+
+void ElseIfOrWithExpression() #void:
+{}
+{
+    "else" ( "if" ValueExpression() | "with" WithPredicateExpression() ) Block()
+}
+
+void ElseExpression() #void:
+{}
+{
+    "else"
+        Block()
+}
+
+void ForExpression() :
+{}
+{
+    "for" Iterator(false) ( "and" Iterator(false) | "or" Iterator(true) )* Block()
+}
+
+void Iterator(boolean optional) #IteratorValues:
+{}
+{
+    { jjtThis.setOptional(optional); }
+    (      DefExpression()
+      (
+        ("in" | ":") InstanceExpression()  { jjtThis.setIn(true); }            [ "by" InstanceExpression()  { jjtThis.setBy(true); } ]       
+      |
+        (
+          ("from" | "=") ValueExpression() { jjtThis.setFrom(true); }
+            [ ( "to" { jjtThis.setTo(true); } | "through" { jjtThis.setThrough(true); } ) ValueExpression() ]
+            [ "by" ValueExpression() { jjtThis.setBy(true); } ]
+        )
+      )
+      [ "where" ValueExpression() { jjtThis.setWhere(true); } ]
+      [ "until" ValueExpression() { jjtThis.setUntil(true); } ]
+    | 
+      "until" { jjtThis.setUntil(true); } ValueExpression()
+    )
+}
+
+void ArrayDynamicInitExpression() #void:
+{}
+{
+    (
+      ArrayInitConditionalExpression()
+    |
+      ArrayInitForExpression()
+    |
+      ArrayInitBlock()
+    )
+}
+
+void ArrayInitConditionalExpression() #ConditionalExpression:
+{}
+{
+    ( ArrayInitIfExpression() | ArrayInitWithExpression() )
+    (
+        LOOKAHEAD(2)
+        ArrayInitElseIfOrWithExpression()
+    )*
+    [ ArrayInitElseExpression() ]
+}
+
+void ArrayInitIfExpression() #void:
+{}
+{
+    "if" ValueExpression()
+        ArrayInitBlock()
+}
+
+void ArrayInitWithExpression() #void:
+{}
+{
+    "with" WithPredicateExpression()
+        ArrayInitBlock()
+}
+
+
+void ArrayInitElseIfOrWithExpression() #void:
+{}
+{
+    "else" ( "if" ValueExpression() | "with" WithPredicateExpression() ) ArrayInitBlock()
+}
+
+void ArrayInitElseExpression() #void:
+{}
+{
+    "else"
+        ArrayInitBlock()
+}
+
+void ArrayInitForExpression() #ForExpression:
+{}
+{
+    "for" Iterator(false) ( "and" Iterator(false) | "or" Iterator(true) )* ArrayInitBlock()
+}
+
+
+Block ArrayInitBlock() #DynamicElementBlock:
+{
+    Block catchBlock;
+}
+{
+    (
+      "{=" [ ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] ] "=}"
+    | 
+      "{" [ ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] ] "}"
+    )
+    [ catchBlock = ArrayInitCatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+
+Block ArrayInitCatchBlock() #void:
+{
+    Block block = null;
+}
+{
+    "catch"  block = ArrayInitBlock()
+    {
+        return block;
+    }
+}
+
+
+void TableDynamicInitExpression() #void:
+{}
+{
+    (
+      TableInitConditionalExpression()
+    |
+      TableInitForExpression()
+    |
+      TableInitBlock()
+    )
+}
+
+void TableInitConditionalExpression() #ConditionalExpression:
+{}
+{
+    ( TableInitIfExpression() | TableInitWithExpression() )
+    (
+        LOOKAHEAD(2)
+        TableInitElseIfOrWithExpression()
+    )*
+    [ TableInitElseExpression() ]
+}
+
+void TableInitIfExpression() #void:
+{}
+{
+    "if" ValueExpression()
+        TableInitBlock()
+}
+
+void TableInitWithExpression() #void:
+{}
+{
+    "with" WithPredicateExpression()
+        TableInitBlock()
+}
+
+
+void TableInitElseIfOrWithExpression() #void:
+{}
+{
+    "else" ( "if" ValueExpression() | "with" WithPredicateExpression() ) TableInitBlock()
+}
+
+void TableInitElseExpression() #void:
+{}
+{
+    "else"
+        TableInitBlock()
+}
+
+void TableInitForExpression() #ForExpression:
+{}
+{
+    "for" Iterator(false) ( "and" Iterator(false) | "or" Iterator(true) )* TableInitBlock()
+}
+
+Block TableInitBlock() #DynamicElementBlock:
+{
+    Block catchBlock;
+}
+{
+    (
+      "{=" [ TableDynamicElementExpression() ( LOOKAHEAD(2) "," TableDynamicElementExpression() )* [ "," ] ] "=}"
+    | 
+      "{" [ TableDynamicElementExpression() ( LOOKAHEAD(2) "," TableDynamicElementExpression() )* [ "," ] ] "}"
+    )
+    [ catchBlock = TableInitCatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+
+Block TableInitCatchBlock() #void:
+{
+    Block block = null;
+}
+{
+    "catch"  block = TableInitBlock()
+    {
+        return block;
+    }
+}
+
+
+void DefExpression() #void:
+{}
+{
+    "(" DefExpression() ")" | DefParameter()
+}
+
+void InstanceExpression() #void:
+{}
+{
+    "(" ValueInstanceExpression() ")" | Instance()
+}
+
+void ValueInstanceExpression() #ValueExpression(>1):
+{}
+{
+    ChoiceInstanceExpression()
+}
+
+
+void ChoiceInstanceExpression() #ChoiceExpression(>1):
+{}
+{
+	(
+      LOOKAHEAD( LogicalOrExpression() "?" )
+      LogicalOrExpression() "?" ChoiceInstanceExpression() ":" ChoiceInstanceExpression() 
+    |
+      AdditiveInstanceExpression()
+    ) 
+}
+
+void AdditiveInstanceExpression() #BinaryExpression(>1):
+{}
+{
+  OrInstanceExpression() (AddOperator() OrInstanceExpression())*
+}
+
+void OrInstanceExpression() #BinaryExpression(>1):
+{}
+{
+  XorInstanceExpression() ( OrOperator() XorInstanceExpression() )*
+}
+
+void XorInstanceExpression() #BinaryExpression(>1):
+{}
+{
+  AndInstanceExpression() ( XorOperator() AndInstanceExpression() )*
+}
+
+void AndInstanceExpression() #BinaryExpression(>1):
+{}
+{
+  UnaryInstanceExpression() ( AndOperator() UnaryInstanceExpression() )*
+}
+
+void UnaryInstanceExpression() #void:
+{}
+{
+  (        BitflipInstanceExpression()
+  |
+    InstanceExpression()
+  )
+}
+
+void BitflipInstanceExpression() #UnaryExpression:
+{}
+{
+    BitflipOperator() UnaryInstanceExpression()
+}
+
+
+Instantiation parseInstance() #Construction:
+{}
+{
+    ComplexName()
+    {
+        return jjtThis;
+    }
+}
+
+void Instance() #Construction:
+{}
+{
+    ComplexName()
+}
+
+void BreakStatement() :
+{}
+{
+    "break" [";"]
+}
+
+void NextConstruction() :
+{}
+{
+    "next" ";"
+}
+
+void SubConstruction() :
+{}
+{
+    "sub" ";"
+}
+
+void SuperConstruction() :
+{}
+{
+    "super" ";"
+}
+
+void AnonymousConstruction() #Construction:
+{}
+{
+    (
+      LOOKAHEAD( "(" ValueExpression() ")" ";" )
+      "(" ValueExpression() ")" ";" [ "++" { jjtThis.setConcurrent(); } ]
+    |
+      AnonymousDefinition() [ ";" [ "++" { jjtThis.setConcurrent(); } ] ]
+    |
+      Literal() ";"
+    )
+    { jjtThis.setAnonymous(); }}
+
+void NamedConstruction() #Construction:
+{}
+{
+    ComplexName() ";" [ "++" { jjtThis.setConcurrent(); } ]
+}
+
+void ComplexName() #ComplexName(>1):
+{}
+{
+    (LOOKAHEAD(NameComponent() ".") NameComponent() ".")* NameComponent()
+}
+
+
+void PureComplexName() #ComplexName(>1):
+{}
+{
+    (
+      LOOKAHEAD(Name() ".")
+      (LOOKAHEAD(NameComponent() ".") Name() ".")+ (Name() | "keep")
+    |
+      Name()
+    )}
+
+ComplexName parseComplexName() #ComplexName:
+{}
+{
+    (LOOKAHEAD(NameComponent() ".") NameComponent() ".")* NameComponent()
+    {
+        return jjtThis;
+    }
+}
+
+
+void NameComponent() #void:
+{}
+{
+    (
+      SpecialName()
+    |
+      LOOKAHEAD(Name() Index()) NameWithIndexes()
+    | 
+      LOOKAHEAD(Name() Arguments() Index()) NameWithIndexes()
+    |
+      LOOKAHEAD(Name() ("(:" | "(")) NameWithArguments()
+    |
+      Name()
+    )
+}
+
+void SpecialName() :
+{}
+{
+    (
+      "container" { jjtThis.setName(Name.CONTAINER); }
+    |
+      "core"      { jjtThis.setName(Name.CORE); }
+    |
+      "count"     { jjtThis.setName(Name.COUNT); }
+    |
+      "def"       { jjtThis.setName(Name.DEF); }
+    |
+      "keys"      { jjtThis.setName(Name.KEYS); }
+    |
+      "here"      { jjtThis.setName(Name.HERE); }
+    |
+      "next"      { jjtThis.setName(Name.NEXT); }
+    |
+      "owner"     { jjtThis.setName(Name.OWNER); }
+    |
+      "site"      { jjtThis.setName(Name.SITE); }
+    |
+      "source"    { jjtThis.setName(Name.SOURCE); }
+    |
+      "sub"       { jjtThis.setName(Name.SUB); }
+    |
+      "super"     { jjtThis.setName(Name.SUPER); }
+    |
+      "this"      { jjtThis.setName(Name.THIS); }
+    |
+      "type" [ LOOKAHEAD("(") Arguments() ] { jjtThis.setName(Name.TYPE); }
+    )
+}
+
+
+
+void NameWithArguments() :
+{ Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.setName(t.image); } Arguments()
+}
+
+void NameWithIndexes() :
+{ Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.setName(t.image); } [ Arguments() ]
+    ( LOOKAHEAD(Index()) Index() )+
+}
+
+void Name() :
+{ Token t; }
+{
+    t = <IDENTIFIER> { jjtThis.setName(t.image); }
+}
+
+void Index() :
+{}
+{
+    (
+      "[" ValueExpression() "]"
+    )
+}
+
+
+void Arguments() :
+{}
+{
+    (
+      "(:" [ ElementExpression() ( "," ElementExpression() )* ] ":)" { jjtThis.setDynamic(); }
+    |
+      "(" [ ElementExpression() ( "," ElementExpression() )* ] ")"
+    )
+}
+
+//
+// Values and Expressions
+//
+
+ValueExpression parseValueExpression() #ValueExpression:
+{}
+{
+    ValueExpression()
+    {
+        return jjtThis;
+    }
+}
+
+AbstractNode ValueExpression() #ValueExpression(>1):
+{}
+{
+    ChoiceExpression()
+    {        return jjtThis;
+    }
+}
+
+void ChoiceExpression() #ChoiceExpression(>1):
+{}
+{
+    (
+      LOOKAHEAD(WithPredicate() "??")      WithPredicate() "??" ValueExpression() ":" ValueExpression()
+    | 
+      LogicalOrExpression() [ "?" ValueExpression() ":" ValueExpression() ]
+    )
+}
+
+void LogicalOrExpression() #BinaryExpression(>1):
+{}
+{
+  LogicalAndExpression() ( LogicalOrOperator() LogicalAndExpression() )*
+}
+
+void LogicalOrOperator() :
+{}
+{
+    "||"
+}
+
+void LogicalAndExpression() #BinaryExpression(>1):
+{}
+{
+  EqualityExpression() ( LogicalAndOperator() EqualityExpression() )*
+}
+
+void LogicalAndOperator() :
+{}
+{
+    "&&"
+}
+
+void EqualityExpression() #BinaryExpression(>1):
+{}
+{
+  RelationalExpression() ( ( EqualsOperator() | EqualsIgnoreCaseOperator() | NotEqualsOperator() | NotEqualsIgnoreCaseOperator() ) RelationalExpression() )*
+}
+
+void EqualsOperator() :
+{}
+{
+    "=="
+}
+
+void EqualsIgnoreCaseOperator() #EqualsOperator:
+{}
+{
+    "~==" { jjtThis.setIgnoreCase(); }
+}
+
+void NotEqualsOperator() :
+{}
+{
+    "!="
+}
+
+void NotEqualsIgnoreCaseOperator() #NotEqualsOperator:
+{}
+{
+    "~!=" { jjtThis.setIgnoreCase(); }
+}
+
+void RelationalExpression() #BinaryExpression(>1):
+{}
+{
+  InExpression() ( ( LessThanOperator() | LTIgnoreCaseOperator() | GreaterThanOperator() | GTIgnoreCaseOperator() | LessThanOrEqualOperator() | LEIgnoreCaseOperator() | GreaterThanOrEqualOperator() | GEIgnoreCaseOperator() ) InExpression() )*
+}
+
+void LessThanOperator() :
+{}
+{
+    "<"
+}
+
+void LTIgnoreCaseOperator() #LessThanOperator:
+{}
+{
+    "~<" { jjtThis.setIgnoreCase(); }
+}
+
+void GreaterThanOperator() :
+{}
+{
+    ">"
+}
+
+void GTIgnoreCaseOperator() #GreaterThanOperator:
+{}
+{
+    "~>" { jjtThis.setIgnoreCase(); }
+}
+
+void LessThanOrEqualOperator() :
+{}
+{
+    "<="
+}
+
+void LEIgnoreCaseOperator() #LessThanOrEqualOperator:
+{}
+{
+    "~<=" { jjtThis.setIgnoreCase(); }
+}
+
+void GreaterThanOrEqualOperator() :
+{}
+{
+    ">="
+}
+
+void GEIgnoreCaseOperator() #GreaterThanOrEqualOperator:
+{}
+{
+    "~>=" { jjtThis.setIgnoreCase(); }
+}
+
+void InExpression() #BinaryExpression(>1):
+{}
+{
+  ShiftExpression() ( InOperator() ShiftExpression() )*
+}
+
+void InOperator() :
+{}
+{
+    "in"
+}
+
+
+void ShiftExpression() #BinaryExpression(>1):
+{}
+{
+  AdditiveExpression() ( ( LeftShiftOperator() | RightShiftOperator() | RightUnsignedShiftOperator() ) AdditiveExpression() )*
+}
+
+void LeftShiftOperator() :
+{}
+{
+    "<<"
+}
+
+void RightShiftOperator() :
+{}
+{
+    ">>"
+}
+
+void RightUnsignedShiftOperator() :
+{}
+{
+    ">>>"
+}
+
+void AdditiveExpression() #BinaryExpression(>1):
+{}
+{
+  MultiplicativeExpression() ( ( AddOperator() | SubtractOperator() ) MultiplicativeExpression() )*
+}
+
+void AddOperator() :
+{}
+{
+    "+"
+}
+
+void SubtractOperator() :
+{}
+{
+    "-"
+}
+
+void MultiplicativeExpression() #BinaryExpression(>1):
+{}
+{
+    OrExpression() ( (MultiplyOperator() | DivideByOperator() | ModOperator()) OrExpression() )*
+}
+
+void MultiplyOperator() :
+{}
+{
+    "*"
+}
+
+void DivideByOperator() :
+{}
+{
+    "/"
+}
+
+void ModOperator() :
+{}
+{
+    "%"
+}
+
+void OrExpression() #BinaryExpression(>1):
+{}
+{
+  XorExpression() ( OrOperator() XorExpression() )*
+}
+
+void OrOperator() :
+{}
+{
+    "|"
+}
+
+void XorExpression() #BinaryExpression(>1):
+{}
+{
+  AndExpression() ( XorOperator() AndExpression() )*
+}
+
+void XorOperator() :
+{}
+{
+    "^"
+}
+
+void AndExpression() #BinaryExpression(>1):
+{}
+{
+  UnaryExpression() ( AndOperator() UnaryExpression() )*
+}
+
+void AndOperator() :
+{}
+{
+    "&"
+}
+
+void UnaryExpression() #void:
+{}
+{
+  (
+    PositiveExpression()
+  |
+    NegativeExpression()
+  |
+    BitflipExpression()
+  |
+    LogicalNotExpression()
+  |
+    LOOKAHEAD( CastLookahead() )
+    CastExpression()
+  |
+    IsaExpression()
+  |
+    ExpressionComprehension()
+  )
+}
+
+void ExpressionComprehension() #void:
+{}
+{
+  (    ComprehensionForExpression()
+  |
+    ComprehensionConditionalExpression() 
+  )}
+
+void ComprehensionConditionalExpression() #ConditionalExpression:
+{}
+{
+    ( ComprehensionIfExpression() | ComprehensionWithExpression() )
+    (
+        LOOKAHEAD(2)
+        ComprehensionElseIfOrWithExpression()
+    )*
+    [ ComprehensionElseExpression() ]
+}
+
+void ComprehensionIfExpression() #void:
+{}
+{
+    "if" ValueExpression()
+        ComprehensionBlock()
+}
+
+void ComprehensionWithExpression() #void:
+{}
+{
+    "with" WithPredicateExpression()
+        ComprehensionBlock()
+}
+
+
+void ComprehensionElseIfOrWithExpression() #void:
+{}
+{
+    "else" ( "if" ValueExpression() | "with" WithPredicateExpression() ) ComprehensionBlock()
+}
+
+void ComprehensionElseExpression() #void:
+{}
+{
+    "else"
+        ComprehensionBlock()
+}
+
+void ComprehensionForExpression() #ForExpression:
+{}
+{
+    "for" Iterator(false) ( "and" Iterator(false) | "or" Iterator(true) )* ComprehensionBlock()
+}
+
+
+Block ComprehensionBlock() #CantoBlock:
+{
+    Block catchBlock;
+}
+{
+    (
+      "{=" [ ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] ] "=}"
+    | 
+      "{" [ ArrayElementExpression() ( LOOKAHEAD(2) "," ArrayElementExpression() )* [ "," ] ] "}"
+    )
+    [ catchBlock = ComprehensionCatchBlock() { jjtThis.setCatch(catchBlock); } ]
+    {
+        return jjtThis;
+    }
+}
+
+
+Block ComprehensionCatchBlock() #void:
+{
+    Block block = null;
+}
+{
+    "catch"  block = ComprehensionBlock()
+    {
+        return block;
+    }
+}
+
+  
+void PositiveExpression() #void:
+{}
+{
+    "+" UnaryExpression()
+}
+
+void NegativeExpression() #UnaryExpression:
+{}
+{
+    NegateOperator() UnaryExpression()
+}
+
+void NegateOperator() :
+{}
+{
+    "-"
+}
+
+void BitflipExpression() #UnaryExpression:
+{}
+{
+    BitflipOperator() UnaryExpression()
+}
+
+void BitflipOperator() :
+{}
+{
+    "~"
+}
+
+void LogicalNotExpression() #UnaryExpression:
+{}
+{
+    LogicalNotOperator() UnaryExpression()
+}
+
+void LogicalNotOperator() :
+{}
+{
+    "!"
+}
+
+// This production is to determine lookahead only.  The LOOKAHEAD specifications
+// below are not used, but they are there just to indicate that we know about
+// this.
+void CastLookahead() #void:
+{}
+{
+    LOOKAHEAD(2)
+    "(" PrimitiveType()
+  |
+    LOOKAHEAD("(" TypeName() "[]")
+    "(" TypeName() "[]"
+  |
+    LOOKAHEAD("(" TypeName() "{}")
+    "(" TypeName() "{}"
+  |
+    // the java grammar file didn't have "+" or "-" below
+    "(" TypeName() ")" ( "~" | "!" | "+" | "-" | "(" | Name() | "this" | "super" | Literal() )
+}
+
+void CastExpression() #UnaryExpression:
+{}
+{
+    TypeOperator() UnaryExpression()
+}
+
+void TypeOperator() :
+{}
+{
+    "(" SimpleType() ")"
+}
+
+void IsaExpression() #IsaExpression(>1):
+{}
+{
+    PrimaryExpression() [ IsaOperator() ]
+}
+
+void IsaOperator() #void:
+{}
+{
+    ( "isa" | "|>" ) SimpleType()
+}
+
+void PrimaryExpression() #void:
+{}
+{
+    (
+      "(" ValueExpression() ")"
+    |
+      Literal()
+    |
+      ValueInstance()
+    )
+}
+
+void ValueInstance() #Construction:
+{}
+{
+    ComplexName()
+}
+
+
+void Literal() #void:
+{}
+{
+    (
+      IntegerLiteral()
+    |
+      FloatingPointLiteral()
+    |
+      CharLiteral()
+    | 
+      SingleQuoteStringLiteral()
+    |
+      DoubleQuoteStringLiteral()
+    |
+      BooleanLiteral()
+    |
+      NullLiteral()
+    )
+}
+
+void IntegerLiteral() :
+{ Token t; }
+{
+    t = <INTEGER_LITERAL>
+    {
+      jjtThis.setValue(t.image);
+    }
+}
+
+void FloatingPointLiteral() :
+{ Token t; }
+{
+    t = <FLOATING_POINT_LITERAL>
+    {
+      jjtThis.setValue(t.image);
+    }
+}
+
+void CharLiteral() #CharLiteral:
+{ Token t; }
+{
+    t = <CHAR_LITERAL>
+    {
+      // strip off the leading and trailing quotes
+      String str = t.image.substring(1, t.image.length() - 1);
+      jjtThis.setValue(str);
+    }
+}
+
+void SingleQuoteStringLiteral() #StringLiteral:
+{ Token t; }
+{
+    t = <SQ_STRING_LITERAL>
+    {
+      // strip off the leading and trailing quotes
+      String str = t.image.substring(1, t.image.length() - 1);
+      jjtThis.setValue(str, true);
+    }
+}
+
+void DoubleQuoteStringLiteral() #StringLiteral:
+{ Token t; }
+{
+    t = <DQ_STRING_LITERAL>
+    {
+      // strip off the leading and trailing quotes
+      String str = t.image.substring(1, t.image.length() - 1);
+      jjtThis.setValue(str, false);
+    }
+}
+
+void BooleanLiteral() :
+{}
+{
+    (
+      "true" { jjtThis.setValue(true); }
+    |
+      "false" { jjtThis.setValue(false); }
+    )
+}
+
+void NullLiteral() :
+{}
+{
+   "null" { jjtThis.setPrimitive(); }
+}
+
+Block NullBlock() #NullLiteral:
+{}
+{
+    (
+      "[/]"  { jjtThis.setStatic(); }
+    |
+      "[?]"  { jjtThis.setAbstract(); }
+    )
+    {
+        return jjtThis;
+    }
+}
+
+void ExternalBlock() #NullLiteral:
+{}
+{
+    (
+      "[&]"  { jjtThis.setExternal(); }
+    )
+}
+

@@ -1,0 +1,46 @@
+javacc/jjtree settings
+----------------------
+
+file: BENTOHOME$/refimp/src/bento/parser/bento.jjt
+
+jjtree options:
+
+   -- also run javacc
+   -- NOT static
+   -- multi
+   -- NOT node_default_void
+   -- node_scope_hook
+   -- NOT node_factory
+   -- NOT node_uses_parser
+   -- build_node_files
+   -- visitor
+
+node prefix: Parsed
+
+node package: bento.parser
+
+output file: bento.jj
+
+output directory: BENTOHOME$/refimp/src/bento/parser
+
+visitor exception: default
+
+
+javacc options:
+
+  -- NOT static
+  -- NOT debug_parser
+  -- NOT debug_lookahead
+  -- optimize_token_manager
+  -- error_reporting
+  -- java_unicode_escape
+  -- NOT unicode_input
+  --
+
+lookahead: 1
+
+choice_ambiguity_check: 2
+
+other_ambiguity_check: 1
+
+ 

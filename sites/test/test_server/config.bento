@@ -1,0 +1,75 @@
+/--
+ --   config.bento
+ --/
+
+[=
+    /** The primary site; requests are directed here by default. **/
+    site_config main_site = test_server_config
+
+    /** All the sites that the server should make available by name. 
+     **/ 
+    site_config[] all_sites = [] 
+    
+    /** If true, the sites in all_sites share the main_site core instead of
+     *  loading their own.
+     **/
+    boolean share_core = true
+    
+    /** Verbosity level for console output, can range from 0 (terse) to 2 (verbose) **/
+    int verbosity = 1;
+
+    /** Define the available external interfaces (address and port).  Not every site
+     *  necessarily responds to every interface.  Individual sites may filter out 
+     *  some of them.
+     **/
+    listen_to[] = [ "127.0.0.1:9999" ]
+
+    /** Do not handle requests for files with the following extensions; let the server's
+     *  default file handling logic handle them.
+     **/ 
+    ignore_extensions[] = [ "png", "jpg", "gif", "ico" ]
+
+    /** Handle requests with the following extensions if they are defined, even if they
+     *  are not declared as responses or pages (i.e., handle as if a '$' were prepended).
+     **/ 
+    always_handle_extensions[] = [ "css", "js" ]
+
+    /--- configuration variables queried by the server ---/
+    file_base = main_site.filepath
+    boolean files_first = main_site.files_first
+    bentopath = main_site.bentopath
+    sitename = main_site.name
+    sitepath = main_site.sitepath
+    
+    file_separator = "/"
+
+    /** A generic website configuration. **/
+    site_config [=
+        name [?]
+        bentopath [?]
+        boolean recursive = false;
+
+        filepath = "."
+        boolean files_first = false;
+        
+        /** If non-empty, respond only to the listed addresses.  The addresses are
+         *  allowed, but are not automatically enabled; addresses must also appear in 
+         *  the listen_to array.  If empty, respond to any address.
+         **/
+        respond_only_to[] = []  
+    =]
+    
+   
+    /--- config objects for available sites ---/
+
+    site_config test_server_config [=
+        name = "test_server"
+        bentopath = "./sites/test/test_server/src"
+        filepath = "."
+    =]    
+
+    /** The site config table allows lookup of site configuration by name.  It is
+     *  generated automatically from the all_sites list.
+     **/
+    site_config{} site_config_table = { for site_config sc in all_sites [= sc.name: sc =] }
+=]

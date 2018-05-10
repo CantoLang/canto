@@ -1,0 +1,28 @@
+/** 
+ *  test_server.bento
+ *
+ *  Launched by test.bento to test server launching and access.  
+ *
+ **/
+
+site test_server [=
+
+    server_response a [=
+        "A";
+    =]
+
+    bc_array[] = [ "B", "C" ]
+    
+    server_response bc [=
+        bc_array;
+    =]
+
+    de_table{} = { d: "D", e: "E" }
+    
+    server_response de [=
+        de_table;
+    =]
+
+=]
+
+
