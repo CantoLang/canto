@@ -1,4 +1,4 @@
-/-- fun test file --/
+/-- canto test file --/
 
 
 site test {
@@ -6,7 +6,7 @@ site test {
     extern java java.**
 
     copyright [|
-        Copyright &copy; 2017 by <a href="http://www.fundev.org">fundev.org</a><br>
+        Copyright &copy; 2017 by <a href="http://cantolang.org">cantolang.org</a><br>
     |]
 
     /------------------------------------------------------------------/
@@ -3211,7 +3211,7 @@ srt {=
         aliased_method(w) = org.cantolang.test.ExternalTest.other(w)
         
         q = "Q"
-        fun_context my_context = this_domain.context
+        canto_context my_context = this_domain.context
 
         external_interface external_alias(a) = org.cantolang.test.ExternalTest(a);
         external_alias("R") external_sub {
@@ -3240,7 +3240,7 @@ srt {=
 
 qtst {=
     q = "Q"
-    fun_context my_context = this_domain.context
+    canto_context my_context = this_domain.context
     my_context.construct("q");
 =}
 
@@ -6937,11 +6937,11 @@ ft {=
             button("status", "Get data");
         }
 
-        test_server_funpath = main_site.funpath + "/test_server" 
+        test_server_cantopath = main_site.cantopath + "/test_server" 
         
         server_params{} = {}
 
-        server_params test_server_params = { "funpath": test_server_funpath }
+        server_params test_server_params = { "cantopath": test_server_cantopath }
                                 
         launch_test_server {
             eval(this_server.launch_server("test_server", test_server_params));
@@ -6958,7 +6958,7 @@ ft {=
         de{} = get_de
          
         content(request r, session s) {
-            log("test_server funpath: " + test_server_funpath);
+            log("test_server cantopath: " + test_server_cantopath);
         
             if (r.params["launch"]) {
                 log("launching " + test_server_params["site"]);       
