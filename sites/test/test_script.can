@@ -1,5 +1,5 @@
 /--
- -- test the Fun script runner
+ -- test the Canto script runner
  --/
  
 script test_script {
