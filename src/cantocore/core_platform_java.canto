@@ -255,7 +255,7 @@ core {
     
     dynamic string[] dir_tree(path) = canto.runtime.Utils.dirTree(path)
 
-    file_interface file_impl(file_interface fbase, path),(base, path),(base) = canto.runtime.Utils.getFunFile(fbase, base, path)
+    file_interface file_impl(file_interface fbase, path),(base, path),(base) = canto.runtime.Utils.getCantoFile(fbase, base, path)
     
     dynamic file_impl(*) file(file_interface fbase, path),(base, path),(base) [/]
 
@@ -317,7 +317,7 @@ core {
     /** sends a string to log file/console **/
     dynamic log(str) = canto.runtime.SiteBuilder.log(str)
 
-    /** sends a string to log file/console if Fun is running in
+    /** sends a string to log file/console if Canto is running in
      *  verbose mode.
      **/
     dynamic vlog(str) = canto.runtime.SiteBuilder.vlog(str)

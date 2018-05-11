@@ -6,7 +6,7 @@ site test {
     extern java java.**
 
     copyright [|
-        Copyright &copy; 2017 by <a href="http://cantolang.org">cantolang.org</a><br>
+        Copyright &copy; 2018 by <a href="http://cantolang.org">cantolang.org</a><br>
     |]
 
     /------------------------------------------------------------------/
@@ -5393,7 +5393,7 @@ show_this_context {=
     page(r, s) basepage(request r, session s) {
         keep in global_stats: int global_page_views = global_stats["global_page_views"] + 1
 
-        title = [| Fun Test Suite: {= label; =} |]
+        title = [| Canto Test Suite: {= label; =} |]
 
         color bgcolor = "#EEDDAA"
 
@@ -5427,7 +5427,7 @@ show_this_context {=
 
 
         topbar() [|
-            <div align="center"><h2>Fun Test Suite: {= label; =}</h2></div>
+            <div align="center"><h2>Canto Test Suite: {= label; =}</h2></div>
             <div align="right"><h3>{= today; =}</h3></div>
         |]
 
@@ -5554,7 +5554,7 @@ show_this_context {=
 
     public basepage(r, s) index(request r, session s) {
         label = "Home"
-        title = "Fun Test Suite"
+        title = "Canto Test Suite"
         int min_category = 0
         int max_category = -1
 
