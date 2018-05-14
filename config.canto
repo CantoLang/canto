@@ -58,7 +58,7 @@
 
     /--- config objects for available sites ---/
 
-    /--- fun language test site ---/
+    /--- canto language test site ---/
     site_config test_config {
         name = "test"
         cantopath = "./sites/test"

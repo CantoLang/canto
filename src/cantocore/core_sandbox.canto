@@ -33,7 +33,7 @@ core {
     /** raw sandbox contents **/ 
     sandbox_editor_contents(snippet) = snippet
     
-    /** template to create a fun site out of the sandbox contents **/
+    /** template to create a canto site out of the sandbox contents **/
     dynamic src_template(contents) {
     
         [`` site `~sandbox_site` { dynamic `~sandbox` { log("instantiating sandbox"); ``]
