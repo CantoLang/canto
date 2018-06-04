@@ -1,37 +1,37 @@
-Bento in a Nutshell
+Canto in a Nutshell
 ===================
 
 ##1. The Big Picture
 
-The essence of a programming language, what might be called its DNA equivalent, is the grammar that defines it.  Most of this document will describe aspects of Bento's grammar and explain how it can be used to achieve useful results.  But DNA is not the organism.  A living creature is the product of the complex interaction of its DNA with its environment.  So too, understanding programs written in a language requires understanding not just the grammar but the larger context within which the language operates -- a greater whole encompassing both the program and the user as well as the mechanisms by which they interact.
+The essence of a programming language, what might be called its DNA equivalent, is the grammar that defines it.  Most of this document will describe aspects of Canto's grammar and explain how it can be used to achieve useful results.  But DNA is not the organism.  A living creature is the product of the complex interaction of its DNA with its environment.  So too, understanding programs written in a language requires understanding not just the grammar but the larger context within which the language operates -- a greater whole encompassing both the program and the user as well as the mechanisms by which they interact.
 
 Looking at this greater whole, most programming languages in wide use follow what might be called the command model of computing.  This model views a program as a command to be executed.  The user invokes the program by typing a command at the command line, or through some other system facility -- double-clicking an icon, selecting from a menu, etc.; the principle is the same.  The program then runs from start to finish, acquiring resources, perhaps soliciting input from the user, performing various tasks, generating some kind of output and eventually exiting.  The natural programming paradigm in this context is procedural: a program is a procedure, and the statements that make up the program are steps in the procedure.  If the program by chance obtains input or generates output, it does so as a side effect of some step or other in the procedural logic it executes.
 
-Bento, in contrast, follows a web-style request/response model of computing.  This model views an application as a system of potential responses.  The user makes a request in some manner, such as typing a url into a browser; if the application has defined a response for this request, that response is retrieved and returned to the user.  Some parts of the response may already exist, some parts may need to be constructed, and all parts have to be woven together into a proper whole.  Some of the construction may involve the execution of complex logic, but the point of the code is to construct output.  Computation is a side effect.
+Canto, in contrast, follows a web-style request/response model of computing.  This model views an application as a system of potential responses.  The user makes a request in some manner, such as typing a url into a browser; if the application has defined a response for this request, that response is retrieved and returned to the user.  Some parts of the response may already exist, some parts may need to be constructed, and all parts have to be woven together into a proper whole.  Some of the construction may involve the execution of complex logic, but the point of the code is to construct output.  Computation is a side effect.
 
-Bento is declarative, which is a natural paradigm for describing output.  But Bento isn't a typical declarative language.  Its unique grammar allows it to express procedural logic, or, more precisely, declarative logic that can look and feel very procedural.  This dual personality allows Bento to handle both markup and scripting functions effectively and naturally.
+Canto is declarative, which is a natural paradigm for describing output.  But Canto isn't a typical declarative language.  Its unique grammar allows it to express procedural logic, or, more precisely, declarative logic that can look and feel very procedural.  This dual personality allows Canto to handle both markup and scripting functions effectively and naturally.
 
-But Bento's primary goal is not to follow any particular paradigm or model.  It's to be expressive.  Programming languages are human languages, written by humans, for humans.  (Computers, on the other hand, prefer machine language, which is not readily comprehensible to humans.)  Bento, like any ambitious programming language, is intended to allow programmers to craft application architectures, data structures, and implementations of business logic that are clear, concise and communicative to themselves and their fellow programmers.
+But Canto's primary goal is not to follow any particular paradigm or model.  It's to be expressive.  Programming languages are human languages, written by humans, for humans.  (Computers, on the other hand, prefer machine language, which is not readily comprehensible to humans.)  Canto, like any ambitious programming language, is intended to allow programmers to craft application architectures, data structures, and implementations of business logic that are clear, concise and communicative to themselves and their fellow programmers.
 
-##2. Running Bento
+##2. Running Canto
 
-As described above, the runtime platform for Bento is a web server, specifically the Bento server, which is a standalone web server attached to a compiler and a runtime evaluation engine.  Alternatively, the Bento server can run as a servlet, which operates the same but piggybacks on an existing web server rather than providing its own web server.
+As described above, the runtime platform for Canto is a web server, specifically the Canto server, which is a standalone web server attached to a compiler and a runtime evaluation engine.  Alternatively, the Canto server can run as a servlet, which operates the same but piggybacks on an existing web server rather than providing its own web server.
 
-The reference implementation of the Bento server is written in Java, so Bento also requires a standard Java runtime environment (JRE) to run.
+The reference implementation of the Canto server is written in Java, so Canto also requires a standard Java runtime environment (JRE) to run.
 
-A Bento application consists of one or more text files containing code written in Bento.  This code defines responses.  When the Bento server is launched, it compiles the source files into an internal representation, then listens for requests.  When the server receives a request, it constructs an appropriate response by evaluating the Bento code that defines it.
+A Canto application consists of one or more text files containing code written in Canto.  This code defines responses.  When the Canto server is launched, it compiles the source files into an internal representation, then listens for requests.  When the server receives a request, it constructs an appropriate response by evaluating the Canto code that defines it.
 
 ###2.1 Configuration
 
-It's possible to configure Bento by means of parameters on the command line (if run as a standalone server) or in the web.xml file (if run as a servlet), but it's also possible and generally more convenient to configure Bento via a configuration file written in Bento (Bento happens to be a good configuration language).  At startup, Bento searches for a file called config.bento in the current directory.  If found, it looks in this file for configuration information such as the path to the source files for the application and the address and port to listen for requests on.
+It's possible to configure Canto by means of parameters on the command line (if run as a standalone server) or in the web.xml file (if run as a servlet), but it's also possible and generally more convenient to configure Canto via a configuration file written in Canto (Canto happens to be a good configuration language).  At startup, Canto searches for a file called config.bento in the current directory.  If found, it looks in this file for configuration information such as the path to the source files for the application and the address and port to listen for requests on.
 
-###2.2 Bento as a Service
+###2.2 Canto as a Service
 
 
 
 ##3. Blocks
 
-Bento code is composed of two kinds of things: data, and instructions for generating data.  Data comes in data blocks, instructions come in code blocks.
+Canto code is composed of two kinds of things: data, and instructions for generating data.  Data comes in data blocks, instructions come in code blocks.
 
 ###3.1 Data Blocks
 
@@ -49,29 +49,36 @@ Leading and trailing white space is trimmed, so the above data block and the fol
 
 ###3.2 Code Blocks
 
-A code block starts with ```[=``` and ends with ```=]```.  Example:
+A code block starts with ```{``` and ends with ```}```.  Example:
 ```
-    [=
+    {
         hello;
         goodbye;
-    =]
+    }
 ```
 
 ###3.3 Nesting
 
 Data can be embedded in code, and code can be embedded in data:
 ```
-    [=
+    {
         [|
-            <h1>Hello, [= name; =].</h1>
+            <h1>Hello, {= name; =}.</h1>
         |]
-    =]
+    }
 ```
 
+Note that when code is embedded in data the delimiters are ```{=``` and ```=}```
+instead of ```{``` and ```}```.  Actually ```{=``` and ```=}``` can be used
+istead of ```{``` and ```}``` in all cases.  But data blocks often contain
+Javascript or CSS, both of which use ```{``` and ```}``` liberally, so to avoid
+massive escaping Canto only recognizes ```{=``` and ```=}``` as delimiters when
+embedding code in data.
+  
 A data block may be empty, as may a code block:
 ```
     [| |]
-    [= =]
+    { }
 ```
 
 There is special notation for an empty block (an empty block is empty of both code and data, so there is no need to distinguish beween the two):
@@ -81,9 +88,9 @@ There is special notation for an empty block (an empty block is empty of both co
 
 ###3.4 Comments
 
-Comments are blocks of text added for documentation or other purposes which are ignored by the Bento compiler.  Bento allows comments to be freely interspersed with Bento code.
+Comments are blocks of text added for documentation or other purposes which are ignored by the Canto compiler.  Canto allows comments to be freely interspersed with Canto code.
 
-There are two kinds of comments in Bento, documenting and nondocumenting.  Documenting comments are intended for usable commentary on the code that follows.  Automatic documentation generators should be able to construct documentation for Bento code by extracting the documenting comments.
+There are two kinds of comments in Canto, documenting and nondocumenting.  Documenting comments are intended for usable commentary on the code that follows.  Automatic documentation generators should be able to construct documentation for Canto code by extracting the documenting comments.
 
 Documenting comments are delimited by ```/*``` and ```*/```:
 ```
@@ -99,11 +106,11 @@ Nondocumenting comments are delimited by ```/--``` and ```--/```
 
 Comments may be nested as deeply as desired.  Documenting comments may be nested inside of nondocumenting comments, and vice versa, but nondocumenting comments render all embedded comments as nondocumenting as well, regardless of their delimiters.
 
-Bento also supports single-line comments, which start with ```//``` and end at the next end-of-line character.  Single-line comments are nondocumenting.
+Canto also supports single-line comments, which start with ```//``` and end at the next end-of-line character.  Single-line comments are nondocumenting.
 
 ##4. Constructions
 
-Both data and code blocks do the same thing -- specify output.  A data block specifies output explictly.  A code block contains Bento statements that logically describe the output.  Such statements are called constructions.
+Both data and code blocks do the same thing -- specify output.  A data block specifies output explictly.  A code block contains Canto statements that logically describe the output.  Such statements are called constructions.
 
 ###4.1 Basic Constructions
 
@@ -134,44 +141,44 @@ Expressions, like names and values, may be contsructed using the construction op
 
 ###4.2 Logical Constructions
 
-Bento provides two kinds of special constructions for implementing logic, conditionals and loops.  The simplest conditional consists of an expression and a code or data block, which is evaluated only if the value of the expression, interpreted as a boolean value, is true:
+Canto provides two kinds of special constructions for implementing logic, conditionals and loops.  The simplest conditional consists of an expression and a code or data block, which is evaluated only if the value of the expression, interpreted as a boolean value, is true:
 ```
-    if (arriving) [= 
+    if (arriving) { 
         hello;
-    =]
+    }
 ```
 
 A conditional may also provide an alternative block, which is evaluated if the test fails:
 ```
-    if (arriving) [= 
+    if (arriving) { 
         hello;
-    =] else [=
+    } else {
         "So...";
-    =]
+    }
 ```
 
 Multiple conditionals may be strung together:
 ```
-    if (arriving) [= 
+    if (arriving) { 
         hello;
-    =] else if (leaving) [=
+    } else if (leaving) {
         goodbye;
-    =] else [=
+    } else {
         "So..."
-    =]
+    }
 ```
 
-Loops cause a code or data block to be evaluated some number of times.  The simplest kind of loop is used in conjuction with a collection, which is a Bento entity that groups together other entities (we will discuss exactly how collections are defined and what they can do in a later section):
+Loops cause a code or data block to be evaluated some number of times.  The simplest kind of loop is used in conjuction with a collection, which is a Canto entity that groups together other entities (we will discuss exactly how collections are defined and what they can do in a later section):
 ```
-    for x in x_list [=
+    for x in x_list {
         x;
-    =]
+    }
 ```
 
 Another kind of loop steps through a sequence of values:
 ```
     for int i from 0 to 3 [|
-        <li>Line [= i; =]</li>
+        <li>Line {= i; =}</li>
     |]
 ```
 
@@ -188,7 +195,7 @@ The default increment for this kind of loop is 1, but may be set to any value vi
 Loops may be nested; they may also be combined, using the "and" keyword:
 ```
     for x in x_list and y in y_list and int i from 0 [|
-        <li>Point [= i; =]: ([= x; =], [= y; =])</li>
+        <li>Point {= i; =}: ({= x; =}, {= y; =})</li>
     |]
 ```
 
@@ -198,7 +205,7 @@ The above loop will repeat until either ```x_list``` or ```y_list``` runs out of
 
 ###5.1 Simple Definitions
 
-When the construction operator is applied to a name, or to an expression which includes a name, Bento obtains the data associated with the name.  Such an association is called a definition.  A definition consists of a name and a scope, typically a code or data block, which contains the associated data, or code to generate the data.  Here is a simple definition using a data block:
+When the construction operator is applied to a name, or to an expression which includes a name, Canto obtains the data associated with the name.  Such an association is called a definition.  A definition consists of a name and a scope, typically a code or data block, which contains the associated data, or code to generate the data.  Here is a simple definition using a data block:
 ```
     hello [|
         Hello, world.
@@ -207,9 +214,9 @@ When the construction operator is applied to a name, or to an expression which i
 
 Here is another simple definition, this time using a code block:
 ```
-    greetings [=
+    greetings {
         hello;
-    =]
+    }
 ```
 
 Here is an empty definition, using an empty block:
@@ -219,20 +226,20 @@ Here is an empty definition, using an empty block:
 
 ###5.2 Instantiation of Definitions
 
-When a definition is instantiated, Bento constructs output by concatenating the constructions and blocks it contains, in the order in which they appear. So, if we have the following definitions:
+When a definition is instantiated, Canto constructs output by concatenating the constructions and blocks it contains, in the order in which they appear. So, if we have the following definitions:
 ```
     start_tag [| <h1> |]
 
     end_tag [| </h1> |]
 
-    hello [=
+    hello {
         start_tag;
         [| Hello, world. |]
         end_tag;
-    =]
+    }
 ```
 
-then Bento handles the construction
+then Canto handles the construction
 ```
     hello;
 ```
@@ -242,10 +249,10 @@ by concatenating the output of ```start_tag```, the data block ```[| Hello, worl
     <h1>Hello, world.</h1>
 ```
 
-In Bento you always have more than one way to write an implementation, because you can always substitute code embedded in a data block for data emebedded in a code block (or vice versa).  Here is a code-in-data implementation of ```hello``` which achieves the exact same result as the data-in-code one above:
+In Canto you always have more than one way to write an implementation, because you can always substitute code embedded in a data block for data emebedded in a code block (or vice versa).  Here is a code-in-data implementation of ```hello``` which achieves the exact same result as the data-in-code one above:
 ```
     hello [|
-        [= start_tag; =]Hello, world.[= end_tag; =]
+        {= start_tag; =}Hello, world.{= end_tag; =}
     |]
 ```
 
@@ -254,7 +261,7 @@ There is yet another way of writing a definition.  In the special case of a defi
     start_tag = "<h1>"
 ```
 
-This resembles the syntax for assignment in many languages.  And indeed it may appear to behave that way in many cases.  For example, consider the following bit of Bento code:
+This resembles the syntax for assignment in many languages.  And indeed it may appear to behave that way in many cases.  For example, consider the following bit of Canto code:
 ```
     hello = "Hello, world."
 
@@ -266,13 +273,13 @@ Evaluating this, we get this output:
     Hello, world.
 ```
 
-which is what we would expect from assigning a value to a variable and then outputting that variable.  But there is an important difference, not salient in this particular case but critical in many others.  A definition is not a construction, and doesn't do anything by its mere presence.  The statement that looks like an assignment is a definition, and the Bento server ignores it as it is constructing a response.  Until the Bento server gets to the following statement, which instantiates a ```hello```, there is no variable called ```hello``` containing the value "Hello, world."
+which is what we would expect from assigning a value to a variable and then outputting that variable.  But there is an important difference, not salient in this particular case but critical in many others.  A definition is not a construction, and doesn't do anything by its mere presence.  The statement that looks like an assignment is a definition, and the Canto server ignores it as it is constructing a response.  Until the Canto server gets to the following statement, which instantiates a ```hello```, there is no variable called ```hello``` containing the value "Hello, world."
 
-Another way of describing this is to say that Bento is a lazy language -- nothing (ideally) is evaluated before it is needed.
+Another way of describing this is to say that Canto is a lazy language -- nothing (ideally) is evaluated before it is needed.
 
 ###5.3 Instantiation Without Output
 
-As noted earlier, a Bento program describes output, and computation is a side effect.  If computation is the purpose of a definition, however, the output may be superfluous or even inconvenient.  To accommodate such cases, Bento provides a built-in function, ```eval```, which instantiates its argument but throws away the output.
+As noted earlier, a Canto program describes output, and computation is a side effect.  If computation is the purpose of a definition, however, the output may be superfluous or even inconvenient.  To accommodate such cases, Canto provides a built-in function, ```eval```, which instantiates its argument but throws away the output.
 
 Example:
 ```
@@ -294,23 +301,23 @@ which yields:
 
 A definition can contain another definition, referred to as a child definition.  The following definition of greetings contains a child definition called ```hello```:
 ```
-    greetings [=
+    greetings {
         hello [| <h1>Hello, world.</h1> |]
-    =]
+    }
 ```
 
-A child definition, though, is not a construction, and is ignored by Bento when the containing definition is instantiated.  So given the above definition, the construction
+A child definition, though, is not a construction, and is ignored by Canto when the containing definition is instantiated.  So given the above definition, the construction
 ```
         greetings;
 ```
 
 would yield no output because the definition of greetings contains no constructions.  But a definition can contain both child definitions and constructions.  For example:
 ```
-    greetings [=
+    greetings {
         hello [| <h1>Hello, world.</h1> |]
 
         hello;
-    =]
+    }
 ```
 
 In this case, when ```greetings``` is instantiated, you get
@@ -320,57 +327,57 @@ In this case, when ```greetings``` is instantiated, you get
 
 A definition may have any number of child definitions, of any type, and there may be more child definitions nested within those.  Example:
 ```
-    building [=
-        floor_1 [=
-            apt_1A [=
+    building {
+        floor_1 {
+            apt_1A {
                 int bedrooms = 1
                 float baths = 1.0
-            =]
-            apt_1B [= 
+            }
+            apt_1B { 
                 int bedrooms = 2
                 float baths = 1.5
-            =]
-        =]
-        floor_2 [=
-            apt_PH [= 
+            }
+        }
+        floor_2 {
+            apt_PH { 
                 int bedrooms = 3
                 float baths = 2.5
-            =]
-        =]
-    =]
+            }
+        }
+    }
 ```
 
 You can reference a child of a definition using the dot operator.  Continuing on the preceding example: 
 ```
     show_bedrooms [|
         <h2>Bedrooms</h2>
-        <p>Apt. 1A: [=
+        <p>Apt. 1A: {=
 
             building.floor_1.apt_1A.bedrooms;
 
-        =] </p><p>Apt. 1B: [= 
+        =} </p><p>Apt. 1B: {= 
 
             building.floor_1.apt_1B.bedrooms;
 
-        =] </p><p>Apt. PH: [= 
+        =} </p><p>Apt. PH: {= 
 
             building.floor_2.apt_PH.bedrooms;
 
-        =] </p>
+        =} </p>
     |]
 ```
 
 ##7. Namespace
 
-Bento's namespace is somewhat unusual.  Programming languages typically have different namespaces for different categories of entities such as types, classes, functions, objects and variables.  In Bento, however, the boundaries between the categories are not so distinct.  A single entity may span multiple categories, acting as a type in some cases, a function in others and a variable in yet others, even though the entity is defined in only one place.  So Bento has just one namespace for all entities.
+Canto's namespace is somewhat unusual.  Programming languages typically have different namespaces for different categories of entities such as types, classes, functions, objects and variables.  In Canto, however, the boundaries between the categories are not so distinct.  A single entity may span multiple categories, acting as a type in some cases, a function in others and a variable in yet others, even though the entity is defined in only one place.  So Canto has just one namespace for all entities.
 
-One advantage of this approach is that a single Bento statement can operate on multiple levels simultaneously, or operate on different levels in different circumstances.  An example of the former is the way every definition is also a type declaration.  An example of the latter is the way some constructions can generate new data in some circurmstances and retrieve stored data in others (see the chapter on State below).
+One advantage of this approach is that a single Canto statement can operate on multiple levels simultaneously, or operate on different levels in different circumstances.  An example of the former is the way every definition is also a type declaration.  An example of the latter is the way some constructions can generate new data in some circurmstances and retrieve stored data in others (see the chapter on State below).
 
-Besides the namespace they reside in, the important characteristics of names in Bento are the lexical rules they follow and the rules for resolving them, which depends on the scope they are in. 
+Besides the namespace they reside in, the important characteristics of names in Canto are the lexical rules they follow and the rules for resolving them, which depends on the scope they are in. 
 
 ###7.1 Names
 
-The lexical rules for names in Bento are fairly standard: names are case sensitive; they may include letters, digits, underscores and dollar signs; they may not start with a digit.  Keywords in the language such as ```for``` and ```if``` may not be used as names.
+The lexical rules for names in Canto are fairly standard: names are case sensitive; they may include letters, digits, underscores and dollar signs; they may not start with a digit.  Keywords in the language such as ```for``` and ```if``` may not be used as names.
 
 ###7.2 Scopes
 
@@ -378,81 +385,81 @@ Every name must resolve to a definition.  The resolution process depends on the 
  
 Every definition creates a scope.  Nested definitions create nested scopes.  A name may only be defined once in an immediate scope (a scope not including its nested scopes).  Here again is an example from chapter 5:
 ```
-    building [=
-        floor_1 [=
-            apt_1A [=
+    building {
+        floor_1 {
+            apt_1A {
                 int bedrooms = 1
                 float baths = 1.0
-            =]
-            apt_1B [= 
+            }
+            apt_1B { 
                 int bedrooms = 2
                 float baths = 1.5
-            =]
-        =]
-        floor_2 [=
-            apt_PH [= 
+            }
+        }
+        floor_2 {
+            apt_PH { 
                 int bedrooms = 3
                 float baths = 2.5
-            =]
-        =]
-    =]
+            }
+        }
+    }
 ```
 
 Note that the name ```baths``` is defined three times, but each definition is in a separate scope.  If ```baths``` had appeared twice in the same scope, a compile-time error would occur.
 
-When Bento encounters a name and needs to find the corresponding definition, it searches its namespace by scope. It begins with the immediate scope and works its way up through the parent's scope, and the parent's parent's scope, until it runs out of scopes or a matching definition is found.
+When Canto encounters a name and needs to find the corresponding definition, it searches its namespace by scope. It begins with the immediate scope and works its way up through the parent's scope, and the parent's parent's scope, until it runs out of scopes or a matching definition is found.
 
 Consider the following definition:
 ```
-    greetings [=
+    greetings {
         name = "Moon"
 
-        hello [=
+        hello {
             name = "World"
 
-            [| <p>Hello, [= name; =].</p> |]
-        =]
+            [| <p>Hello, {= name; =}.</p> |]
+        }
 
-        good_night [=
-            [| <p>Good night, [= name; =].</p> |]
-        =]
+        good_night {
+            [| <p>Good night, {= name; =}.</p> |]
+        }
         
         hello;
         good_night;
-    =]
+    }
 ```
 
-When Bento instantiates ```hello```, it looks in the scope of ```hello```'s definition for a definition of ```name``` and finds it, giving ```name``` the value "World".  But ```good_night``` has no definition for ```name``` in its immediate scope, so when Bento instantiates ```good_night``` it continues its search to the next scope outwards, the one created by the definition of ```greetings```.  There it finds ```name```, containing the value "Moon".  The result:
+When Canto instantiates ```hello```, it looks in the scope of ```hello```'s definition for a definition of ```name``` and finds it, giving ```name``` the value "World".  But ```good_night``` has no definition for ```name``` in its immediate scope, so when Canto instantiates ```good_night``` it continues its search to the next scope outwards, the one created by the definition of ```greetings```.  There it finds ```name```, containing the value "Moon".  The result:
 ```
     <p>Hello, World.</p><p>Good night, Moon.</p>
 ```
 
 Using the child operator (dot), it's possible to instantiate a definition that is not in an accessible scope as long as it has an ancestor that is in scope.  For example, in the following code ```good_night``` accesses ```name```, which is not directly accessible, by referencing it as the child of ```hello```, which is accessible:
 ```
-    greetings [=
+    greetings {
 
-        hello [=
+        hello {
             name = "World"
 
-            [| <p>Hello, [= name; =].</p> |]
-        =]
+            [| <p>Hello, {= name; =}.</p> |]
+        }
 
-        good_night [=
-            [| <p>Good night, [= hello.name; =].</p> |]
-        =]
+        good_night {
+            [| <p>Good night, {= hello.name; =}.</p> |]
+        }
         
         hello;
         good_night;
-    =]
+    }
 ```
 
 Such access from a wider scope can be controlled using an access modifier -- a keyword that precedes the definition and determines specifies its behavior in some regard.  One such modifier is ```local```, which specifies local access.  If a definition is declared to have local access, it is invisible to all wider scopes.  For example, if we change the definition of name in the preceding example to the following:
 ```
-        hello [=
+        hello {
             local name = "World"
  
-            [| <p>Hello, [= name; =].</p> |]
-        =]
+            [| <p>Hello, {= name; =}.</p> |]
+        }
 ```
 
 then instantiating ```hello``` will still work, but instantiating ```good_night``` will fail, because ```name``` is no longer visible beyond ```hello```.
@@ -461,11 +468,11 @@ then instantiating ```hello``` will still work, but instantiating ```good_night`
 
 The outermost scope of an application is the site level, created by a site definition (a typed definition whose supertype is the built-in type ```site```).  Example:
 ```
-    site hello_world_example [=
+    site hello_world_example {
 
         hello [| Hello, world. |]
 
-    =]
+    }
 ```
 
 Site definitions have special properties that set them apart from other definitions:
@@ -475,13 +482,13 @@ Site definitions have special properties that set them apart from other definiti
 * They do not create a new type, so you cannot use the site name as the supertype in a typed definition
 * They may be divided into multiple parts
 
-The ability to divide a site into parts allows a site to be defined across multiple source files.  The Bento compiler concatenates together all the code blocks from site definitions of a given name, resulting in the equivalent of one big code block.
+The ability to divide a site into parts allows a site to be defined across multiple source files.  The Canto compiler concatenates together all the code blocks from site definitions of a given name, resulting in the equivalent of one big code block.
 
-Normally the outermost definition in a Bento source file is a site definition.  If the source file does not begin with an explicit site definition, its contents are presumed to belong to a special unnamed site called the default site.
+Normally the outermost definition in a Canto source file is a site definition.  If the source file does not begin with an explicit site definition, its contents are presumed to belong to a special unnamed site called the default site.
 
 ##7. Types
 
-Bento has the notion of type, which is a named category of data.  But types are optional.  A definition may be either typed or untyped.  A typed definition asserts that the data resulting from its instantiation belongs to a particular category.  An untyped definition makes no such assertion.
+Canto has the notion of type, which is a named category of data.  But types are optional.  A definition may be either typed or untyped.  A typed definition asserts that the data resulting from its instantiation belongs to a particular category.  An untyped definition makes no such assertion.
 
 ###7.1 Primitive Types
 
@@ -492,7 +499,7 @@ The definitions shown up to now, consisting of a name and an implementation, are
     |]
 ```
 
-This definition declares the type to be ```string```, which is a primitive type.  Primitive types are types that are built into the language and are not explicitly defined in any Bento code.  Primitive types include standard types commonly found in programming languages, with the meanings a programmer would expect:
+This definition declares the type to be ```string```, which is a primitive type.  Primitive types are types that are built into the language and are not explicitly defined in any Canto code.  Primitive types include standard types commonly found in programming languages, with the meanings a programmer would expect:
 ```
     boolean
     byte
@@ -506,9 +513,9 @@ These may be used in definitions of any format:
 ```
     boolean flag1 = true
 
-    boolean flag2 [= 
+    boolean flag2 {
         false;
-    =]
+    }
 
     char a = 'A'
 
@@ -521,13 +528,13 @@ These may be used in definitions of any format:
     float fourteen_point_zero = fourteen
 ```
 
-As the final example above illustrates, the data in a typed definition does not have to itself be of the specified type.  If it is not, Bento will convert it to the specified type upon instantiation, and if it cannot be converted, Bento will output the null value for that type.  The null value for a string is an empty string; for a boolean, false; for a character, the NUL character; and for numeric types, zero.
+As the final example above illustrates, the data in a typed definition does not have to itself be of the specified type.  If it is not, Canto will convert it to the specified type upon instantiation, and if it cannot be converted, Canto will output the null value for that type.  The null value for a string is an empty string; for a boolean, false; for a character, the NUL character; and for numeric types, zero.
 
-When Bento instantiates a definition that contains multiple constructions, constructions other than strings are converted to strings before they are concatenated to form output.  In this sense, the string type is the most fundamental.  In fact, it may generally be omitted since untyped definitions and strings both ultimately produce text.  In the end, everything is a string.
+When Canto instantiates a definition that contains multiple constructions, constructions other than strings are converted to strings before they are concatenated to form output.  In this sense, the string type is the most fundamental.  In fact, it may generally be omitted since untyped definitions and strings both ultimately produce text.  In the end, everything is a string.
 
 ###7.2 User-Defined Types
 
-In addition to the built-in types, Bento supports user-defined types.  It is very easy to create a type in Bento.  In fact it is virtually impossible not to create a type, since every definition creates a new type, which may be referenced wherever a type is expected.  This is true even for definitions that are themselves empty or untyped or both -- an untyped definition does not use a type, but it creates one, which another defition can use.  For example:
+In addition to the built-in types, Canto supports user-defined types.  It is very easy to create a type in Canto.  In fact it is virtually impossible not to create a type, since every definition creates a new type, which may be referenced wherever a type is expected.  This is true even for definitions that are themselves empty or untyped or both -- an untyped definition does not use a type, but it creates one, which another defition can use.  For example:
 ```
     message [/]
 
@@ -547,7 +554,7 @@ The type created by a typed definition is referred to as a subtype of the origin
 
 ###7.3 Detecting Types
 
-Bento provides the ```isa``` operator (pronounced "is a") to test whether an entity belongs to a type, i.e., was defined as being of that type or a subtype.  An entity is also considered to belong to its own type, i.e. the type created by its own definition.  Given the code in the preceding example, the following three expressions are all true:
+Canto provides the ```isa``` operator (pronounced "is a") to test whether an entity belongs to a type, i.e., was defined as being of that type or a subtype.  An entity is also considered to belong to its own type, i.e. the type created by its own definition.  Given the code in the preceding example, the following three expressions are all true:
 ```
     (hello isa message)
     (french_hello isa message)
@@ -562,9 +569,9 @@ But these two expressions are false:
 
 The keyword ```type``` makes it possible to query the current type, or the type associated with a name.  In the simplest case, type returns the name of the definition being instantiated.  For example:
 ```
-    hello [=
+    hello {
         type;
-    =]
+    }
 
     hello;
 ```
@@ -576,9 +583,9 @@ produces this:
 
 But in some cases it may be a subtype:
 ```
-    hello [=
+    hello {
         type;
-    =]
+    }
 
     hello greeting [/]
 
@@ -608,7 +615,7 @@ In this example, french_hello is a subtype of both hello and french.  Therefore,
 
 ##8. Parameters
 
-A definition can be made more general by allowing some of the information it uses to vary from instantiation to instantiation.  Bento supports this through parameters. 
+A definition can be made more general by allowing some of the information it uses to vary from instantiation to instantiation.  Canto supports this through parameters. 
 
 ###8.1 Basics of Parameters
 
@@ -617,60 +624,60 @@ A definition may have zero or more parameters.  Parameters are specified in pare
 Here is a definition with a single typed parameter:
 ```
     htag(int level) [|
-        <h[= level; =]>
+        <h{= level; =}>
     |]
 ```
 
 The following example shows a definition with a single parameter and a corresponding instantiation with a single argument:
 ```
-    greetings [=
-        hello(nm) [=
-            [| <h1>Hello, [= nm; =]</h1> |]
-        =]
+    greetings {
+        hello(nm) {
+            [| <h1>Hello, {= nm; =}</h1> |]
+        }
 
         hello("World");
-    =]
+    }
 ```
 
-In the above, ```hello``` is defined with a single untyped parameter called ```nm```.  ```hello``` is then instantiated with the a single argument, the string "World".  When Bento encounters ```nm``` in the implementation of ```hello```, it identifies ```nm``` as a parameter, and matches the parameter ```nm``` to the argument "World".  The result in this case is therefore the same as if we had written the following instead:
+In the above, ```hello``` is defined with a single untyped parameter called ```nm```.  ```hello``` is then instantiated with the a single argument, the string "World".  When Canto encounters ```nm``` in the implementation of ```hello```, it identifies ```nm``` as a parameter, and matches the parameter ```nm``` to the argument "World".  The result in this case is therefore the same as if we had written the following instead:
 ```
-    greetings [=
-        hello [=
+    greetings {
+        hello {
             nm = "World"
 
-            [| <h1>Hello, [= nm; =]</h1> |]
-        =]
+            [| <h1>Hello, {= nm; =}</h1> |]
+        }
 
         hello;
-    =]
+    }
 ```
 
 But this works only because in the initial version we instantiated ```hello``` just once.  The following variation would not be able to be rewritten quite so simply:
 ```
-    greetings [=
-        hello(nm) [=
-            [| <h1>Hello, [= nm; =]</h1> |]
-        =]
+    greetings {
+        hello(nm) {
+            [| <h1>Hello, {= nm; =}</h1> |]
+        }
 
         hello("World");
-    =]
+    }
 ```
 
 Just like other definitions, the name of a parameter must be unique in the scope in which it is defined.  Also, just like other definitions, a parameter is visible to a scope beneath the one in which it is defined, as long as the same name has not been redefined in that scope (or an intervening scope, if it is more deeply nested).  So the following is valid:
 ```
-    greetings(nm) [=
-        hello [=
-            [| <h1>Hello, [= nm; =]</h1> |]
-        =]
+    greetings(nm) {
+        hello {
+            [| <h1>Hello, {= nm; =}</h1> |]
+        }
 
         hello;
-    =]
+    }
 ```
 
 Multiple parameters are allowed; they are specified in a list, separated by commas:
 ```
     hello(nm, int level) [|
-        <h[= level; =]>Hello, [= nm; =]</h[= level; =]>
+        <h{= level; =}>Hello, {= nm; =}</h{= level; =}>
     |] 
 ```
 
@@ -691,28 +698,28 @@ The purpose of this will be discussed in the next chapter.
 
 ##8.2 Overloading
   
-Bento supports overloading of definitions.  An overloaded definition is one that may be instantiated in more than one way, with differing numbers or types of parameters.  In other languages that support overloading of functions or operators, each overloaded version has its own distinct implementation.  In Bento, however, the different versions are defined using multiple parameter sets with a single implementation.
+Canto supports overloading of definitions.  An overloaded definition is one that may be instantiated in more than one way, with differing numbers or types of parameters.  In other languages that support overloading of functions or operators, each overloaded version has its own distinct implementation.  In Canto, however, the different versions are defined using multiple parameter sets with a single implementation.
 
 Overloaded parameter sets are specified in a list, separated by commas.  Each parameter set must differ from the others in either the number or the type of the parameters.  A parameter may appear in more than one parameter set, but it must have the same type in each.  For example:
 ```
-    hello(nm), (nm, int level) [=
-         if (level > 0) [| <h[= level; =]> |]
+    hello(nm), (nm, int level) {
+         if (level > 0) [| <h{= level; =}> |]
          else           [| <p> |]
 
-         [| Hello, [= nm; =] |]
+         [| Hello, {= nm; =} |]
 
-         if (level > 0) [| </h[= level; =]> |]
+         if (level > 0) [| </h{= level; =}> |]
          else           [| </p> |]
-    |]
+    }
 ```
 
-When an overloaded definition is instantiated, Bento selects the parameter set that most closely matches the arguments specified in the instantiation, and constructs the definition utilizing the arguments as the values for the selected parameter set.  Other parameters receive the null value for their base type.
+When an overloaded definition is instantiated, Canto selects the parameter set that most closely matches the arguments specified in the instantiation, and constructs the definition utilizing the arguments as the values for the selected parameter set.  Other parameters receive the null value for their base type.
 
-This presents a problem, however.  If a parameter that is not in every parameter list is null, it's impossible to tell why merely by examining its value  -- it might not be in the selected parameter set, or it might have been passed a null value.  So Bento provides the ```with``` statement, which is a special kind of conditional that tests whether a parameter is in the selected parameter set.
+This presents a problem, however.  If a parameter that is not in every parameter list is null, it's impossible to tell why merely by examining its value  -- it might not be in the selected parameter set, or it might have been passed a null value.  So Canto provides the ```with``` statement, which is a special kind of conditional that tests whether a parameter is in the selected parameter set.
 
 Example: 
 ```
-    which_param(int x), (float y), (z) [=
+    which_param(int x), (float y), (z) {
         with (x) [|
             <p>Called with an int</p>
         |] else with (y) [|
@@ -720,14 +727,14 @@ Example:
         |] else [|
             <p>Called with something else</p>
         |]
-    =]
+    }
 ```
 
 ##9. Inheritance
 
-A typed definition in Bento may make use of the type's definition.  This is called subclassing or inheritance.  The type's definition is called the superdefinition; the definition that uses the type is called the subdefinition.
+A typed definition in Canto may make use of the type's definition.  This is called subclassing or inheritance.  The type's definition is called the superdefinition; the definition that uses the type is called the subdefinition.
 
-Bento supports four kinds of inheritance: implementation inheritance, interface inheritance, override inheritance and lateral inheritance.
+Canto supports four kinds of inheritance: implementation inheritance, interface inheritance, override inheritance and lateral inheritance.
 
 ###9.1 Implementation Inheritance 
 
@@ -749,7 +756,7 @@ the output would be
 
 Even without supplying its own implementation, a definition can customize the superdefinition's implementation by supplying the supertype with arguments:
 ```
-    hello(nm) [| Hello, [= nm; =]. |]
+    hello(nm) [| Hello, {= nm; =}. |]
 
     hello("World") hello_world [/]
 ```
@@ -772,12 +779,12 @@ This time the output would be
  
 The more complex cases occur when the subdefinition extends the superdefinition's implementation rather than replacing it.  There are two such cases, which may be called outside-in and inside-out inheritance.
 
-Outside-in inheritance is analogous to the approach followed by many object-oriented languages.  With this approach, the subdefinition explicitly references the superdefinition.  In Bento, this is accomplished via the built-in name ```super```.  Example:
+Outside-in inheritance is analogous to the approach followed by many object-oriented languages.  With this approach, the subdefinition explicitly references the superdefinition.  In Canto, this is accomplished via the built-in name ```super```.  Example:
 ```
     hello [| Hello, World |]
 
     hello another_hello [|
-         [= super; =].  How are you?
+         {= super; =}.  How are you?
     |]
 
     another_hello;
@@ -792,14 +799,14 @@ Unlike in some languages, super can occur anywhere in the subdefinition's implem
 ```
     hello [| Hello, World. |]
 
-    hello two_worlds_meet [=
+    hello two_worlds_meet {
         [| Two worlds meet on the street.  " |]
-        for int i from 0 to 2 [=
+        for int i from 0 to 2 {
             super;
             [| "  " |]
-        =]
+        }
         [| "  They continue on their way. |]
-    =]
+    }
       
     two_worlds_meet;
 ```
@@ -811,11 +818,11 @@ The output of the above:
 
 This is called outside-in inheritance because the implementation of the definition being instantiated (the subdefinition) wraps the implementation of its superdefinition.  With inside-out inheritance, the superdefinition's implementation wraps the subdefinition's.  This is accomplished using the ```sub``` built-in name.  ```sub``` appears in the superdefinition, and indicates where within the superdefinition's implementation the implementation provided by the subdefinition appears.  Example:
 ```
-    message [=
+    message {
         [| <h1> |]
         sub;
         [| </h1> |]
-    =]
+    }
 
     message hello [| Hello, World |]
 
@@ -831,18 +838,18 @@ Inside-out inheritance turns out to be very useful because for many classes of d
 
 Both outside-in and inside-out inheritance may be extended any number of levels.  Example:
 ```
-    message [=
+    message {
         sub;
-    =]
+    }
 
-    message header_message [=
+    message header_message {
         [| <h1> |]
         sub;
         [| </h1> |]
-    =]
+    }
 
     header_message hello [|
-        Hello, [= sub; =]
+        Hello, {= sub; =}
     |]
 
     hello hello_world [| World |]
@@ -852,17 +859,17 @@ Both outside-in and inside-out inheritance may be extended any number of levels.
 
 with the same result as the previous example.
 
-Bento does not allow mixing inside-out and outside-in inheritance.  If a definition contains a reference to ```sub```, its descendants (subdefinitions, subdefinitions of those subdefinitions, and so on) cannot contain a reference to ```super```; and if a definition contains a reference to ```super```, its ancestors (superdefinition, its superdefinition, ans so on) cannot contain a reference to ```sub```.  It is always legal to have no reference to either.
+Canto does not allow mixing inside-out and outside-in inheritance.  If a definition contains a reference to ```sub```, its descendants (subdefinitions, subdefinitions of those subdefinitions, and so on) cannot contain a reference to ```super```; and if a definition contains a reference to ```super```, its ancestors (superdefinition, its superdefinition, ans so on) cannot contain a reference to ```sub```.  It is always legal to have no reference to either.
 
 Neither ```sub``` nor ```super``` takes arguments.  But arguments may be passed to a superdefinition by adding them to the supertype, as described in the previous chapter.  Here is an example that also uses ```super```:
 ```
-    hello(nm) [| Hello, [= nm; =]. |]
+    hello(nm) [| Hello, {= nm; =}. |]
 
-    hello("World") hello_world [=
+    hello("World") hello_world {
         [| <h1> |]
         super;
         [| </h1> |]
-    =]
+    }
         
     hello_world;
 ```
@@ -880,14 +887,14 @@ If a definition contains a child definition with the same name as a child defini
 
 Example:
 ```
-    greetings [=
+    greetings {
         hello = "Hello. "
         goodbye = "Bye."
-    =]
+    }
 
-    greetings night_greetings [=
+    greetings night_greetings {
         goodbye = "Good night."
-    =]
+    }
     
     night_greetings.hello;
     night_greetings.goodbye;
@@ -904,17 +911,17 @@ With override inheritance, a child definition may incorporate the implementation
 
 Example:
 ```
-    greetings [=
+    greetings {
         hello = "Hello."
-    =]
+    }
     
-    greetings bold_greetings [=
-        this hello [=
+    greetings bold_greetings {
+        this hello {
             [| <b> |]
             super;
             [| </b> |]
-        =]
-    =]
+        }
+    }
 
     bold_greetings.hello;
 ```
@@ -926,7 +933,7 @@ which produces:
 
 ###9.5 Lateral Inheritance
 
-Bento supports a kind of inheritance which works outside the standard implementation inheritance chain defined by the ```super``` or ```sub``` keywords.
+Canto supports a kind of inheritance which works outside the standard implementation inheritance chain defined by the ```super``` or ```sub``` keywords.
 
 
 ###9.4 Multiple Inheritance
@@ -935,7 +942,7 @@ As noted earlier, a definition may have multiple supertypes.  In such a case a d
 
 For implementation inheritance, the system selects the first elegible definition in the list of superdefinitions to be the superdefinition for implementation purposes.  A definition is elegible if it has a parameter list that matches the arguments supplied at runtime, and has an inheritance keyword that is compatible with the definition being instantiated.
 
-For interface inheritance, all child definitions of all superdefinitions are available.  When resolving a reference to a child in a superdefinition, Bento looks first at the implementation superdefinition (the one selected by the logic for implementation inheritance); if it has a child of the given name, it is selected.  If it does not, then Bento searches the superdefinitions in the order they are listed.
+For interface inheritance, all child definitions of all superdefinitions are available.  When resolving a reference to a child in a superdefinition, Canto looks first at the implementation superdefinition (the one selected by the logic for implementation inheritance); if it has a child of the given name, it is selected.  If it does not, then Canto searches the superdefinitions in the order they are listed.
 
 In the case of lateral inheritance, all lateral superdefinitions (ones containing the ```next``` keyword) are implemented, in the order they appear.
 
@@ -944,7 +951,7 @@ The single exception to multiple inheritance is override inheritance, which allo
 
 ##10. Collections
 
-A collection is a definition which associates a name with multiple values which may be referenced individually using an index.  Bento supports two kinds of collections, arrays and tables.
+A collection is a definition which associates a name with multiple values which may be referenced individually using an index.  Canto supports two kinds of collections, arrays and tables.
 
 
 ###10.1 Arrays
@@ -971,10 +978,10 @@ The values in an array may be any valid instantiation or expression.  Array inde
 
     time_units[] = [ MINUTE, ("half " + HOUR), HOUR ]
     
-    for int i from 0 to 3 [=
+    for int i from 0 to 3 {
         time_units[2 - i];
         "... ";
-    =]
+    }
 ```
 
 Result:
@@ -991,13 +998,14 @@ Arrays may be typed.  In such case the array indicator may go either with the ty
 
 ###10.2 Tables
 
-In a table, the values exist as a set of key-value pairs, and individual values are referenced using a string index, also called a key.  In other languages, the equivalent of a Bento table is sometimes called an associative array, map or hashtable.  Tables and table indexes are denoted by ```{``` and ```}``` (curly braces).  Example:
+In a table, the values exist as a set of key-value pairs, and individual values are referenced using a string index, also called a key.  In other languages, the equivalent of a Canto table is sometimes called an associative array, map or hashtable.  Tables are defined by ```{``` and ```}``` but table entries are accessed like array items, with
+```[``` and ```]```.  Example:
 ```
     heavenly_bodies{} = { "Earth": "planet", "Luna": "moon", "Sol": "star" }
 
-    heavenly_bodies{"Sol"};
+    heavenly_bodies["Sol"];
     "dust and ";
-    heavenly_bodies{"Luna"};
+    heavenly_bodies["Luna"];
     "beams";
 ```
 
@@ -1013,28 +1021,28 @@ Like arrays, tables may be typed, and the table indicator may go either with the
 
 ###10.3 Dynamically Generated Collections
 
-Bento allows collections to be wholly or partially generated by logic rather than having to separately specify each element.  This ability, called array comprehension in some languages, is accomplished via special forms of logical constructions.
+Canto allows collections to be wholly or partially generated by logic rather than having to separately specify each element.  This ability, called array comprehension in some languages, is accomplished via special forms of logical constructions.
 
 
 
 ##11. State
 
-Most computation requires modifying and reading state information, whether it be intermediate results, user input, retrieved data, loop indexes, flags, etc.  Bento supports the handling of state information, but in a unique way.
+Most computation requires modifying and reading state information, whether it be intermediate results, user input, retrieved data, loop indexes, flags, etc.  Canto supports the handling of state information, but in a unique way.
 
 
 ###11.1 Caching
 
 Traditional programming languages manage state using variables and assignment operators.  The model underlying the traditional approach is based on memory: variables represent chunks of memory, generally implemented as relative locations within a larger block (the heap or stack) but conceptually fixed; assignment operators represent the modification of the contents of such memory locations.
 
-Bento follows a different approach.  There are no variables or assignment operators.  Instead, Bento manages state by caching results in a controlled manner.  According to this model, when a definition is instantiated, by default the results are maintained for possible reuse by further constructions in the same scope that reference the same definition.  Example:
+Canto follows a different approach.  There are no variables or assignment operators.  Instead, Canto manages state by caching results in a controlled manner.  According to this model, when a definition is instantiated, by default the results are maintained for possible reuse by further constructions in the same scope that reference the same definition.  Example:
 ```
-    say_hello [=
-        hello(nm) [| Hello, [= nm; =]. |]
+    say_hello {
+        hello(nm) [| Hello, {= nm; =}. |]
 
         hello("world");
         "  I repeat, ";
         hello;
-    =]
+    }
 
     say_hello;
 ```
@@ -1044,56 +1052,56 @@ resulting in
      Hello, world.  I repeat, Hello, world.
 ```
 
-In the above example, ```hello``` is referenced by two constructions in the same scope.  When Bento encounters the first, it looks up the definition for ```hello`` and instantiates it.  It also saves the generated data in a local cache associated with the current scope.  When Bento encounters the second construction of ```hello```, it retrieves the cached data rather than regenerating it.  In this way, child definitions can act in effect as local variables for the parent's implementation.
+In the above example, ```hello``` is referenced by two constructions in the same scope.  When Canto encounters the first, it looks up the definition for ```hello`` and instantiates it.  It also saves the generated data in a local cache associated with the current scope.  When Canto encounters the second construction of ```hello```, it retrieves the cached data rather than regenerating it.  In this way, child definitions can act in effect as local variables for the parent's implementation.
 
 However, this may not always be desirable.  For example, suppose the programmer in the above example wishes for ```hello``` to behave differently if no name is passed to it:
 ```
-    say_hello [=
-        hello(nm) [=
-            if (nm) [| Hello, [= nm; =]. |]
+    say_hello {
+        hello(nm) {
+            if (nm) [| Hello, {= nm; =}. |]
             else    [| Hello! |]
-        =]
+        }
 
         hello("world");
         "  I repeat, ";
         hello;
-    =]
+    }
 
     say_hello;
 ```
 
 This time caching may work contrary to the programmer's purpose.  If the programmer is expecting the second construction of hello to be handled by the new code, she will be disappointed, because the second construction will retrieve the cached result of the first construction.  Caching may be avoided, however, by adding a durability modifier to the definition.  The modifier in this case is ```dynamic```, and is used as follows:
 ```
-    say_hello [=
-        dynamic hello(nm) [=
-            if (nm) [| Hello, [= nm; =]. |]
+    say_hello {
+        dynamic hello(nm) {
+            if (nm) [| Hello, {= nm; =}. |]
             else    [| Hello! |]
-        =]
+        }
 
         hello("world");
         "  I repeat, ";
         hello;
-    =]
+    }
 
     say_hello;
 ```
 
-The ```dynamic``` modifier instructs Bento to regenerate the output every time, rather than looking for cached output.  So, with the modifier in place, the result will be:
+The ```dynamic``` modifier instructs Canto to regenerate the output every time, rather than looking for cached output.  So, with the modifier in place, the result will be:
 ```
      Hello, world.  I repeat, Hello!
 ```
 
-In general, if you want a definition to behave more like a traditional function, you should use the ```dynamic``` modifier, while if you want it to behave more like a variable, you should avoid the ```dynamic``` modifier and allow Bento to cache the value.
+In general, if you want a definition to behave more like a traditional function, you should use the ```dynamic``` modifier, while if you want it to behave more like a variable, you should avoid the ```dynamic``` modifier and allow Canto to cache the value.
 
 ###11.2 Dynamic Instantiation
 
-Bento allows you to combine caching and dynamic behaviors, specifying dynamic behavior only for selected instantiations of a definition.  This is accomplished by using ```(:``` and ```:)``` instead of ```(``` and ```)``` for the argument list.   In the following example, we have removed the dynamic modifier from ```hello```, and instead used the dynamic instantiation form where we want dynamic behavior.
+Canto allows you to combine caching and dynamic behaviors, specifying dynamic behavior only for selected instantiations of a definition.  This is accomplished by using ```(:``` and ```:)``` instead of ```(``` and ```)``` for the argument list.   In the following example, we have removed the dynamic modifier from ```hello```, and instead used the dynamic instantiation form where we want dynamic behavior.
 ```
-    say_hello [=
-        hello(nm) [=
-            if (nm) [| Hello, [= nm; =]. |]
+    say_hello {
+        hello(nm) {
+            if (nm) [| Hello, {= nm; =}. |]
             else    [| Hello! |]
-        =]
+        }
 
         hello("world");
         "  I repeat, ";
@@ -1102,7 +1110,7 @@ Bento allows you to combine caching and dynamic behaviors, specifying dynamic be
         hello(: "moon" :);
         "  In short, ";
         hello(::);
-    =]
+    }
 
     say_hello;
 ```
@@ -1114,15 +1122,15 @@ resulting in:
 
 By default, cached values are cleared when a scope is exited.  Consider the following:
 ```
-    say_hello [=
+    say_hello {
 
-        hello(nm) [| Hello, [= nm; =]. |]
+        hello(nm) [| Hello, {= nm; =}. |]
 
         hello("world");
         "  ";
         hello(:"moon":);
         "  ";
-    =]
+    }
 
     say_hello;
     say_hello;
@@ -1137,22 +1145,22 @@ Instantiating ```say_hello``` a second time returns the same output as the first
 
 ###11.3 The Identity Pattern
 
-Bento's caching system makes it possible to do virtually anything in Bento that can be done with mutable variables in other languages.  Indeed, mutable variables are such a natural fit to certain kinds of operations that mimicking them in Bento is a reasonable thing to do.  Consider the problem of counting the members of a set with some testable property.  A natural solution is to employ a loop, a test and a counting variable:
+Canto's caching system makes it possible to do virtually anything in Canto that can be done with mutable variables in other languages.  Indeed, mutable variables are such a natural fit to certain kinds of operations that mimicking them in Canto is a reasonable thing to do.  Consider the problem of counting the members of a set with some testable property.  A natural solution is to employ a loop, a test and a counting variable:
 ```
-    int count_with_some_property [=
+    int count_with_some_property {
         int num(int n) = n
 
-        for x in some_array [=
-            if (some_test(x)) [=
+        for x in some_array {
+            if (some_test(x)) {
                 eval(num(: num + 1 :));
-             =]
-        =]
+             }
+        }
 
         num;
-    =]
+    }
 ``` 
 
-The example above illustrates a common Bento pattern for storing values, the identity definition pattern, which may be written more generally as follows:
+The example above illustrates the standard Canto way of storing values, the identity definition pattern, which may be written more generally as follows:
 ```
     vartype varname(vartype x) = x
 ```
@@ -1163,18 +1171,18 @@ This code mimics a variable named ```varname``` of type ```vartype```.  Like a v
 
 As explained in an earlier chapter, the outermost scope of an application is the site level scope, which is a scope created by a site definition.  Caching at this level has a special property: the cache persists through a session.  This means that if a top-level definition (i.e., one at the site level) is instantiated in a response, its value is available to subsequent responses.  Example:
 ```
-    site hello_world_example [=
+    site hello_world_example {
 
-        hello(nm) [| Hello, [= nm; =]. |]
+        hello(nm) [| Hello, {= nm; =}. |]
 
-        first_response [=
+        first_response {
             hello(world);
-        =] 
+        } 
 
-        second_response [=
+        second_response {
             hello;
-        =]
-    =]
+        }
+    }
 ```
     
 Because ```hello``` is a top-level definition, it is cached in the session.  Assume ```first_response``` is instantiated as part of the response to the user's first request, and ```second_response``` is instantiated as part of the response to the user's second request.  Then, because of session caching, instantiating ```hello``` in ```second_response``` will retrieve the cached value generated by the instantiation of ```hello(world)``` in ```first_response```, namely:
@@ -1186,17 +1194,17 @@ Thus, definitions at the site level act like session variables.
 
 ###11.5 Static and Global Definitions
 
-If you do want the cached value preserved beyond its scope, you can achieve this by adding the ```static``` or ```global``` modifier to the definition.  ```global``` instructs Bento to use the cached value for all references in all scopes.  Here is the previous example, with hello modified to be global:
+If you do want the cached value preserved beyond its scope, you can achieve this by adding the ```static``` or ```global``` modifier to the definition.  ```global``` instructs Canto to use the cached value for all references in all scopes.  Here is the previous example, with hello modified to be global:
 ```
-    say_hello [=
+    say_hello {
 
-        global hello(nm) [| Hello, [= nm; =]. |]
+        global hello(nm) [| Hello, {= nm; =}. |]
 
         hello("world");
         "  ";
         hello(:"moon":);
         "  ";
-    =]
+    }
 
     say_hello;
     say_hello;
@@ -1207,16 +1215,16 @@ This time the output is as follows:
     Hello, world.  Hello, moon.  Hello, moon.  Hello, moon.
 ```
 
-Like ```global```, the ```static``` modifier makes the cached value available in all scopes.  In addition, ```static``` makes a definition immutable; Bento constructs the definition just once, and attempts to cache a different value for the definition via dynamic instantiation are ignored.
+Like ```global```, the ```static``` modifier makes the cached value available in all scopes.  In addition, ```static``` makes a definition immutable; Canto constructs the definition just once, and attempts to cache a different value for the definition via dynamic instantiation are ignored.
 
 
 ##12 Advanced State Management
 
 ###12.1 Object Caching
 
-The default caching behavior in Bento is sufficient for many tasks, but for some purposes it's too limiting.  A prime example of this occurs when programming in an object-oriented style.  In object-oriented programming, an object often encapsulates a number of properties.  This is naturally expressed in Bento through child definitions -- the parent definition represents the object, and the child definitions represent the properties.  For example:
+The default caching behavior in Canto is sufficient for many tasks, but for some purposes it's too limiting.  A prime example of this occurs when programming in an object-oriented style.  In object-oriented programming, an object often encapsulates a number of properties.  This is naturally expressed in Canto through child definitions -- the parent definition represents the object, and the child definitions represent the properties.  For example:
 ```
-    greeting(nm, msg) [=
+    greeting(nm, msg) {
         message = msg
         name = nm
 
@@ -1224,16 +1232,16 @@ The default caching behavior in Bento is sufficient for many tasks, but for some
         ", ";
         name;
         "!";
-    =]
+    }
 ```
 
 This defines an object called ```greeting``` that has two properties, ```message``` and ```name```.  But ```message``` and ```name``` are definitions, not values.
 
-Bento supports caching of child definitions this via keep directives.  A keep directive is an optional prefix to a definition that begins with the ```keep``` keyword.
+Canto supports caching of child definitions this via keep directives.  A keep directive is an optional prefix to a definition that begins with the ```keep``` keyword.
 
-The simplest form is just the keyword ```keep``` by itself.  When prefixed to a definition, Bento will cache the instantiated value whenever and wherever the parent is cached.  For example:
+The simplest form is just the keyword ```keep``` by itself.  When prefixed to a definition, Canto will cache the instantiated value whenever and wherever the parent is cached.  For example:
 ```
-    hello(nm, lang) [=
+    hello(nm, lang) {=
         keep: name = nm 
         keep: language = lang
 
@@ -1243,7 +1251,7 @@ The simplest form is just the keyword ```keep``` by itself.  When prefixed to a 
         ", ";
         name;
         "!";                
-    =]
+    =}
 
     hello h = hello("Jacques", "French");
 
@@ -1269,22 +1277,22 @@ The ```keep``` keyword supports various options to further customize and control
 
 ###12.3 Cache Aliasing
 
-Bento allows a program to explicitly specify the name with which a definition's results are cached.  , a f  ```keep as``` specifies the name by which a definition's results are cached (cache aliasing).  This allows
+Canto allows a program to explicitly specify the name with which a definition's results are cached.  , a f  ```keep as``` specifies the name by which a definition's results are cached (cache aliasing).  This allows
 
 ```keep by``` makes it possible to dynamically generate the name by which a definition's results are cached (cache by key).
 
 Finally, ```keep in``` allows the programmer to specify the table in which a definitions's results are cached (cache exposure).
 
-Exposing and controlling Bento's caching mechanism in this way forms the basis of a number of advanced techniques for managing state.  It also carries the potential of seamlessly integrating Bento's caching with external persistence mechanisms such as databases.
+Exposing and controlling Canto's caching mechanism in this way forms the basis of a number of advanced techniques for managing state.  It also carries the potential of seamlessly integrating Canto's caching with external persistence mechanisms such as databases.
 
 
 ###11.8 Context
 
-A scope always exists in a context.  This context is conceptually a stack, with each layer in the stack consisting of a scope, an argument-parameter mapping and a cache.  When Bento instantiates a definition, a new layer is pushed on to the stack.  When the instantiation is complete, the layer is popped off the stack.  In between, as instantiations nested within are evaluated, further layers are pushed and popped.  The values resulting from these instantiations are cached in the current layer, as explained above.
+A scope always exists in a context.  This context is conceptually a stack, with each layer in the stack consisting of a scope, an argument-parameter mapping and a cache.  When Canto instantiates a definition, a new layer is pushed on to the stack.  When the instantiation is complete, the layer is popped off the stack.  In between, as instantiations nested within are evaluated, further layers are pushed and popped.  The values resulting from these instantiations are cached in the current layer, as explained above.
 
-These contexts have two properties that are relevant to a Bento application.  One is that they are threadsafe; that is, Bento can construct many responses simultaneously, each one with its own context.  The second is that a context encapsulates the entire application state for a thread.
+These contexts have two properties that are relevant to a Canto application.  One is that they are threadsafe; that is, Canto can construct many responses simultaneously, each one with its own context.  The second is that a context encapsulates the entire application state for a thread.
 
-Bento supports direct access to provides a special keyword, ```here```, provides the mechanism for capturing a continuation; and another keyword, continue, resumes a continuation.
+Canto supports direct access to provides a special keyword, ```here```, provides the mechanism for capturing a continuation; and another keyword, continue, resumes a continuation.
 
 
 
