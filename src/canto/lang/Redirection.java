@@ -19,7 +19,7 @@ public class Redirection extends Throwable {
     
     private static final long serialVersionUID = 1L;
 
-    public static final String STANDARD_ERROR = "error";
+    public static final String STANDARD_ERROR = Redirection.STANDARD_ERROR_PAGE;
     public static final String STANDARD_ERROR_PAGE = "/error_page";
     public static final String STANDARD_ERROR_DIV = "/$error_div";
     
