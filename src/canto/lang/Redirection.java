@@ -19,7 +19,7 @@ public class Redirection extends Throwable {
     
     private static final long serialVersionUID = 1L;
 
-    public static final String STANDARD_ERROR = Redirection.STANDARD_ERROR_PAGE;
+    public static final String STANDARD_ERROR = "error";
     public static final String STANDARD_ERROR_PAGE = "/error_page";
     public static final String STANDARD_ERROR_DIV = "/$error_div";
     
@@ -47,7 +47,7 @@ public class Redirection extends Throwable {
     
     public Redirection(String location) {
         super();
-        this.location = location;
+        this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         message = null;
         instance = null;
         canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location);
@@ -55,7 +55,7 @@ public class Redirection extends Throwable {
 
     public Redirection(String location, String message) {
         super(message);
-        this.location = location;
+        this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         this.message = message;
         canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location + " with message: " + message);
     }
@@ -63,7 +63,7 @@ public class Redirection extends Throwable {
     public Redirection(int status, String location, String message) {
         super(message);
         this.status = status;
-        this.location = location;
+        this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         this.message = message;
         canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location + " with message: " + message + " and status: " + status);
     }
