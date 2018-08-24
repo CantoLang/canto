@@ -3,7 +3,7 @@ Canto in a Nutshell
 
 ##1. The Big Picture
 
-The essence of a programming language, what might be called its DNA equivalent, is the grammar that defines it.  Most of this document will describe aspects of Canto's grammar and explain how it can be used to achieve useful results.  But DNA is not the organism.  A living creature is the product of the complex interaction of its DNA with its environment.  So too, understanding programs written in a language requires understanding not just the grammar but the larger context within which the language operates -- a greater whole encompassing both the program and the user as well as the mechanisms by which they interact.
+The essence of a programming language, its DNA, is the grammar that defines it.  Most of this document will describe aspects of Canto's grammar and explain how it can be used to achieve useful results.  But DNA is not the organism.  A living creature is the product of the complex interaction of its DNA with its environment.  So too, understanding programs written in a language requires understanding not just the grammar but the larger context within which the language operates -- a greater whole encompassing both the program and the user as well as the mechanisms by which they interact.
 
 Looking at this greater whole, most programming languages in wide use follow what might be called the command model of computing.  This model views a program as a command to be executed.  The user invokes the program by typing a command at the command line, or through some other system facility -- double-clicking an icon, selecting from a menu, etc.; the principle is the same.  The program then runs from start to finish, acquiring resources, perhaps soliciting input from the user, performing various tasks, generating some kind of output and eventually exiting.  The natural programming paradigm in this context is procedural: a program is a procedure, and the statements that make up the program are steps in the procedure.  If the program by chance obtains input or generates output, it does so as a side effect of some step or other in the procedural logic it executes.
 
@@ -15,15 +15,17 @@ But Canto's primary goal is not to follow any particular paradigm or model.  It'
 
 ##2. Running Canto
 
-As described above, the runtime platform for Canto is a web server, specifically the Canto server, which is a standalone web server attached to a compiler and a runtime evaluation engine.  Alternatively, the Canto server can run as a servlet, which operates the same but piggybacks on an existing web server rather than providing its own web server.
-
-The reference implementation of the Canto server is written in Java, so Canto also requires a standard Java runtime environment (JRE) to run.
+As described above, the runtime platform for Canto is a web server, specifically the Canto server, which is a standalone web server attached to a compiler and a runtime evaluation engine.  The Canto server can run as a servlet, piggybacking on an existing web server rather than providing its own web server.
 
 A Canto application consists of one or more text files containing code written in Canto.  This code defines responses.  When the Canto server is launched, it compiles the source files into an internal representation, then listens for requests.  When the server receives a request, it constructs an appropriate response by evaluating the Canto code that defines it.
 
+Alternatively, it's possible to run Canto more like a conventional language, as a script invoked from the command line.
+
+The reference implementation of the Canto server is written in Java, so Canto also requires a standard Java runtime environment (JRE) to run.
+
 ###2.1 Configuration
 
-It's possible to configure Canto by means of parameters on the command line (if run as a standalone server) or in the web.xml file (if run as a servlet), but it's also possible and generally more convenient to configure Canto via a configuration file written in Canto (Canto happens to be a good configuration language).  At startup, Canto searches for a file called config.bento in the current directory.  If found, it looks in this file for configuration information such as the path to the source files for the application and the address and port to listen for requests on.
+Canto is configured via a configuration file written in Canto (Canto happens to be a good configuration language).  At startup, Canto searches for a file called config.bento in the current directory.  If found, it looks in this file for configuration information such as the path to the source files for the application and the address and port to listen for requests on.
 
 ###2.2 Canto as a Service
 

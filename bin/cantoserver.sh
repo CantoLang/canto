@@ -204,11 +204,11 @@ status()
     echo "CANTO_PID       = $CANTO_PID"
     echo "CANTO_STATE     = $CANTO_STATE"
     echo "CANTO_USER      = $CANTO_USER"
-    echo "CLASSPATH     = $CLASSPATH"
-    echo "JAVA          = $JAVA"
-    echo "JAVA_OPTIONS  = ${JAVA_OPTIONS[*]}"
+    echo "CLASSPATH       = $CLASSPATH"
+    echo "JAVA            = $JAVA"
+    echo "JAVA_OPTIONS    = ${JAVA_OPTIONS[*]}"
     echo "CANTO_ARGS      = ${CANTO_ARGS[*]}"
-    echo "RUN_CMD       = ${RUN_CMD[*]}"
+    echo "RUN_CMD         = ${RUN_CMD[*]}"
     echo
 
     if ! running "$CANTO_PID"

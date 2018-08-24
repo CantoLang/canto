@@ -835,7 +835,7 @@ public class Context {
             // context stack with the definition
             params = definition.getParamsForArgs(args, this);
 
-if (definition.getName().equals("show")) {
+if (definition.getName().equals("quick_tour_page")) {
  System.out.println(definition.getName() + " at ctx 839");    
 }
             
@@ -3484,7 +3484,9 @@ if (definition.getName().equals("show")) {
         if (entry.def == null) {
             throw new NullPointerException("attempt to push null definition onto context stack");
         }
-
+if (!(entry.def instanceof NamedDefinition)) {
+ System.out.println("!!!pushing non-NamedDef " + entry.def.getFullName());
+}
         if (entry.def instanceof Site) {
             // if we are pushing a site, share the cache from the
             // root entry
