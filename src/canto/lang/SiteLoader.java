@@ -10,6 +10,10 @@ package canto.lang;
 
 import java.io.*;
 import java.net.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import canto.parser.*;
@@ -103,9 +107,41 @@ public class SiteLoader {
      *  from the cantocore directory in the classpath.</li>
      */
     public void load() {
-        String configPath = "/config.canto";
-        Class<?> c = getClass();
         URL url = null;
+
+    	// if the loadCore flag is set, load core canto files useing the loader
+        // from the CoreSource class, which will most often be loading from canto.jar
+
+        if (loadCore) {
+            String[] corePaths = CoreSource.getCorePaths();
+            Class<CoreSource> cs = CoreSource.class;
+            try {
+                for (int i = 0; i < corePaths.length; i++) {
+                    String corePath = corePaths[i];
+                    url = cs.getResource(corePath);
+                    if (url == null) {
+                        log(corePath + " not found");
+                        continue;
+                    }
+                    loadURL(url, loaders, true);
+                    log(corePath + " autoloaded");
+                }
+
+            } catch (Exception e) {
+                if (corePaths.length == 0) {
+                    log("Unable to autoload: " + e + " (also no core path specified)");
+                } else {
+                    String corePath = corePaths[0];
+                    for (int i = 1; i < corePaths.length; i++) {
+                        corePath = ", " + corePaths[i];
+                    }
+                    log("Unable to autoload " + corePath + ": " + e);
+                }
+            }
+        }
+
+    	String configPath = "/config.canto";
+        Class<?> c = getClass();
         if (externalUrl != null) {
             log("Requesting source from " + externalUrl);
             try {
@@ -186,41 +222,6 @@ public class SiteLoader {
         }
         
 
-        // if the loadCore flag is set, and core definitions haven't been loaded, load
-        // core.can and core_platform_java.can using the loader from this class,
-        // which will most often be loading from canto.jar
-        if (loadCore) {
-
-            // to see if the core has been loaded, look for a definition for "page"
-            DefinitionTable defTable = core.getDefinitionTable();
-            if (defTable.getDefinition("page") == null) {
-                String[] corePaths = CoreSource.getCorePaths();
-                c = CoreSource.class;
-                try {
-                    for (int i = 0; i < corePaths.length; i++) {
-                        String corePath = corePaths[i];
-                        url = c.getResource(corePath);
-                        if (url == null) {
-                            log(corePath + " not found");
-                            continue;
-                        }
-                        loadURL(url, loaders, true);
-                        log(corePath + " autoloaded");
-                    }
-
-                } catch (Exception e) {
-                    if (corePaths.length == 0) {
-                        log("Unable to autoload: " + e + " (also no core path specified)");
-                    } else {
-                        String corePath = corePaths[0];
-                        for (int i = 1; i < corePaths.length; i++) {
-                            corePath = ", " + corePaths[i];
-                        }
-                        log("Unable to autoload " + corePath + ": " + e);
-                    }
-                }
-            }
-        }
 
         // everything is loaded, now link
         link(loaders);
@@ -304,48 +305,29 @@ public class SiteLoader {
         return exceptions;
     }
 
-    /** See if the passed file represents a wildcard specification. Right now the only
-     *  kind of wildcard supported is a path that ends in *.xxx where xxx
-     *  is a file extension. This will 
+    /** See if the passed file represents a wildcard specification. This includes any
+     *  file whost path includes * or ?. 
      * @param file
      * @return
      */
     private boolean isWildCard(File file) {
         String path = file.getPath();
-        int ix = path.indexOf('*');
-        // reject paths that don't have exactly one *
-        if (ix == -1 || ix != path.lastIndexOf("*")) {
-            return false;
-        } else if (ix == 0) {
-            if (path.charAt(1) != '.' || path.indexOf('/') > 0) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            if (path.charAt(ix - 1) != '/' || path.lastIndexOf('/') > ix) {
-                return false;
-            } else {
-                return true;
-            }
-        }
+        int lastSeparator = path.lastIndexOf('/');
+        return path.indexOf('*') > lastSeparator || path.indexOf('?') > lastSeparator;
     }
     
-    private File[] expandWildCard(File file) {
+    private File[] expandWildCard(File file) throws IOException {
         List<File> fileList = new ArrayList<File>();
         File[] files = new File[0];
+        String pathStr = file.getPath();
+        int lastSeparator = pathStr.lastIndexOf('/');
 
-        String path = file.getPath();
-        int ix = path.indexOf("*");
-        String ext = path.substring(ix + 1);   // includes the period
-        String dirPath = (ix > 0 ? path.substring(0, ix) : ".");
-        File dir = new File(dirPath);
-        for (File f: dir.listFiles()) {
-            if (f.getPath().endsWith(ext)) {
-                fileList.add(f);
-            }
+        Path path = lastSeparator >= 0 ? Paths.get(pathStr.substring(0,  lastSeparator)) : Paths.get(".");
+        String glob = lastSeparator >= 0 ? pathStr.substring(lastSeparator + 1) : pathStr;
+        DirectoryStream<Path> stream =  Files.newDirectoryStream(path, glob);
+        for (Path entry: stream) {
+            fileList.add(entry.toFile());
         }
-        
         return (File[]) fileList.toArray(files);
     }
     

@@ -898,7 +898,11 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 //            }
 
             if (def == null) {
-                int n = name.numParts();
+
+if ("$".equals(nm)) {
+ System.out.println(nm + " at Inst 903");
+}
+            	int n = name.numParts();
                 
                 if (n == 1) {
                     prefixArgs = args;
@@ -1035,6 +1039,11 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 //                    }
 //                }
 //            }
+            
+if (name.getName().indexOf("quick_tour_article") >= 0) {
+ System.out.println("got " + name.getName() + " at Inst 1040");	
+}
+            
             if (def == null) {
                 def = lookupDef(name, prefixIndexes, getParent(), owner, classDef, context, resolver);
                 dereferencedIndexes = true;
@@ -1147,7 +1156,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
     private static Definition lookupDef(NameNode name, List<Index> indexes, CantoNode parent, NamedDefinition owner, Definition classDef, Context context, Definition resolver) throws Redirection {
         Definition def = null;
         ArgumentList args = name.getArguments();
-        NamedDefinition defclass = (NamedDefinition) context.peek().def;
+        Definition defclass = context.peek().def;
 
         // first check for a special name
         def = lookupSpecialName(name, parent, owner, context);
@@ -1167,7 +1176,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
                     Definition nextdef = context.peek().def;
                     if (nextdef.equalsOrExtends(defclass)) {
                         if (nextdef instanceof ComplexDefinition) {
-                            defclass = (NamedDefinition) nextdef;
+                            defclass = nextdef;
                         }
                     } else {
                         break;

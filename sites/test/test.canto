@@ -335,7 +335,7 @@ site test {
     }
 
 
-    static stat_super {
+   stat_super {
         a = "A"
         b = "x"
         c = "x"
@@ -406,7 +406,7 @@ site test {
     }
     
 
-    global glob_super {
+    glob_super {
         a = "A"
         b = "x"
         c = "x"
@@ -7188,6 +7188,60 @@ ft {=
                 </ul>
             |]                          
         }
+    }
+    int zx(int zz) = zz
+    global int gp {
+        zx(: zx + 1 :);
+        log("gp called");
+    }
+    
+    int psuper = zx(: zx + 1 :)
+    global psuper gsub [/]
+    
+    dynamic show_p(psuper p) {
+        p;
+    }
+
+    show_p(p) show_p_sub(psuper p) [/]
+    
+    global gparent {
+        int child {
+            zx(: zx + 1 :);
+            log("gparent.child called");
+        }
+        global int gchild {
+            zx(: zx + 1 :);
+            log("gparent.gchild called");
+        }
+    } 
+     
+    public global_param_test {
+        
+        dynamic show(p) {
+            p;
+            p;
+            
+            log("show called");
+        }
+
+        gp;
+        gsub;
+
+        gp;
+        show(gp);
+        show(gp);
+    
+        gsub;
+        show(gsub);
+        show(gsub);
+        
+        show_p_sub(gsub);
+        show_p_sub(gsub);
+        
+        gparent.child;
+        gparent.child;
+        gparent.gchild;
+        gparent.gchild;
     }
 
 }

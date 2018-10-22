@@ -360,7 +360,7 @@ public class CantoDomain implements canto_domain {
             String prop = getPropertyInContext(name, null);
             return (prop == null ? notFound : prop);
         } catch (Redirection r) {
-            log("Unable to getting property " + name + ": " +  r.getMessage());
+            log("Unable to get property " + name + ": " +  r.getMessage());
             return notFound;
         }
     }        

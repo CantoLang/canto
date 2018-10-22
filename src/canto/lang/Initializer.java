@@ -120,9 +120,9 @@ public class Initializer extends CantoVisitor {
             } else if (node instanceof NamedDefinition) {
                 subdef = (NamedDefinition) node;
                 subdef.setDefinitionTable(def.getDefinitionTable());
-                //if (def.isGlobal() && subdef.getDurability() == Definition.IN_CONTEXT) {
-                //    subdef.setDurability(Definition.GLOBAL);
-                //}
+                if (def.isGlobal() && subdef.getDurability() == Definition.IN_CONTEXT) {
+                    subdef.setDurability(Definition.GLOBAL);
+                }
                 
                 // anonymous collections nested in collections represent multidimensional
                 // collections; as such, their supertype is their owner's supertype
