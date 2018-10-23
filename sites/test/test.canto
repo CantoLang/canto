@@ -2249,6 +2249,36 @@ site test {
         }
     }
 
+public dtcet {
+  
+  obj {
+      nm [?]
+      child [?]
+  }
+  
+  obj obj1 {
+      nm = "o1"
+      child = "1"
+  }
+
+  obj obj2 {
+      nm = "o2"
+      child = "2"
+  }
+  
+  obj[] objs = [ obj1, obj2 ]
+  
+  obj{} obj_table = { for obj o in objs { (o.nm): o } }
+  
+  obj o1 = "o1"
+  obj o2 = obj_table["o2"]
+  
+  
+  obj_table[o1].child;
+  o2.child;
+
+}
+
     public test_case recursive_dynamic_array_test {    
         int category = collections
         name = "Recursive Dynamic Array Test"
@@ -2436,13 +2466,6 @@ site test {
         gum_table_1["10"];
     }
 
-te {=
-   gum{} = { yo: "ho" }
-   
-   yo [/]
-   
-   gum[yo.type];
-=}
 
     public test_case table_test {
         int category = collections
@@ -2518,11 +2541,6 @@ te {=
         table_sub_sub["o"];
     }
 
-tt {=
-  table_with_arg(n){} = { "n": n }
-  table_with_arg("N")["n"];
-=}    
-
 
     public test_case table_parameter_test {
         int category = collections
@@ -2567,21 +2585,7 @@ tt {=
         show_foo_ij(foos);
     }
 
-public tblpt {=
-        z{}{} = { "t1":{ "e":"E", "f":"F"}, "t2":{ "g":"G", "h":"H" } }
-        dynamic show(aa) {
-          for k in aa.keys {
-            if (aa[k].count > 1) {
-                show(aa[k]);
-            } else {
-                aa[k];
-            }
-          }
-        }
-        show(z);
-=}
-
-    
+   
     public test_case multidimensional_table_test {
         int category = collections
         name = "Multidimensional Table Test"
@@ -2613,15 +2617,6 @@ public tblpt {=
             }
         }
     }
-
-public mtt {
-  z{}{} = { "z1":{"e":"E", "f":"F"}, "z2":{"g":"G"} }
-  for k in z.keys {
-    for kk in z[k].keys {
-      z[k][kk];
-    }
-  }
-}
 
 
     public test_case mapped_array_table_test {
@@ -2704,19 +2699,7 @@ public mtt {
         if (table_2 != table_1) [| S |] else [| x |]
         
     }
-cop {=
-  array_1[] = [ "a" ]
-  array_2[] = [ "b", "c" ]
-  array_3[] = array_1 + array_2
-        a = "a"
-        c = "c"
-        if (a in array_1) [| A |] else [| x |]
-        if (a in array_2) [| x |] else [| B |]
-        if (c in array_3) [| C |] else [| x |]
-  array_1.count;
-  array_2.count;
-  array_3.count;
-=}
+
 
     public test_case count_test {
         int category = collections
