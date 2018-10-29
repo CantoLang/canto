@@ -242,9 +242,9 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
                     numProblems++;
                     String msg = "site name not provided";
                     initParams.put("problem" + numProblems, msg);
-                    i++;
                 } else {
                     initParams.put("site", nextArg);
+                    i++;
                 }
 
             } else if (arg.equals("--address") || arg.equals("-a")) {
@@ -570,34 +570,34 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         if (shareCore) {
             sharedCore = mainSite.getCore();
         }
-//        Object[] all_sites = mainSite.getPropertyArray("all_sites");
-//        if (all_sites != null && all_sites.length > 0) {
-//            for (int i = 0; i < all_sites.length; i++) {
-//                site_config sc = new site_config_wrapper((CantoObjectWrapper) all_sites[i]);
-//                String nm = sc.name();
-//                if (nm.equals(siteName)) {
-//                    continue;
-//                }
-//                String bp = null;
-//                if (shareCore) {
-//                    bp = sc.sitepath();
-//                }
-//                if (bp == null || bp.length() == 0) {
-//                    bp = sc.cantopath();
-//                }
-//                boolean r = sc.recursive();
-//                CantoSite s = load(nm, bp, r);
-//                sites.put(nm, s);
-//            }
-//            
-//            // have to relink to catch intersite references
-//            SiteBuilder.log("--- SUPERLINK PASS ---");
-//            link(mainSite.getParseResults());
-//            Iterator<CantoSite> it = sites.values().iterator();
-//            while (it.hasNext()) {
-//                link(it.next().getParseResults());
-//            }
-//        }
+        Object[] all_sites = mainSite.getPropertyArray("all_sites");
+        if (all_sites != null && all_sites.length > 0) {
+            for (int i = 0; i < all_sites.length; i++) {
+                site_config sc = new site_config_wrapper((CantoObjectWrapper) all_sites[i]);
+                String nm = sc.name();
+                if (nm.equals(siteName)) {
+                    continue;
+                }
+                String bp = null;
+                if (shareCore) {
+                    bp = sc.sitepath();
+                }
+                if (bp == null || bp.length() == 0) {
+                    bp = sc.cantopath();
+                }
+                boolean r = sc.recursive();
+                CantoSite s = load(nm, bp, r);
+                sites.put(nm, s);
+            }
+            
+            // have to relink to catch intersite references
+            SiteBuilder.log("--- SUPERLINK PASS ---");
+            link(mainSite.getParseResults());
+            Iterator<CantoSite> it = sites.values().iterator();
+            while (it.hasNext()) {
+                link(it.next().getParseResults());
+            }
+        }
 
         String showAddress = getNominalAddress();
         slog("             site = " + (siteName == null ? "(no name)" : siteName));

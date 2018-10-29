@@ -18,6 +18,8 @@ import java.util.*;
 
 import canto.parser.*;
 import canto.runtime.Context;
+import canto.runtime.CantoObjectWrapper;
+import canto.runtime.CantoServer;
 import canto.runtime.CantoVisitor;
 import canto.runtime.SiteBuilder;
 import cantocore.CoreSource;
@@ -69,6 +71,7 @@ public class SiteLoader {
     private Object[] sources = null;
     private Node[] parseResults = null;
     private Exception[] exceptions = null;
+    private site_config siteConfig = null;
 
     public SiteLoader(Core core, String siteName, String path, String filter, boolean recursive, LoadOptions options) {
         this.core = core;
@@ -187,21 +190,30 @@ public class SiteLoader {
         log("site name is " + (siteName == null ? "null; running default site" : siteName));
         
         if (configurable) {
+            internalPath = null;
             try {
                 Context context = null;
-                String propName = "cantopath";
                 if (siteName != null && siteName.length() > 0 && !siteName.equals(Name.DEFAULT)) {
                     Site thisSite = core.getSite(siteName);
                     if (thisSite != null) {
                         site = thisSite;
                         context = new Context(site);
                     }
-                    propName = siteName + ".cantopath";
                 }
                 if (context == null) {
                     context = new Context(site);
                 }
-                internalPath = getProperty(propName, site, context);
+                Object[] sites = (Object[]) getPropertyArray("all_sites", site, context);
+                for (Object siteObj: sites) {
+                	CantoObjectWrapper obj = (CantoObjectWrapper) siteObj;
+                	site_config sc = new CantoServer.site_config_wrapper(obj);
+                	String name = sc.name();
+                	if (siteName.equals(name)) {
+                		siteConfig = sc;
+                		internalPath = sc.cantopath();
+                		break;
+                	}
+                }
                 
             } catch (Redirection r) {
                 log("Problem loading site: unable to create context to determine properties: " + r.getMessage());
@@ -252,7 +264,12 @@ public class SiteLoader {
     private String getProperty(String name, Site site, Context context) {
         String prop = null;
         Instantiation instance = null;
-        NameNode reference = new NameNode(name);
+        NameNode reference = null;
+        if (name.indexOf('.') > 0) {
+        	reference = new ComplexName(name);
+        } else {
+        	reference = new NameNode(name);
+        }
         instance = new Instantiation(reference, site);
 
         try {
@@ -264,6 +281,51 @@ public class SiteLoader {
         return prop;
     }
 
+    private Object[] getPropertyArray(String name, Site site, Context context) {
+        Object[] props = null;
+        Object propsObj = getPropertyCollectionObject(name, site, context);
+            
+        if (propsObj instanceof List<?>) {
+            int len = ((List<?>) propsObj).size();
+            props = new Object[len];
+            props = ((List<?>) propsObj).toArray(props);
+               
+        } else if (propsObj instanceof Object[]) {
+            props = (Object[]) propsObj;
+        }
+
+        return props;
+    }
+
+    private Object getPropertyCollectionObject(String name, Site site, Context context) {
+        Object collectionObj = null;
+        Instantiation instance = null;
+        NameNode reference = new NameNode(name);
+        instance = new Instantiation(reference, site);
+        try {
+            collectionObj = instance.getData(context);
+            if (collectionObj instanceof CantoArray) {
+                collectionObj = ((CantoArray) collectionObj).instantiateArray(context);
+            } 
+                
+            if (collectionObj instanceof ResolvedCollection) {
+                collectionObj = ((ResolvedCollection) collectionObj).getCollectionObject();
+            }
+
+            if (collectionObj instanceof List || collectionObj.getClass().isArray()) {
+                collectionObj = ArrayBuilder.instantiateElements(collectionObj, context);
+            } else if (collectionObj instanceof Map) {
+                collectionObj = TableBuilder.instantiateElements(collectionObj, context);
+            }
+      
+        } catch (Redirection r) {
+            log("Problem getting property " + name + ", redirects to " +  r.getLocation());
+        }
+
+        return collectionObj;
+
+    }
+    
     private final void waitForLoaders(int startIx, int endIx) {
         synchronized (loaders) {
             while (true) {

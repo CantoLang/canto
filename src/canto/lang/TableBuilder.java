@@ -20,6 +20,41 @@ import canto.runtime.Context;
  */
 public class TableBuilder extends CollectionBuilder {
 
+    static public Object instantiateElements(Object tableObject, Context context) throws Redirection {
+        Object tableInstance = tableObject;
+        if (tableObject instanceof Map<?,?>) {
+        	Map<String,Object> tableMap = (Map<String,Object>) tableObject;
+            Set<String> keys = tableMap.keySet();
+            for (String key: keys) {
+                Object data = tableMap.get(key);
+                Object origData = data;
+
+                if (data instanceof CollectionInstance) {
+                     data = ((CollectionInstance) data).getCollectionObject();
+                }
+
+                if (data instanceof ElementDefinition) {
+                    data = ((ElementDefinition) data).getElement(context);
+                }
+
+                if (data instanceof Value) {
+                    data = ((Value) data).getValue();
+
+                } else if (data instanceof ValueGenerator) {
+                    data = ((ValueGenerator) data).getData(context);
+                }
+
+                if (!data.equals(origData)) {
+                	tableMap.put(key, data);
+                }
+            }
+
+        } else  {
+            throw new Redirection(Redirection.STANDARD_ERROR, "Unable to instantiate elements for table, passed table object is of wrong type: " + tableObject.getClass().getName());
+        }
+        return tableInstance;
+    }
+
     private CollectionDefinition tableDef = null;
 
     public TableBuilder(CollectionDefinition tableDef) {
