@@ -578,15 +578,15 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
                 if (nm.equals(siteName)) {
                     continue;
                 }
-                String bp = null;
+                String cp = null;
                 if (shareCore) {
-                    bp = sc.sitepath();
+                    cp = sc.sitepath();
                 }
-                if (bp == null || bp.length() == 0) {
-                    bp = sc.cantopath();
+                if (cp == null || cp.length() == 0) {
+                    cp = sc.cantopath();
                 }
                 boolean r = sc.recursive();
-                CantoSite s = load(nm, bp, r);
+                CantoSite s = load(nm, cp, r, false);
                 sites.put(nm, s);
             }
             
@@ -719,11 +719,15 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
 
     /** Load the site files */
     public CantoSite load(String sitename, String cantoPath, boolean recurse) throws Exception {
+        return load(sitename, cantoPath, recurse, !customCore);
+    }
+
+    public CantoSite load(String sitename, String cantoPath, boolean recurse, boolean autoloadCore) throws Exception {
         CantoSite site = null;
 
         slog(NAME_AND_VERSION);
         slog("Loading site " + (sitename == null ? "(no name yet)" : sitename));
-        site = (CantoSite) compile(sitename, cantoPath, recurse, !customCore);
+        site = (CantoSite) compile(sitename, cantoPath, recurse, autoloadCore);
         Exception e = site.getException();
         if (e != null) {
             slog("Exception loading site " + site.getName() + ": " + e);

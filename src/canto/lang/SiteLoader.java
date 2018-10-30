@@ -199,24 +199,51 @@ public class SiteLoader {
                         site = thisSite;
                         context = new Context(site);
                     }
+                } else {
+                    context = new Context(site);
+                    String name = getProperty("sitename", site, context);
+                    if (name != null && name.length() > 0 && !name.equals(Name.DEFAULT)) {
+                    	siteName = name;
+                        Site thisSite = core.getSite(siteName);
+                        if (thisSite != null) {
+                            site = thisSite;
+                            context = new Context(site);
+                        }
+                    }
                 }
                 if (context == null) {
                     context = new Context(site);
                 }
+                
+            	CantoObjectWrapper mainSite = getPropertyObject("main_site", site, context);
                 Object[] sites = (Object[]) getPropertyArray("all_sites", site, context);
-                for (Object siteObj: sites) {
-                	CantoObjectWrapper obj = (CantoObjectWrapper) siteObj;
-                	site_config sc = new CantoServer.site_config_wrapper(obj);
+                
+                if (sites == null || sites.length == 0) {
+                	if (mainSite == null) {
+                        throw new Redirection(Redirection.STANDARD_ERROR, "No definition for main_site or all_sites");
+                	}
+                	site_config sc = new CantoServer.site_config_wrapper(mainSite);
                 	String name = sc.name();
                 	if (siteName.equals(name)) {
                 		siteConfig = sc;
                 		internalPath = sc.cantopath();
-                		break;
                 	}
+                } else {
+                    for (Object siteObj: sites) {
+                    	CantoObjectWrapper obj = (CantoObjectWrapper) siteObj;
+                    	site_config sc = new CantoServer.site_config_wrapper(obj);
+                    	String name = sc.name();
+                    	if (siteName.equals(name)) {
+                    		siteConfig = sc;
+                    		internalPath = sc.cantopath();
+                    		break;
+                    	}
+                    }
                 }
                 
+                
             } catch (Redirection r) {
-                log("Problem loading site: unable to create context to determine properties: " + r.getMessage());
+                log("Problem loading site: unable to determine site properties: " + r.getMessage());
                 throw new RuntimeException(r.getMessage());
             }
 
@@ -274,6 +301,31 @@ public class SiteLoader {
 
         try {
             prop = instance.getText(context);
+        } catch (Redirection r) {
+            log("Problem getting property " + name + ", redirects to " +  r.getLocation());
+        }
+
+        return prop;
+    }
+
+    private CantoObjectWrapper getPropertyObject(String name, Site site, Context context) {
+        CantoObjectWrapper prop = null;
+        Instantiation instance = null;
+        NameNode reference = null;
+        if (name.indexOf('.') > 0) {
+        	reference = new ComplexName(name);
+        } else {
+        	reference = new NameNode(name);
+        }
+        instance = new Instantiation(reference, site);
+
+        try {
+        	Object obj = instance.getData(context);
+        	if (obj instanceof canto.lang.NullValue) {
+        		prop = null;
+        	} else {
+                prop = (CantoObjectWrapper) obj;
+        	}
         } catch (Redirection r) {
             log("Problem getting property " + name + ", redirects to " +  r.getLocation());
         }
