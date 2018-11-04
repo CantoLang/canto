@@ -603,7 +603,10 @@ public class SiteLoader {
             } else if (node instanceof Type) {
                 Type type = (Type) node;
                 if (type.getDefinition() == null && !type.isPrimitive() && !type.isSpecial()) {
-                    type.resolve();
+if ("scene".equals(type.getName())) {
+ System.out.println("SiteLoader 607");	
+}
+                	type.resolve();
                     if (errorOnUnresolvedType && type.getDefinition() == null && !type.isExternal()) {
                         throw new LinkException("Unable to resolve type " + type.getName());
                     }
