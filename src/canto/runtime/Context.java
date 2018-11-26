@@ -835,7 +835,7 @@ public class Context {
             // context stack with the definition
             params = definition.getParamsForArgs(args, this);
 
-if (definition.getName().equals("quick_tour_page")) {
+if (definition.getName().indexOf("test_backtick") > -1) {
  System.out.println(definition.getName() + " at ctx 839");    
 }
             
@@ -1125,14 +1125,14 @@ if (definition.getName().equals("quick_tour_page")) {
                 }
 
             } catch (ScriptExit se) {
-            	String textOut = null;
+                String textOut = null;
                 if (sb != null) {
-                	textOut = sb.toString();
+                    textOut = sb.toString();
                 } else if (data != null) {
                     textOut = data.toString();
                 }
                 if (textOut != null) {
-                	se.setTextOut(textOut);
+                    se.setTextOut(textOut);
                 }
                 throw se;
             }
@@ -3538,7 +3538,7 @@ if (!(entry.def instanceof NamedDefinition)) {
                         String keepKeepKey = scopedef.getName() + ".keep";
                         String globalKeepKeepKey = makeGlobalKey(scopedef.getFullNameInContext(this)) + ".keep";
                         while (prev != null) {
-                        	Map<String, Object> keepKeep = (Map<String, Object>) prev.get(keepKeepKey, globalKeepKeepKey, null, true);
+                            Map<String, Object> keepKeep = (Map<String, Object>) prev.get(keepKeepKey, globalKeepKeepKey, null, true);
                             if (keepKeep != null) {
                                 topEntry.addKeepKeep(keepKeep);
                                 break;
@@ -4986,15 +4986,22 @@ if (unpushedEntries == null) {
 
                     if (defOwner != null && defOwner.getDurability() != Definition.DYNAMIC && this.def.equalsOrExtends(defOwner)) {
                         Definition defOwnerOwner = defOwner.getOwner();
+                        boolean isSite = (defOwnerOwner instanceof Site);
+                        Map<String, Object> ownerKeep = null;
                         Entry entry = link;
                         while (entry != null) {
                             if (entry.def.equalsOrExtends(defOwnerOwner)) {
+                                ownerKeep = entry.getKeep();
                                 break;
+                            } else if (isSite && entry.siteKeepMap != null) {
+                                ownerKeep = entry.siteKeepMap.get(defOwnerOwner.getName());
+                                if (ownerKeep != null) {
+                                    break;
+                                }
                             }
                             entry = entry.link;
                         }
                         if (entry != null) {
-                            Map<String, Object> ownerKeep = entry.getKeep();
                             synchronized (ownerKeep) {
                                 entry.localPut(ownerKeep, null, ownerName + "." + key, holder, false);
                             }
