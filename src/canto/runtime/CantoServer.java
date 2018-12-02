@@ -613,6 +613,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         slog("             file_base = " + fileBase);
         slog("             address = " + showAddress + (port == null ? "" : (":" + port)));
         slog("             timeout = " + (asyncTimeout > 0 ? Long.toString(asyncTimeout) : "none"));
+        slog("             verbosity = " + Integer.toString(SiteBuilder.verbosity));
         slog("             debuggingEnabled = " + debuggingEnabled);
         slog("Site " + siteName + " launched at " + (new Date()).toString());
     }

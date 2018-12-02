@@ -425,11 +425,11 @@ public class PrimitiveValue extends AbstractNode implements Construction, Value 
                 if (objects.length == 0) {
                     return "[]";
                 } else {
-                    String str = "[" + getRecursiveStringFor(objects[0]);
+                    String str = "[ " + getRecursiveStringFor(objects[0]);
                     for (int i = 1; i < objects.length; i++) {
-                        str = str + "," + getRecursiveStringFor(objects[i]);
+                        str = str + ", " + getRecursiveStringFor(objects[i]);
                     }
-                    str = str + "]";
+                    str = str + " ]";
                     return str;
                 }
             } else if (value instanceof Collection<?>) {

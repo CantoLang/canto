@@ -585,8 +585,16 @@ public class CantoSite extends CantoDomain {
             int len = list.size();
             if (len > 0) {
                 Iterator<?> it = list.iterator();
+                int n = 0;
                 while (it.hasNext()) {
+                    if (n++ > 0) {
+                        sb.append(", ");
+                    }
                     Object element = it.next();
+                    if (element instanceof CantoObjectWrapper) {
+                        continue;
+                    }
+                    
                     if (element instanceof Value) {
                         element = ((Value) element).getValue();
                     }
@@ -601,10 +609,6 @@ public class CantoSite extends CantoDomain {
                             sb.append(str.replace("\"", "\\\""));
                             sb.append('"');
                         }
-                    }
-
-                    if (it.hasNext()) {
-                        sb.append(", ");
                     }
                 }
             }

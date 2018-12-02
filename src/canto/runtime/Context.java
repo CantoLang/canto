@@ -1255,7 +1255,14 @@ if (definition.getName().indexOf("test_backtick") > -1) {
      *  in the current context, or null if there is none.
      */
     public Object getData(Definition def, String name, ArgumentList args, List<Index> indexes) throws Redirection {
-        return getData(def, name, args, indexes, false);
+        Object data = getData(def, name, args, indexes, false);
+        Logger.vlog(" - - - getting " + name + " from cache: - - - ");
+        if (data == null) {
+            Logger.vlog(" - - - (no data)");
+        } else {
+            Logger.vlog(" - - - " + data.toString());
+        }
+        return data;
     }    
 
     synchronized private Object getData(Definition def, String name, ArgumentList args, List<Index> indexes, boolean local) throws Redirection {
@@ -1485,6 +1492,7 @@ if (definition.getName().indexOf("test_backtick") > -1) {
      *  in the current context.
      */
     public void putData(Definition def, ArgumentList args, List<Index> indexes, String name, Object data) throws Redirection {
+        Logger.vlog(" - - - storing " + name + " in cache - - - ");
         putData(def, args, def, args, indexes, name, data, null);
     }    
     /** Keeps data associated with the specified name

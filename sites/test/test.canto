@@ -7227,4 +7227,29 @@ ft {=
         gparent.gchild;
     }
 
+    dynamic public obj_array_caching_test {
+    
+        ao(z) {
+           keep: msg = z
+           this;
+        }
+        
+        ao[] aos = [ ao(: "A" :), ao(: "B" :), ao(: "C" :), ao(: "D" :), ao(: "E" :) ]
+        
+        ao[] results(ao[] y) = y
+        
+        ao rr = results[2]
+        
+        eval(results(aos));
+        
+        //for ao r in results and int i from 0 to 2 {
+        //    r.msg;
+        //}
+
+        rr.msg;
+        rr.msg;
+        //results[3].msg;
+        //results[4].msg;
+        
+    } 
 }

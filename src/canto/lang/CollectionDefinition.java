@@ -10,6 +10,7 @@ package canto.lang;
 
 import java.util.*;
 
+import canto.runtime.CantoObjectWrapper;
 import canto.runtime.Context;
 import canto.runtime.Holder;
 
@@ -296,12 +297,12 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
      */
     public CollectionInstance createCollectionInstance(Context context, ArgumentList args, List<Index> indexes) throws Redirection {
         if (builder == null) {
-        	Type type = getType();
+            Type type = getType();
             Class<?> c = type.getTypeClass(context);
             if (c != null && (Map.class.isAssignableFrom(c))) {
                 setTable(true);
             } else {
-            	setTable(false);
+                setTable(false);
             }
         }
     	return builder.createCollectionInstance(context, args, indexes);
@@ -311,6 +312,15 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
      *  arguments.
      */
     public CollectionInstance createCollectionInstance(Context context, ArgumentList args, List<Index> indexes, Object collectionData) throws Redirection {
+        if (builder == null) {
+            Type type = getType();
+            Class<?> c = type.getTypeClass(context);
+            if (c != null && (Map.class.isAssignableFrom(c))) {
+                setTable(true);
+            } else {
+                setTable(false);
+            }
+        }
         return builder.createCollectionInstance(context, args, indexes, collectionData);
     }
 
@@ -471,6 +481,8 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
             }
         } else if (isPrimitiveValue(element)) {
             return new ElementDefinition(this, element);
+        } else if (element instanceof CantoObjectWrapper) {
+            return new ElementDefinition(this, ((CantoObjectWrapper) element).getConstruction());
         } else {
             return new ExternalDefinition((NameNode) null, this, this, getElementType(), getAccess(), getDurability(), element, null);
         }
