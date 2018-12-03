@@ -899,7 +899,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 
             if (def == null) {
 
-if ("main_site.cantopath".equals(nm)) {
+if ("rr.msg".equals(nm)) {
  System.out.println(nm + " at Inst 903");
 }
             	int n = name.numParts();

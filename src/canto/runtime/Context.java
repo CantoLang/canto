@@ -835,7 +835,7 @@ public class Context {
             // context stack with the definition
             params = definition.getParamsForArgs(args, this);
 
-if (definition.getName().indexOf("test_backtick") > -1) {
+if (definition.getName().indexOf(".msg") > 0) {
  System.out.println(definition.getName() + " at ctx 839");    
 }
             
@@ -1538,7 +1538,7 @@ if (definition.getName().indexOf("test_backtick") > -1) {
                     break;
                 }
             } else {
-                entryDef = (NamedDefinition) entry.def;
+                entryDef = entry.def;
                 reachedScope = (scopeOwner.equals(entryDef) || 
                                 scopeOwner.isSubDefinition(entryDef) ||
                                 (scopeOwner instanceof Site && 

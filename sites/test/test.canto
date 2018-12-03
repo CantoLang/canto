@@ -36,7 +36,8 @@ site test {
                               base_child_subclass_test, bitwise_array_operator_test, border_layout_test,
                               cache_test, cached_aliased_parameter_test, cached_array_test,
                               cached_child_of_alias_test, cached_external_object_test, 
-                              cached_identity_test, cached_object_test, char_utilities_test,
+                              cached_identity_test, cached_object_test, 
+                              cached_obj_array_child_test, char_utilities_test,
                               children_of_global_test, children_of_overridden_super_test, 
                               children_of_parameterized_super_test, children_of_static_test,
                               collection_parse_test, collection_operators_test, collection_utilities_test,
@@ -1525,19 +1526,19 @@ site test {
         for char c from 'A' through 'C' {
             c;
         }
-        for foo f: de {
+        for foo f in de {
             bar(f);
         }
-        for foo f: fg {
+        for foo f in fg {
             baz(f.x);
         }
-        for char c: hi {
+        for char c in hi {
             bam.boo(c);
         }
-        for x: array_holder(jk).aa {
+        for x in array_holder(jk).aa {
             x;
         }
-        for char p: tps[0].ap {
+        for char p in tps[0].ap {
             p;
         }
     }
@@ -7227,7 +7228,12 @@ ft {=
         gparent.gchild;
     }
 
-    dynamic public obj_array_caching_test {
+    public test_case cached_obj_array_child_test {
+        int category = collections
+        name = "Cached Object Array Child Test"
+        key = "cached_obj_array_child"
+
+        expected = "ABCDE"
     
         ao(z) {
            keep: msg = z
@@ -7236,20 +7242,18 @@ ft {=
         
         ao[] aos = [ ao(: "A" :), ao(: "B" :), ao(: "C" :), ao(: "D" :), ao(: "E" :) ]
         
-        ao[] results(ao[] y) = y
+        ao[] cached_obj_array(ao[] y) = y
         
-        ao rr = results[2]
+        ao rr = cached_obj_array[2]
         
-        eval(results(aos));
+        eval(cached_obj_array(aos));
         
-        //for ao r in results and int i from 0 to 2 {
-        //    r.msg;
-        //}
+        for ao r in cached_obj_array and int i from 0 to 2 {
+            r.msg;
+        }
 
         rr.msg;
-        rr.msg;
-        //results[3].msg;
-        //results[4].msg;
-        
+        cached_obj_array[3].msg;
+        cached_obj_array[4].msg;
     } 
 }
