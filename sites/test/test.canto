@@ -2542,7 +2542,6 @@ public dtcet {
         table_sub_sub["o"];
     }
 
-
     public test_case table_parameter_test {
         int category = collections
         name = "Table Parameter Test"
@@ -5181,19 +5180,36 @@ public hot {=
         deeper_obj.q.y;
     }
 
-cot {=
-        obj(xx) {
-            x = xx
-            x;
+
+    public test_case cached_obj_array_child_test {
+        int category = collections
+        name = "Cached Object Array Child Test"
+        key = "cached_obj_array_child"
+
+        expected = "ABCDE"
+    
+        ao(z) {
+           keep: msg = z
+           this;
         }
         
-        obj(*) sub_obj(zz) [/]
- 
-        sub_obj(: "E" :);
-        sub_obj.x;
-        sub_obj(: "G" :);
-        sub_obj.x;
-=}
+        ao[] aos = [ ao(: "A" :), ao(: "B" :), ao(: "C" :), ao(: "D" :), ao(: "E" :) ]
+        
+        ao[] cached_obj_array(ao[] y) = y
+        
+        ao rr = cached_obj_array[2]
+        
+        eval(cached_obj_array(aos));
+        
+        for ao r in cached_obj_array and int i from 0 to 2 {
+            r.msg;
+        }
+
+        rr.msg;
+        cached_obj_array[3].msg;
+        cached_obj_array[4].msg;
+    } 
+
 
     public test_case aliased_sub_child_test {
         int category = instantiations
@@ -7227,33 +7243,5 @@ ft {=
         gparent.gchild;
         gparent.gchild;
     }
-
-    public test_case cached_obj_array_child_test {
-        int category = collections
-        name = "Cached Object Array Child Test"
-        key = "cached_obj_array_child"
-
-        expected = "ABCDE"
-    
-        ao(z) {
-           keep: msg = z
-           this;
-        }
-        
-        ao[] aos = [ ao(: "A" :), ao(: "B" :), ao(: "C" :), ao(: "D" :), ao(: "E" :) ]
-        
-        ao[] cached_obj_array(ao[] y) = y
-        
-        ao rr = cached_obj_array[2]
-        
-        eval(cached_obj_array(aos));
-        
-        for ao r in cached_obj_array and int i from 0 to 2 {
-            r.msg;
-        }
-
-        rr.msg;
-        cached_obj_array[3].msg;
-        cached_obj_array[4].msg;
-    } 
 }
+

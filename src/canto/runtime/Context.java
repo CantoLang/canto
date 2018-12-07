@@ -197,7 +197,10 @@ public class Context {
                 contextDefInstance = getContextDefInstance((Definition) element, args);
             } else if (element instanceof Instantiation) {
                 Instantiation instance = (Instantiation) element;
-                contextDefInstance = getContextDefInstance(instance.getDefinition(this), instance.getArguments());
+                Definition instanceDef = instance.getDefinition(this);
+                if (instanceDef != null) {
+                    contextDefInstance = getContextDefInstance(instanceDef, instance.getArguments());
+                }
             }
         }
 
@@ -2520,7 +2523,12 @@ if (definition.getName().indexOf(".msg") > 0) {
     }
 
     public int pushSupersAndAliases(ComplexDefinition owner, Definition def, ArgumentList args) throws Redirection {
-        Definition instantiatedDef = getContextDefinition(def);
+        Definition instantiatedDef = def;
+        DefinitionInstance defInstance = getContextDefInstance(instantiatedDef, args);
+        def = defInstance.def;
+        if (defInstance.args != null) {
+        	args = defInstance.args;
+        }
         int numPushes = 0;
         ParameterList params = def.getParamsForArgs(args, this);
         Definition superdef = null;
@@ -3520,14 +3528,22 @@ if (definition.getName().indexOf(".msg") > 0) {
 
     public void push(Definition def, ParameterList params, ArgumentList args, boolean newFrame) throws Redirection {
         DefinitionInstance defInstance = getContextDefInstance(def, args);
+        if (defInstance.args != null && defInstance.args != args) {
+        	args = defInstance.args;
+        	params = defInstance.def.getParamsForArgs(args, this);
+        }
         Definition superdef = (newFrame ? null : defInstance.def);
-        Entry entry = newEntry(defInstance.def, superdef, params, defInstance.args);
+        Entry entry = newEntry(defInstance.def, superdef, params, args);
         push(entry);
     }
 
     public void push(Definition instantiatedDef, Definition superdef, ParameterList params, ArgumentList args) throws Redirection {
         DefinitionInstance defInstance = getContextDefInstance(instantiatedDef, args);
-    	Entry entry = newEntry(defInstance.def, getContextDefinition(superdef), params, defInstance.args);
+        if (defInstance.args != null && defInstance.args != args) {
+        	args = defInstance.args;
+        	params = defInstance.def.getParamsForArgs(args, this);
+        }
+    	Entry entry = newEntry(defInstance.def, getContextDefinition(superdef), params, args);
         push(entry);
     }
 
@@ -3785,7 +3801,12 @@ if (unpushedEntries == null) {
 
 
     public synchronized void unpop(Definition def, ParameterList params, ArgumentList args) {
-        Definition contextDef = getContextDefinition(def);
+        DefinitionInstance defInstance = getContextDefInstance(def, args);
+        Definition contextDef = defInstance.def;
+        if (defInstance.args != null && defInstance.args != args) {
+        	args = defInstance.args;
+        	params = contextDef.getParamsForArgs(args, this);
+        }
         _push(newEntry(contextDef, contextDef, params, args));
     }
 
