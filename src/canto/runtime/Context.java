@@ -117,7 +117,6 @@ public class Context {
         public int lastState() { return state; }
     }
 
-
     /** Dereferences the passed definition if necessary to return the proper
      *  definition to push on the context.
      * @throws Redirection 
@@ -162,6 +161,52 @@ public class Context {
         } else {
         // anything else has to be a named definition
            return definition;
+        }
+    }
+
+    /** Dereferences the passed definition if necessary to return the proper
+     *  definition to push on the context.
+     * @throws Redirection 
+     */
+    private DefinitionInstance getContextDefInstance(Definition definition, ArgumentList args) {
+        DefinitionInstance contextDefInstance = null;
+
+        // first resolve element references to element definitions,
+        // which are handled below
+        if (definition instanceof ElementReference) {
+            try {
+                Definition elementDef = ((ElementReference) definition).getElementDefinition(this);
+                if (elementDef != null) {
+                    definition = elementDef;
+                }
+            } catch (Redirection r) {
+                throw new IllegalStateException("Redirection on attempt to get element definition: " + r);
+            }
+        }
+
+        if (definition instanceof DefinitionFlavor) {
+            definition = ((DefinitionFlavor) definition).def;
+        } else if (definition instanceof TypeDefinition) {
+            definition = ((TypeDefinition) definition).def;
+        //} else if (definition instanceof ElementReference) {
+        //    // array and table references defer to their collections for context.
+        //    contextDef = ((ElementReference) definition).getCollectionDefinition();
+        } else if (definition instanceof ElementDefinition) {
+            Object element = ((ElementDefinition) definition).getElement(this);
+            if (element instanceof Definition) {
+                contextDefInstance = getContextDefInstance((Definition) element, args);
+            } else if (element instanceof Instantiation) {
+                Instantiation instance = (Instantiation) element;
+                contextDefInstance = getContextDefInstance(instance.getDefinition(this), instance.getArguments());
+            }
+        }
+
+        if (contextDefInstance != null) {
+            return contextDefInstance;
+
+        } else {
+        // anything else has to be a named definition
+           return new DefinitionInstance(definition, args, null);
         }
     }
 
@@ -3468,20 +3513,21 @@ if (definition.getName().indexOf(".msg") > 0) {
     }
 
     public void push(Definition def, ParameterList params, ArgumentList args) throws Redirection {
-        Definition contextDef = getContextDefinition(def);
-        Entry entry = newEntry(contextDef, contextDef, params, args);
+        DefinitionInstance defInstance = getContextDefInstance(def, args);
+        Entry entry = newEntry(defInstance.def, defInstance.def, params, defInstance.args);
         push(entry);
     }
 
     public void push(Definition def, ParameterList params, ArgumentList args, boolean newFrame) throws Redirection {
-        Definition contextDef = getContextDefinition(def);
-        Definition superdef = (newFrame ? null : contextDef);
-        Entry entry = newEntry(contextDef, superdef, params, args);
+        DefinitionInstance defInstance = getContextDefInstance(def, args);
+        Definition superdef = (newFrame ? null : defInstance.def);
+        Entry entry = newEntry(defInstance.def, superdef, params, defInstance.args);
         push(entry);
     }
 
     public void push(Definition instantiatedDef, Definition superdef, ParameterList params, ArgumentList args) throws Redirection {
-        Entry entry = newEntry(getContextDefinition(instantiatedDef), getContextDefinition(superdef), params, args);
+        DefinitionInstance defInstance = getContextDefInstance(instantiatedDef, args);
+    	Entry entry = newEntry(defInstance.def, getContextDefinition(superdef), params, defInstance.args);
         push(entry);
     }
 
