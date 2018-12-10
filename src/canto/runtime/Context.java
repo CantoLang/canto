@@ -5016,7 +5016,11 @@ if (unpushedEntries == null) {
         }
 
         private void put(String key, Holder holder, Context context, int maxLevels) {
-            boolean kept = false;
+if (key.indexOf("results") >= 0) {
+ System.out.println("put " + key + " at Ctx 5020");	
+}
+        	
+        	boolean kept = false;
             Definition nominalDef = holder.nominalDef;
             Map<String, Object> localKeep = getKeep();
             synchronized (localKeep) {
@@ -5102,10 +5106,13 @@ if (unpushedEntries == null) {
             if (def != null) {
                 Definition ownerDef = def.getOwner();
                 if (ownerDef != null) {
+                	boolean isSite = (ownerDef instanceof Site); // && !(ownerDef instanceof Core);
                     Entry entry = this;
                     while (entry != null) {
                         if (entry.def.equalsOrExtends(ownerDef)) {
                             break;
+                        } else if (isSite && entry.link == null) {
+                        	break;
                         }
                         entry = entry.link;
                     }

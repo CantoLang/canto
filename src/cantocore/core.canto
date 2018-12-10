@@ -987,7 +987,7 @@ core {
      *  Standard test runner
      */
 
-    test_runner {
+    dynamic test_runner {
     
         name = owner.type
 
