@@ -7121,7 +7121,15 @@ ft {=
         }
     }
 
-    tloop {
+public ttr {
+    test_test_runner.run;
+
+    for test_result rslt in test_test_runner.results {
+        rslt.name;
+    }
+}
+
+    public tloop {
         tp {
             int nr = 0
             
