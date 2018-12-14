@@ -941,7 +941,7 @@ core {
      */
 
     
-    test_result(test_name, boolean rslt, msgs[]) {
+    dynamic test_result(test_name, boolean rslt, msgs[]) {
         keep: name = test_name
         keep: boolean result = rslt
         keep: messages[] = msgs
