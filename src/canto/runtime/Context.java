@@ -883,10 +883,6 @@ public class Context {
             // context stack with the definition
             params = definition.getParamsForArgs(args, this);
 
-if (definition.getName().indexOf(".msg") > 0) {
- System.out.println(definition.getName() + " at ctx 839");    
-}
-            
             // if there are args but this definition has no params, check to see if it's an
             // alias and if so look for params there
             if (params == null && args != null && definition.isAliasInContext(this)) {
@@ -2527,7 +2523,7 @@ if (definition.getName().indexOf(".msg") > 0) {
         DefinitionInstance defInstance = getContextDefInstance(instantiatedDef, args);
         def = defInstance.def;
         if (defInstance.args != null) {
-        	args = defInstance.args;
+            args = defInstance.args;
         }
         int numPushes = 0;
         ParameterList params = def.getParamsForArgs(args, this);
@@ -3529,8 +3525,8 @@ if (definition.getName().indexOf(".msg") > 0) {
     public void push(Definition def, ParameterList params, ArgumentList args, boolean newFrame) throws Redirection {
         DefinitionInstance defInstance = getContextDefInstance(def, args);
         if (defInstance.args != null && defInstance.args != args) {
-        	args = defInstance.args;
-        	params = defInstance.def.getParamsForArgs(args, this);
+            args = defInstance.args;
+            params = defInstance.def.getParamsForArgs(args, this);
         }
         Definition superdef = (newFrame ? null : defInstance.def);
         Entry entry = newEntry(defInstance.def, superdef, params, args);
@@ -3540,10 +3536,10 @@ if (definition.getName().indexOf(".msg") > 0) {
     public void push(Definition instantiatedDef, Definition superdef, ParameterList params, ArgumentList args) throws Redirection {
         DefinitionInstance defInstance = getContextDefInstance(instantiatedDef, args);
         if (defInstance.args != null && defInstance.args != args) {
-        	args = defInstance.args;
-        	params = defInstance.def.getParamsForArgs(args, this);
+            args = defInstance.args;
+            params = defInstance.def.getParamsForArgs(args, this);
         }
-    	Entry entry = newEntry(defInstance.def, getContextDefinition(superdef), params, args);
+        Entry entry = newEntry(defInstance.def, getContextDefinition(superdef), params, args);
         push(entry);
     }
 
@@ -3804,8 +3800,8 @@ if (unpushedEntries == null) {
         DefinitionInstance defInstance = getContextDefInstance(def, args);
         Definition contextDef = defInstance.def;
         if (defInstance.args != null && defInstance.args != args) {
-        	args = defInstance.args;
-        	params = contextDef.getParamsForArgs(args, this);
+            args = defInstance.args;
+            params = contextDef.getParamsForArgs(args, this);
         }
         _push(newEntry(contextDef, contextDef, params, args));
     }
@@ -5016,11 +5012,7 @@ if (unpushedEntries == null) {
         }
 
         private void put(String key, Holder holder, Context context, int maxLevels) {
-if (key.indexOf("results") >= 0) {
- System.out.println("put " + key + " at Ctx 5020");	
-}
-        	
-        	boolean kept = false;
+            boolean kept = false;
             Definition nominalDef = holder.nominalDef;
             Map<String, Object> localKeep = getKeep();
             synchronized (localKeep) {
@@ -5106,13 +5098,18 @@ if (key.indexOf("results") >= 0) {
             if (def != null) {
                 Definition ownerDef = def.getOwner();
                 if (ownerDef != null) {
-                	boolean isSite = (ownerDef instanceof Site); // && !(ownerDef instanceof Core);
+                    boolean isSite = (ownerDef instanceof Site); // && !(ownerDef instanceof Core);
                     Entry entry = this;
                     while (entry != null) {
                         if (entry.def.equalsOrExtends(ownerDef)) {
                             break;
+                        } else if (entry.def != def && entry.def.equalsOrExtends(def)) {
+                            Definition entryDefOwner = entry.def.getOwner();
+                            if (entryDefOwner != null) {
+                                ownerDef = entryDefOwner;
+                            }
                         } else if (isSite && entry.link == null) {
-                        	break;
+                            break;
                         }
                         entry = entry.link;
                     }
