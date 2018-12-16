@@ -4936,7 +4936,7 @@ kst {=
         name = "Higher Order Definition Test"
         key = "ho_def"
 
-        expected = "ABCDEFGH"
+        expected = "ABCDEFGHI"
 
         dynamic func_1(x) {
             x;
@@ -4949,6 +4949,8 @@ kst {=
         dynamic func_3(ff, y) {
             ff(y);
         }
+        
+        dynamic func_4(ff) = ff("I")
 
         func_array[] = [ func_1, func_3 ]
         
@@ -4970,6 +4972,8 @@ kst {=
         
         ho_test_5 = func_array[0]
         ho_test_6 = func_array[1]
+        
+        ho_test_7(f) = func_4(f)
 
         ho_test_1(func_1, "B");
         ho_test_2(func_2);
@@ -4977,21 +4981,18 @@ kst {=
         ho_test_4(func_1, "F");
         ho_test_5("G");
         ho_test_6(func_1, "H");
+        ho_test_7(func_1);
     }
 
 public hot {=
    dynamic func_1(x) {
      x;
    }
-   dynamic func_3(ff, y) {
-       ff(y);
-   }
+   dynamic func_4(ff) = ff("I")
 
-   func_array[] = [ func_1, func_3 ]
-   ho_test_5 = func_array[0]
-   ho_test_6 = func_array[1]
-   ho_test_5("G");
-   ho_test_6(func_1, "H");
+   ho_test_7(f) = func_4(f)
+   
+   ho_test_7(func_1);
 =}
 
 

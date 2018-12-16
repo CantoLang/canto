@@ -137,6 +137,9 @@ public class Utils {
     }
 
     public static int indexOf(String str, String substr) {
+        if (substr == null) {
+        	return -1;
+        }
         if (str != null) {
             return str.indexOf(substr);
         } else {

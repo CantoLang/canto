@@ -172,4 +172,28 @@ public class DefParameter extends NamedDefinition {
         }
         return "";
     }
+    
+//    protected String getTypeAndName() {
+//        StringBuffer sb = new StringBuffer();
+//        
+//        Type type = getSuper();
+//        if (type != null) {
+//            sb.append(type.getName());
+//            sb.append(' ');
+//        }
+//
+//        String name = getReferenceName();
+//        if (name != null && name.length() > 0) {
+//            sb.append(name);
+//            List<Dim> dims = getDims();
+//            if (dims != null && dims.size() > 0) { 
+//                Iterator<Dim> it = dims.iterator();
+//                while (it.hasNext()) {
+//                    it.next().toString();
+//                }
+//            }
+//            sb.append(' ');
+//        }
+//        return sb.toString();        
+//    }
 }
