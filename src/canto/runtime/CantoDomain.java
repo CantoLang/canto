@@ -657,7 +657,7 @@ public class CantoDomain implements canto_domain {
 
     public Instantiation getInstance(Site site, String typeName, String name, ArgumentList[] argLists, Context argContext) {
         Definition def = getDefinition(name);
-        if (def != null) {
+        if (def != null && (typeName.length() == 0 || name.equals(typeName) || def.isSuperType(typeName))) {
             @SuppressWarnings("rawtypes")
             ListNode[] paramsAndArgs = def.getMatch(argLists, argContext);
             ArgumentList args = (paramsAndArgs == null ? null : (ArgumentList) paramsAndArgs[1]);

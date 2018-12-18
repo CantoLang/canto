@@ -4936,7 +4936,7 @@ kst {=
         name = "Higher Order Definition Test"
         key = "ho_def"
 
-        expected = "ABCDEFGHI"
+        expected = "ABCDEFGHIJ"
 
         dynamic func_1(x) {
             x;
@@ -4945,15 +4945,19 @@ kst {=
         dynamic boolean func_2(x) {
             (x == "yes");
         }
-        
+
         dynamic func_3(ff, y) {
             ff(y);
         }
-        
+
         dynamic func_4(ff) = ff("I")
 
+        dynamic func_5(z, ff) {
+            func_3(ff, z);
+        }
+
         func_array[] = [ func_1, func_3 ]
-        
+
         ho_test_1(f, b) {
             f("A");
             f(b);
@@ -4967,13 +4971,15 @@ kst {=
         ho_test_3(f) {
             f(func_1, "E");
         }
-        
+
         ho_test_4 = func_3
-        
+
         ho_test_5 = func_array[0]
         ho_test_6 = func_array[1]
-        
+
         ho_test_7(f) = func_4(f)
+
+        ho_test_8(f) = func_5("J", f)
 
         ho_test_1(func_1, "B");
         ho_test_2(func_2);
@@ -4982,17 +4988,24 @@ kst {=
         ho_test_5("G");
         ho_test_6(func_1, "H");
         ho_test_7(func_1);
+        ho_test_8(func_1);
     }
 
 public hot {=
    dynamic func_1(x) {
      x;
    }
-   dynamic func_4(ff) = ff("I")
+   dynamic func_3(ff, y) {
+     ff(y);
+   }
 
-   ho_test_7(f) = func_4(f)
-   
-   ho_test_7(func_1);
+   dynamic func_5(z, fff) {
+     func_3(fff, z);
+   }
+
+   ho_test_8(f) = func_5("J", f)
+
+   ho_test_8(func_1);
 =}
 
 

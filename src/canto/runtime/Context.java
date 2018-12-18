@@ -906,7 +906,6 @@ public class Context {
             boolean constructed = false;
             Definition aliasDef = null;
             Instantiation aliasInstance = null;
-
             NamedDefinition superDef = definition.getSuperDefinition(this);
             Type st = definition.getSuper(this);
     
@@ -1888,23 +1887,29 @@ public class Context {
             // handle parameters which reference parameters in their containers
             if (argRef instanceof NameNode && isParam) {
                 NameNode refName = (NameNode) argRef;
-                if (!refName.hasArguments() && argArgs != null) {
-                	refName = new NameWithArgs(refName.getName(), argArgs);
-                }
                 for (int i = 0; i < numUnpushes; i++) {
                     unpush();
                 }
                 try {
                     argDef = argInstance.getDefinition(this);
-                    boolean inContainer = argInstance.isContainerParameter(resolutionContext);
-                    data = resolutionContext.getParameterInstance(refName, argInstance.isParamChild, inContainer);
-                    if (argDef != null) {
-                        String key = argInstance.getName();
-                        // too expensive for a large loop
-                        //if (argInstance.isForParameter()) {
-                        //    key = key + addLoopModifier();
-                        //}
-                        putData(argDef, argArgs, argDef, argArgs, indexes, key, data, null);
+                    if (!refName.hasArguments() && argArgs != null) {
+                        while (numUnpushes > 0) {
+                            repush();
+                            numUnpushes--;
+                        }
+                        data = argDef.instantiate(argArgs, indexes, this);
+
+                    } else {
+                        boolean inContainer = argInstance.isContainerParameter(resolutionContext);
+                        data = resolutionContext.getParameterInstance(refName, argInstance.isParamChild, inContainer);
+                        if (argDef != null) {
+                            String key = argInstance.getName();
+                            // too expensive for a large loop
+                            //if (argInstance.isForParameter()) {
+                            //    key = key + addLoopModifier();
+                            //}
+                            putData(argDef, argArgs, argDef, argArgs, indexes, key, data, null);
+                        }
                     }
             
                 } finally {
