@@ -153,10 +153,20 @@ public class CantoObjectWrapper {
 
     public Object[] getChildArray(String name) {
         Object obj = this.getChildData(new NameNode(name));
+        if (obj instanceof ResolvedArray) {
+        	try {
+        	    obj = ((ResolvedArray) obj).getCollectionObject();
+        	} catch (Redirection r) {
+        		return null;
+        	}
+        }
+        
         if (obj instanceof List) {
         	return ((List) obj).toArray();
-        } else {
+        } else if (obj instanceof Object[]) {
             return (Object[]) obj;
+        } else {
+        	return null;
         }
     }
         

@@ -42,7 +42,7 @@ public class ParsedStringLiteral extends PrimitiveValue {
         return visitor.visit(this, data);
     }
 
-    public String toString() {
-        return '"' + getString() + '"';
-    }
+    //public String toString() {
+    //    return '"' + getString() + '"';
+    //}
 }

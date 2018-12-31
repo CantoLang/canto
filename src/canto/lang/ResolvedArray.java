@@ -13,7 +13,7 @@ import java.util.List;
 
 import canto.runtime.Context;
 
-class ResolvedArray extends ResolvedCollection {
+public class ResolvedArray extends ResolvedCollection {
 
     private CollectionDefinition collectionDef = null;
     protected CantoArray array = null;
