@@ -628,8 +628,15 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
     
     String getNominalAddress() {
         String showAddress = address;
-        if (showAddress == null) {        
-            Object serverAddr[] = mainSite.getPropertyArray("listen_to");
+        if (showAddress == null) { 
+            Object serverAddr[] = null;
+        	site_config sc = mainSite.getSiteConfig();
+            if (sc != null) {
+            	serverAddr = sc.listen_to();
+            }
+            if (serverAddr == null || serverAddr.length == 0) {
+            	serverAddr = mainSite.getPropertyArray("listen_to");
+            }
             if (serverAddr != null && serverAddr.length > 0) {
                 for (int i = 0; i < serverAddr.length; i++) {
                     String addr = serverAddr[i].toString();
@@ -1359,6 +1366,12 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             return site_config.getChildBoolean("files_first");
         }
        
+        /** The external interfaces (address and port) that the server should
+         *  respond to for this site.  If null the globally defined value is used.
+         **/
+        public Object[] listen_to() {
+        	return site_config.getChildArray("listen_to");
+        };    
     }
     
     public static class CantoServerRunner {

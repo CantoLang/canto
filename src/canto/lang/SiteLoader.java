@@ -228,6 +228,7 @@ public class SiteLoader {
                 		siteConfig = sc;
                 		internalPath = sc.cantopath();
                 	}
+                	site.setSiteConfig(sc);
                 } else {
                     for (Object siteObj: sites) {
                     	CantoObjectWrapper obj = (CantoObjectWrapper) siteObj;
@@ -417,6 +418,10 @@ public class SiteLoader {
 
     public Exception[] getExceptions() {
         return exceptions;
+    }
+    
+    public site_config getSiteConfig() {
+    	return siteConfig;
     }
 
     /** See if the passed file represents a wildcard specification. This includes any

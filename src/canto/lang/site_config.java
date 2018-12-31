@@ -48,6 +48,11 @@ public interface site_config {
      *  suitable Canto object by the requested name exists.
      */
     public boolean files_first();
+    
+    /** The external interfaces (address and port) that the server should
+     *  respond to for this site.  If null the globally defined value is used.
+     **/
+    public Object[] listen_to();    
 }
 
 

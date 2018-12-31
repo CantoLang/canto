@@ -69,7 +69,13 @@ public class CantoJettyServer extends Server implements CantoStandaloneServer {
 
             String addr = cantoServer.getSpecifiedAddress();
             if (addr == null) {
-                serverAddr = mainSite.getPropertyArray("listen_to");
+            	site_config sc = mainSite.getSiteConfig();
+                if (sc != null) {
+                	serverAddr = sc.listen_to();
+                }
+                if (serverAddr == null || serverAddr.length == 0) {
+                	serverAddr = mainSite.getPropertyArray("listen_to");
+                }
             } else {
                 serverAddr = new Object[1];
                 serverAddr[0] = addr;

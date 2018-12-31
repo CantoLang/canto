@@ -151,6 +151,15 @@ public class CantoObjectWrapper {
         }
     }
 
+    public Object[] getChildArray(String name) {
+        Object obj = this.getChildData(new NameNode(name));
+        if (obj instanceof List) {
+        	return ((List) obj).toArray();
+        } else {
+            return (Object[]) obj;
+        }
+    }
+        
     public boolean isChildDefined(String name) {
         return def.hasChildDefinition(name);
     }

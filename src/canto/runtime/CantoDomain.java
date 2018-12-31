@@ -296,10 +296,12 @@ public class CantoDomain implements canto_domain {
             site = core.getSite(domainName);
             // give site a non-null value if necessary
             if (site == null) {
-                log("No data for site " + domainName + " in cantopath; creating empty site");
+                log("No data for site " + domainName + " in cantopath; creating empscty site");
                 site = new Site(domainName);
                 core.addSite(site);
             }
+            site.setSiteConfig(loader.getSiteConfig());
+
         } else if (defaultSite == null) {
             log("No data for site in cantopath.");
         }
