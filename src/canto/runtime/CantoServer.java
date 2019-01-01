@@ -2,7 +2,7 @@
  * 
  * CantoServer.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -91,6 +91,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
     protected String fileHandlerName = null;
     private String contextPath = "";
     private long asyncTimeout = 0l;
+    private String baseUrl = null;
 
     private CantoStandaloneServer standaloneServer = null;
     private HashMap<String, CantoServer> serverMap = new HashMap<String, CantoServer>();
@@ -506,6 +507,10 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             
             standaloneServer.startServer();
             
+            baseUrl = ((CantoJettyServer) standaloneServer).getAddress();
+
+            standaloneServer.join();
+            
         } catch (Exception e) {
             recordState("FAILED");
 
@@ -788,10 +793,11 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
      *  an HTTP server to dispatch requests among multiple Canto servers, using the
      *  first part of the URL to differentiate among them.
      *
-     *  If null, this server accepts all requests.
+     *  If null, the underlying standalone server did not start or does not have an
+     *  address.
      */
     public String base_url() {
-        return null;
+        return baseUrl;
     }
 
     public Map<String, String> site_paths() {

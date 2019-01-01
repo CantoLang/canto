@@ -2,7 +2,7 @@
  * 
  * CantoJettyServer.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -144,7 +144,6 @@ public class CantoJettyServer extends Server implements CantoStandaloneServer {
             setHandler(handlers);
             start();
             cantoServer.recordState(CantoServer.SERVER_STARTED);
-            join();
 
         } catch (Exception e) {
             cantoServer.recordState(CantoServer.SERVER_FAILED);
