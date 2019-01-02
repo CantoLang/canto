@@ -2,7 +2,7 @@
  * 
  * ExternalDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -25,7 +25,7 @@ public class ExternalDefinition extends ComplexDefinition {
      * Table to cache class lookups, to avoid all the exception
      * throwing with Class.forName calls.
      */
-	private static Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
+    private static Map<String, Class<?>> classes = new HashMap<String, Class<?>>();
 
 
     /**
@@ -33,9 +33,9 @@ public class ExternalDefinition extends ComplexDefinition {
      */
     private static class Unusable {}
     private static class Bogus {}
-	
-	
-	/**
+    
+    
+    /**
      * Creates a prototype definition.
      */
     public static ExternalDefinition createPrototype(ComplexName nameNode, Type superType, int access, int dur) {
@@ -46,7 +46,7 @@ public class ExternalDefinition extends ComplexDefinition {
      * Creates a definition corresponding to the passed complex name.
      */
     public static Definition createForName(Definition owner, ComplexName nameNode, Type superType, int access, int dur, Context context) {
-    	// find the left-most class named by the passed complex name.
+        // find the left-most class named by the passed complex name.
         Class<?> externalClass = null;
         String name = "";
         int n = 0;
@@ -224,7 +224,7 @@ public class ExternalDefinition extends ComplexDefinition {
     }
    
     Context getInitContext() {
-    	return initContext;
+        return initContext;
     }
 
     public ExternalDefinition newForArgs(ArgumentList args) {
@@ -355,7 +355,7 @@ public class ExternalDefinition extends ComplexDefinition {
     }
 
     protected void setObject(Object object) {
-    	this.object = object;
+        this.object = object;
     }
 
     public ArgumentList getArguments() {
@@ -376,12 +376,12 @@ public class ExternalDefinition extends ComplexDefinition {
     }
     
     public ExternalDefinition getExternalChildDefinition(NameNode node, Context context) {
-    	if (context == null) {
-    	    if (initContext == null) {
-    	    	return null;
-    	    }
-    	    context = initContext;
-    	}
+        if (context == null) {
+            if (initContext == null) {
+                return null;
+            }
+            context = initContext;
+        }
         try {
             DefinitionInstance defInstance = (DefinitionInstance) getChild(node, node.getArguments(), node.getIndexes(), null, context, false, true, null, null);
             return (ExternalDefinition) (defInstance == null ? null : defInstance.def);
@@ -578,11 +578,19 @@ public class ExternalDefinition extends ComplexDefinition {
                 //     -- if the name is "keys", create a keys definition
                 if (Name.COUNT.equals(name)) {
                     Definition countDef = new CountDefinition(this);  // , context, getArguments());
-                    return countDef.getDefInstance(null, null);
+                    if (generate) {
+                        return countDef.instantiate(context);
+                    } else {
+                        return countDef.getDefInstance(null, null);
+                    }
                 } else if (Name.KEYS.equals(name)) {
                     ExternalCollectionDefinition collectionDef = new ExternalCollectionDefinition(this, context, getArguments(), java.util.Map.class);
                     Definition keysDef = new KeysDefinition(collectionDef, context, null, null);
-                    return keysDef.getDefInstance(null, null);
+                    if (generate) {
+                        return keysDef.instantiate(context);
+                    } else {
+                        return keysDef.getDefInstance(null, null);
+                    }
                 } else if (parentObj instanceof ResolvedInstance) {
                     ResolvedInstance ri = (ResolvedInstance) parentObj;
                     Definition parentDef = ri.getDefinition();
@@ -628,10 +636,10 @@ public class ExternalDefinition extends ComplexDefinition {
     
     
     static boolean  isCollectionClass(Class<?> clazz) {
-    	 return (clazz.isArray() || 
-    	         CantoArray.class.isAssignableFrom(clazz) ||
-    	         List.class.isAssignableFrom(clazz) ||
-    	         Map.class.isAssignableFrom(clazz));
+         return (clazz.isArray() || 
+                 CantoArray.class.isAssignableFrom(clazz) ||
+                 List.class.isAssignableFrom(clazz) ||
+                 Map.class.isAssignableFrom(clazz));
     }
     
     static Constructor<?> getClosestConstructor(Class<?> c, Class<?>[] params, Definition[] paramDefs) {
@@ -895,26 +903,26 @@ public class ExternalDefinition extends ComplexDefinition {
         int numUnpushes = 0;
         int numPushes = 0;
         try {
-	        ExternalDefinition owner = (ExternalDefinition) getOwner();
-	        ArgumentList ownerArgs = owner.getArguments();
-	        Context ownerContext = owner.getInitContext();
-	        if (ownerContext == null) {
-	            //numPushes = context.pushSupersAndAliases(owner, this, getArguments());
-	        	ownerContext = context;
-	        }
-	       
-	        List<Index> ownerIndexes = null;
-	        if (owner instanceof IndexedMethodDefinition) {
-	            ownerIndexes = ((IndexedMethodDefinition) owner).getIndexes();
-	        }
-	        AbstractConstruction.CacheabilityInfo cacheInfo = AbstractConstruction.NOT_CACHEABLE_INFO;
-	        AbstractNode contents = owner.getContents();
-	        if (contents instanceof AbstractConstruction) {
-	            cacheInfo = ((AbstractConstruction) contents).getCacheability(context, null);
-	            if ((cacheInfo.cacheability & AbstractConstruction.CACHE_RETRIEVABLE) == AbstractConstruction.CACHE_RETRIEVABLE) {
-	                object = context.getData(owner, owner.getName(), ownerArgs, ownerIndexes);
-	            }
-	        }
+            ExternalDefinition owner = (ExternalDefinition) getOwner();
+            ArgumentList ownerArgs = owner.getArguments();
+            Context ownerContext = owner.getInitContext();
+            if (ownerContext == null) {
+                //numPushes = context.pushSupersAndAliases(owner, this, getArguments());
+                ownerContext = context;
+            }
+           
+            List<Index> ownerIndexes = null;
+            if (owner instanceof IndexedMethodDefinition) {
+                ownerIndexes = ((IndexedMethodDefinition) owner).getIndexes();
+            }
+            AbstractConstruction.CacheabilityInfo cacheInfo = AbstractConstruction.NOT_CACHEABLE_INFO;
+            AbstractNode contents = owner.getContents();
+            if (contents instanceof AbstractConstruction) {
+                cacheInfo = ((AbstractConstruction) contents).getCacheability(context, null);
+                if ((cacheInfo.cacheability & AbstractConstruction.CACHE_RETRIEVABLE) == AbstractConstruction.CACHE_RETRIEVABLE) {
+                    object = context.getData(owner, owner.getName(), ownerArgs, ownerIndexes);
+                }
+            }
 
             if (object == null) {
                  object = getObject();
@@ -1506,7 +1514,7 @@ class MethodConstruction extends ExternalConstruction {
         if (Modifier.isStatic(method.getModifiers())) {
             instance = null;
         } else {
-        	instance = mdef.generateInstance(context);
+            instance = mdef.generateInstance(context);
         }
         
         contextMarker = context.getMarker(contextMarker);
@@ -1627,13 +1635,13 @@ class MethodConstruction extends ExternalConstruction {
         if (instance != null) {
             Class<?> runtimeClazz = instance.getClass();
             if (!clazz.isAssignableFrom(runtimeClazz)) {
-            	String name = method.getName();
+                String name = method.getName();
 
-            	try {
+                try {
                     runtimeMethod = runtimeClazz.getMethod(name, params);
     
                 } catch (NoSuchMethodException nsme) {
-                	runtimeMethod = ExternalDefinition.getClosestMethod(name, params, runtimeClazz);
+                    runtimeMethod = ExternalDefinition.getClosestMethod(name, params, runtimeClazz);
                     if (runtimeMethod == null) {
                         String message = "Unable to find method " + name + " in class " + instance.getClass().getName();
                         log(message);

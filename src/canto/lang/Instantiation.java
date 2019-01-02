@@ -2,7 +2,7 @@
  * 
  * Instantiation.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -898,10 +898,6 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 //            }
 
             if (def == null) {
-
-if ("ao".equals(nm)) {
- System.out.println(nm + " at Inst 903");
-}
             	int n = name.numParts();
                 
                 if (n == 1) {
@@ -1039,10 +1035,6 @@ if ("ao".equals(nm)) {
 //                    }
 //                }
 //            }
-            
-if (name.getName().indexOf("quick_tour_article") >= 0) {
- System.out.println("got " + name.getName() + " at Inst 1040");	
-}
             
             if (def == null) {
                 def = lookupDef(name, prefixIndexes, getParent(), owner, classDef, context, resolver);
