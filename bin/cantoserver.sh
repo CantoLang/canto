@@ -8,10 +8,6 @@
 # Defaults to the file name without extension.
 #####################################################
 
-echo "SERVICE_HOME starts as $SERVICE_HOME"
-echo "SERVICE_NAME starts as $SERVICE_NAME"
-
-
 NAME=$(echo $(basename $0) | sed -e 's/^[SK][0-9]*//' -e 's/\.sh$//')
 if [ -z "$SERVICE_NAME" ]
 then
@@ -92,8 +88,8 @@ start()
             CH_USER="-c$CANTO_USER"
         fi
 
-        start-stop-daemon -S -p"$CANTO_PID" $CH_USER -d"$CANTO_HOME" -b -m -a "$JAVA" -- "${RUN_ARGS[@]}"
-        echo "start-stop-daemon -S -p$CANTO_PID $CH_USER -d$CANTO_HOME -b -m -a $JAVA -- ${RUN_ARGS[@]}"
+        start-stop-daemon -S -p"$CANTO_PID" $CH_USER -d"$SERVICE_HOME" -b -m -a "$JAVA" -- "${RUN_ARGS[@]}"
+        echo "start-stop-daemon -S -p$CANTO_PID $CH_USER -d$SERVICE_HOME -b -m -a $JAVA -- ${RUN_ARGS[@]}"
 
     else
 
@@ -141,12 +137,12 @@ start()
 stop()
 {
     if [ $UID -eq 0 ] && type start-stop-daemon > /dev/null 2>&1; then
-        start-stop-daemon -K -p"$CANTO_PID" -d"$CANTO_HOME" -a "$JAVA" -s HUP
+        start-stop-daemon -K -p"$CANTO_PID" -d"$SERVICE_HOME" -a "$JAVA" -s HUP
 
         TIMEOUT=30
         while running "$CANTO_PID"; do
             if (( TIMEOUT-- == 0 )); then
-                start-stop-daemon -K -p"$CANTO_PID" -d"$CANTO_HOME" -a "$JAVA" -s KILL
+                start-stop-daemon -K -p"$CANTO_PID" -d"$SERVICE_HOME" -a "$JAVA" -s KILL
             fi
 
             sleep 1
@@ -195,15 +191,16 @@ status()
 {
     if running "$CANTO_PID"
     then
-        echo "FunServer running pid=$(< "$CANTO_PID")"
+        echo "CantoServer running pid=$(< "$CANTO_PID")"
     else
-        echo "FunServer not running"
+        echo "CantoServer not running"
     fi
     echo
     echo "CANTO_HOME      = $CANTO_HOME"
     echo "CANTO_PID       = $CANTO_PID"
     echo "CANTO_STATE     = $CANTO_STATE"
     echo "CANTO_USER      = $CANTO_USER"
+    echo "SERVICE_HOME    = $SERVICE_HOME"
     echo "CLASSPATH       = $CLASSPATH"
     echo "JAVA            = $JAVA"
     echo "JAVA_OPTIONS    = ${JAVA_OPTIONS[*]}"
@@ -234,7 +231,7 @@ while [[ $1 = -* ]]; do
 done
 ACTION=$1
 shift
-
+CANTO_ARGS="$@"
 
 #####################################################
 # Try to find CANTO_HOME if not already set
@@ -259,7 +256,7 @@ then
     then
         CANTO_HOME="/opt/canto"
 
-    elif [ -f "/usr/share/$CANTO_JAR_PATH" ]
+    elif [ -f "/usr/share/canto/$CANTO_JAR_PATH" ]
     then
         CANTO_HOME="/usr/share/canto"
 
@@ -268,18 +265,13 @@ then
         CANTO_HOME="~/canto"
 
     else
-      echo "ERROR: CANTO_HOME not set and Fun not installed in a standard location"
+      echo "ERROR: CANTO_HOME not set and Canto not installed in a standard location"
       exit 1
     fi
 fi
 
 cd "$CANTO_HOME"
 CANTO_HOME=$PWD
-
-if [ "$SERVICE_HOME" == "" ]
-then
-    SERVICE_HOME="$CANTO_HOME"
-fi
 
 cd "$SERVICE_HOME"
 SERVICE_HOME=$PWD
@@ -364,6 +356,8 @@ then
     echo "Listening on $HOST_ADDRESS"
     CANTO_ARGS="$CANTO_ARGS -a $HOST_ADDRESS"
 fi
+
+echo CANTO_ARGS=$CANTO_ARGS
 
 #####################################################
 # Setup JAVA if unset
