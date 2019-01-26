@@ -2,10 +2,9 @@
  * 
  * Initializer.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
-
 
 package canto.lang;
 
@@ -53,7 +52,7 @@ public class Initializer extends CantoVisitor {
                     core.addContents((Site) node);
                 }
 
-            } else if (def == core && node instanceof Site) {
+            } else if (/*def == core && */ node instanceof Site) {
                 if (allowOverwrite) {
                     throw new UnsupportedOperationException("Overwriting site is not supported.");
                 }

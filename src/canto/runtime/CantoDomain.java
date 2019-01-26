@@ -2,7 +2,7 @@
  * 
  * CantoDomain.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -296,7 +296,7 @@ public class CantoDomain implements canto_domain {
             site = core.getSite(domainName);
             // give site a non-null value if necessary
             if (site == null) {
-                log("No data for site " + domainName + " in cantopath; creating empscty site");
+                log("No data for site " + domainName + " in cantopath; creating empty site");
                 site = new Site(domainName);
                 core.addSite(site);
             }

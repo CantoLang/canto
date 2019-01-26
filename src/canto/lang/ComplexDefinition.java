@@ -2,7 +2,7 @@
  * 
  * ComplexDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -11,8 +11,6 @@ package canto.lang;
 import java.util.*;
 
 import canto.runtime.Context;
-import canto.runtime.CantoObjectWrapper;
-import canto.runtime.Holder;
 
 /**
 * ComplexDefinition is a named definition which may contain other named definitions.
@@ -149,7 +147,7 @@ public class ComplexDefinition extends NamedDefinition {
                     if (argsOwner != null) {
                         int limit = context.size() - 1;
                         while (numUnpushes < limit) {
-                            NamedDefinition nextdef = (NamedDefinition) context.peek().def;
+                            Definition nextdef = context.peek().def;
                             if (argsOwner.equals(nextdef) || argsOwner.isSubDefinition(nextdef)) {
                                 break;
                             }

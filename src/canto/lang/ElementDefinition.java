@@ -2,7 +2,7 @@
  * 
  * ElementDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -52,7 +52,7 @@ public class ElementDefinition extends AnonymousDefinition {
                 if (ownerType != null) {
                     Class<?> collectionClass = ownerType.getTypeClass(null);
                     Class<?> elementClass = value.getValueClass();
-                    if (!collectionClass.isAssignableFrom(elementClass)) {
+                    if (collectionClass != null && elementClass != null && !collectionClass.isAssignableFrom(elementClass)) {
                         element = new PrimitiveValue(element, collectionClass);
                     }
                 }
@@ -111,7 +111,12 @@ public class ElementDefinition extends AnonymousDefinition {
             return "";
             //return ((Instantiation) element).getName();
         } else if (element instanceof Value) {
-            return ((Value) element).getValueClass().getName();
+            Class<?> vc = ((Value) element).getValueClass();
+            if (vc == null) {
+                return "";
+            } else {
+                return ((Value) element).getValueClass().getName();
+            }
         } else {
             return element.getClass().getName();
         }
@@ -345,7 +350,7 @@ System.err.println("***** ElementDefinition getBaseDefinition null due to null o
     }
 
     protected ParameterList getMatch(ArgumentList args, Context argContext) {
-    	return ((AnonymousDefinition) getBaseDefinition(argContext)).getMatch(args, argContext);
+        return ((AnonymousDefinition) getBaseDefinition(argContext)).getMatch(args, argContext);
     }
 
     public String toString(String prefix) {
