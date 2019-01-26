@@ -30,9 +30,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
     private static final long serialVersionUID = 1L;
 
     public static final String NAME = "CantoServer";
-    public static final String MAJOR_VERSION = "1.0";
-    public static final String MINOR_VERSION = "0";
-    public static final String VERSION = MAJOR_VERSION + "." + MINOR_VERSION;
+    public static final String VERSION = Version.VERSION;
     public static final String NAME_AND_VERSION = NAME + " " + VERSION;
 
     public static final String REQUEST_STATE_ATTRIBUTE = "canto_request_state";
@@ -185,7 +183,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             System.out.println("                               relative to this path or URL.  If this flag is");
             System.out.println("                               not present, the docbase defaults to the current");
             System.out.println("                               directory.\n");
-            System.out.println("-bp, --cantopath <pathnames>   Sets the initial cantopath, which is a string");
+            System.out.println("-cp, --cantopath <pathnames>   Sets the initial cantopath, which is a string");
             System.out.println("                               of pathnames separated by the platform-specific");
             System.out.println("                               path separator character (e.g., colon on Unix");
             System.out.println("                               and semicolon on Windows).  Pathnames may");
@@ -301,7 +299,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             } else if (arg.equals("--filesfirst") || arg.equals("-ff")) {
                 initParams.put("filesfirst", "true");
 
-            } else if (arg.equals("--cantopath") || arg.equals("-bp")) {
+            } else if (arg.equals("--cantopath") || arg.equals("-cp")) {
                 if (noNextArg) {
                     numProblems++;
                     String msg = "cantopath not provided";
