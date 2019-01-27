@@ -1,24 +1,24 @@
 /--
- --  bento2fun.fun
+ --  bento2canto.canto
  --
- --  Converts bento source files to fun source files
+ --  Converts bento source files to canto source files
  --
- --  For each Bento file does the following:
+ --  For each canto file does the following:
  --
- --    * creates new Fun file
+ --    * creates new Canto file
  --    * loads lines from Bento file
- --    * processes each line and writes to Fun file
+ --    * processes each line and writes to Canto file
  --    * keep track of entering and exiting data blocks
  --    * swap [= and =] with { and } outside of data blocks
  --    * swap [= and =] with {= and =} inside of data blocks
  --/
  
-script bento2fun {
+script bento2canto {
  
     public main(args[]) {
         bentosrc = args[1]
         if (args.count < 2) {
-            "Usage: bento2fun <path>\n";
+            "Usage: bento2canto <path>\n";
             exit(1, true);
         } else {
             "Called with path: ";
@@ -42,14 +42,14 @@ script bento2fun {
     }
 
     dynamic convert(bentofile) {
-        funfile = ends_with(bentofile, ".bento") ? replace(bentofile, ".bento", ".fun") : (bentofile + ".fun") 
+        cantofile = ends_with(bentofile, ".bento") ? replace(bentofile, ".bento", ".canto") : (bentofile + ".canto") 
         bento_lines[] = lines_from_file(bentofile)
         
         keep: int data_levels = 0
         keep as data_levels: dynamic int add_to_data_levels(int n) = data_levels + n
         
-        keep: fun_text = ""
-        keep as fun_text: dynamic add_to_fun_text(text) = fun_text + text + newline
+        keep: can_text = ""
+        keep as can_text: dynamic add_to_can_text(text) = can_text + text + newline
 
         static OPEN_CODE_0 = "[="
         static CLOSE_CODE_0 = "=]"
@@ -67,7 +67,7 @@ script bento2fun {
         step_1B(str) = replace(str, OPEN_CODE_0, OPEN_CODE_2)
         step_2A(str) = replace(str, CLOSE_CODE_0, CLOSE_CODE_1)
         step_2B(str) = replace(str, CLOSE_CODE_0, CLOSE_CODE_2)
-        step_3(str) = replace(str, "bento", "fun")
+        step_3(str) = replace(str, "bento", "canto")
 
         funcs_A[3] = [ step_1A, step_2A, step_3 ]          
         funcs_B[3] = [ step_1B, step_2B, step_3 ]          
@@ -105,10 +105,10 @@ script bento2fun {
         bentofile;
         newline;
         for line in bento_lines {
-            eval(add_to_fun_text(process_line(line)));
+            eval(add_to_can_text(process_line(line)));
         }
 
-        if (!file(funfile).overwrite(fun_text)) {
+        if (!file(cantofile).overwrite(can_text)) {
             "  ...unable to write to ";
             srcfile;
             newline;
