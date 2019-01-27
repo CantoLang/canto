@@ -88,8 +88,9 @@ start()
             CH_USER="-c$CANTO_USER"
         fi
 
-        start-stop-daemon -S -p"$CANTO_PID" $CH_USER -d"$SERVICE_HOME" -b -m -a "$JAVA" -- "${RUN_ARGS[@]}"
+        echo
         echo "start-stop-daemon -S -p$CANTO_PID $CH_USER -d$SERVICE_HOME -b -m -a $JAVA -- ${RUN_ARGS[@]}"
+        start-stop-daemon -S -p"$CANTO_PID" $CH_USER -d"$SERVICE_HOME" -b -m -a "$JAVA" -- "${RUN_ARGS[@]}"
 
     else
 
@@ -98,6 +99,9 @@ start()
             echo "Already Running $(cat $CANTO_PID)!"
             return 1
         fi
+
+        echo
+        echo "Command to run: ${RUN_CMD[@]}"
 
         if [ -n "$CANTO_USER" ] && [ `whoami` != "$CANTO_USER" ]
         then
@@ -116,7 +120,7 @@ start()
             disown \$!
             echo \$! > '$CANTO_PID'"
         else
-            "${RUN_CMD[@]}" > /dev/null &
+            "${RUN_CMD[@]}" > /dev/null 2>&1 &
             disown $!
             echo $! > "$CANTO_PID"
         fi
