@@ -14,6 +14,15 @@ then
     SERVICE_NAME=$NAME
 fi
 
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )/.." >/dev/null 2>&1 && pwd )"
+
+echo DIR is $DIR
 
 usage()
 {
@@ -99,9 +108,6 @@ start()
             echo "Already Running $(cat $CANTO_PID)!"
             return 1
         fi
-
-        echo
-        echo "Command to run: ${RUN_CMD[@]}"
 
         if [ -n "$CANTO_USER" ] && [ `whoami` != "$CANTO_USER" ]
         then
@@ -199,19 +205,6 @@ status()
     else
         echo "CantoServer not running"
     fi
-    echo
-    echo "CANTO_HOME      = $CANTO_HOME"
-    echo "CANTO_PID       = $CANTO_PID"
-    echo "CANTO_STATE     = $CANTO_STATE"
-    echo "CANTO_USER      = $CANTO_USER"
-    echo "SERVICE_HOME    = $SERVICE_HOME"
-    echo "CLASSPATH       = $CLASSPATH"
-    echo "JAVA            = $JAVA"
-    echo "JAVA_OPTIONS    = ${JAVA_OPTIONS[*]}"
-    echo "CANTO_ARGS      = ${CANTO_ARGS[*]}"
-    echo "RUN_CMD         = ${RUN_CMD[*]}"
-    echo
-
     if ! running "$CANTO_PID"
     then
          return 1
@@ -252,6 +245,10 @@ then
     then
         CANTO_HOME=".."
 
+    elif [ -f "$DIR/$CANTO_JAR_PATH" ]
+    then
+        CANTO_HOME="$DIR"
+
     elif [ -n $SERVICE_NAME ] && [ -f "/opt/$SERVICE_NAME/$CANTO_JAR_PATH" ]
     then
         CANTO_HOME="/opt/$SERVICE_NAME"
@@ -280,8 +277,8 @@ CANTO_HOME=$PWD
 cd "$SERVICE_HOME"
 SERVICE_HOME=$PWD
 
-echo "CANTO_HOME is $CANTO_HOME"
-echo "SERVICE_HOME is $SERVICE_HOME"
+#echo "CANTO_HOME is $CANTO_HOME"
+#echo "SERVICE_HOME is $SERVICE_HOME"
 
 #####################################################
 # Set the classpath

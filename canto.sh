@@ -15,8 +15,6 @@ SERVICE_HOME=$DIR
 SERVICE_NAME=$(basename $DIR)
 CANTO_HOME=$DIR
 
-echo Script dir is $DIR
-
 if [[ "$1" == "server" ]]; then
     shift
     if [[ "$1" == "start" || "$1" == "stop" || "$1" == "status" || "$1" == "run"  || "$1" == "restart" ]]; then
