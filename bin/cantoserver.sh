@@ -20,7 +20,7 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
   SOURCE="$(readlink "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
-DIR="$( cd -P "$( dirname "$SOURCE" )/.." >/dev/null 2>&1 && pwd )"
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 
 echo DIR is $DIR
 
@@ -248,6 +248,10 @@ then
     elif [ -f "$DIR/$CANTO_JAR_PATH" ]
     then
         CANTO_HOME="$DIR"
+
+    elif [ -f "$DIR/../$CANTO_JAR_PATH" ]
+    then
+        CANTO_HOME="$DIR/.."
 
     elif [ -n $SERVICE_NAME ] && [ -f "/opt/$SERVICE_NAME/$CANTO_JAR_PATH" ]
     then
