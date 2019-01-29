@@ -259,7 +259,7 @@ abstract public class Block extends AbstractNode implements Construction, Constr
             while (it.hasNext()) {
                 Construction construction = it.next();
                 if (construction instanceof Instantiation) {
-                    if ("eval".equals(((Instantiation) construction).getReferenceName())) {
+                    if ("eval".equals(((Instantiation) construction).getReferenceName().getName())) {
               	        continue;
                     }
                 }

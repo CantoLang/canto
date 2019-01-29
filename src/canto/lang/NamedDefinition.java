@@ -1472,7 +1472,7 @@ public class NamedDefinition extends AnonymousDefinition {
                                  while (it.hasNext()) {
                                      Construction contentArg = it.next();
                                      if (contentArg instanceof Instantiation) {
-                                         if (name.equals(((Instantiation) contentArg).getDefinitionName())) {
+                                         if (name.getName().equals(((Instantiation) contentArg).getDefinitionName())) {
                                              nameEqualsArg = true;
                                              vlog(name + " is also a content arg; skipping lookup");
                                              break;
