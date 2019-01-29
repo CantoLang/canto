@@ -64,11 +64,10 @@ core {
         filepath = "."
         boolean files_first = false;
         
-        /** If non-empty, respond only to the listed addresses.  The addresses are
-         *  allowed, but are not automatically enabled; addresses must also appear in 
-         *  the listen_to array.  If empty, respond to any address.
+        /** Define the available external interfaces (address and port).  If implemented, this overrides 
+         *  the globally defined listen_to array.
          **/
-        respond_only_to[] = []  
+        listen_to [?]
         
         this;
     }
@@ -579,7 +578,7 @@ core {
      *  database implementation defined in the platform-dependent core definition file
      *  (e.g. core_platform_java.canto), and is a subclass of database_interface.
      */
-    db_impl(driver, url, user, password) database(driver, url, user, password) {
+    dynamic db_impl(driver, url, user, password) database(driver, url, user, password) {
 
         super;
 
@@ -599,38 +598,38 @@ core {
     doctype [/]
 
 
-    doctype html4strict [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    static doctype html4strict [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
            "http://www.w3.org/TR/html4/strict.dtd">
     |]
 
-    doctype html4loose [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    static doctype html4loose [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
            "http://www.w3.org/TR/html4/loose.dtd">
     |]
 
-    doctype html4frames [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+    static doctype html4frames [| <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
            "http://www.w3.org/TR/html4/frameset.dtd">
     |]
 
-    doctype xhtmlstrict [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    static doctype xhtmlstrict [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
     |]
 
-    doctype xhtmltrans [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    static doctype xhtmltrans [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     |]
 
-    doctype xhtmlframes [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
+    static doctype xhtmlframes [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
     |]
 
-    doctype xhtml11 [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    static doctype xhtml11 [| <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
         "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
     |]
 
 
     imagepath [/]
 
-    image {
+    dynamic image {
         if (imagepath) { imagepath; }
         sub;
     }
@@ -640,36 +639,36 @@ core {
 
     /------- display constants for convenience -------/
 
-    sp = " "
-    urlsp = "%20";
-    nbsp = "&nbsp;"
-    amp = "&amp;"
-    gt = "&gt;"
-    lt = "&lt;"
+    static sp = " "
+    static urlsp = "%20";
+    static nbsp = "&nbsp;"
+    static amp = "&amp;"
+    static gt = "&gt;"
+    static lt = "&lt;"
 
-    bslash = "\\"
-    bar = "|"
-    colon = ":"
-    comma = ","
-    dash = "-"
-    dblquote [| " |]
-    dot = "."
-    eq = "="
-    quote = "'"
-    semicolon = ";"
-    slash = "/"
-    uscore = "_"
+    static bslash = "\\"
+    static bar = "|"
+    static colon = ":"
+    static comma = ","
+    static dash = "-"
+    static dblquote [| " |]
+    static dot = "."
+    static eq = "="
+    static quote = "'"
+    static semicolon = ";"
+    static slash = "/"
+    static uscore = "_"
 
 
-    hr = "<hr>"
-    br = "<br>"
-    para = "<p>"
-    end_para = "</p>"
+    static hr = "<hr>"
+    static br = "<br>"
+    static para = "<p>"
+    static end_para = "</p>"
 
-    char tab = (char) 9
-    char newline = (char) 10
-    char lf = (char) 10
-    char cr = (char) 13
+    static char tab = (char) 9
+    static char newline = (char) 10
+    static char lf = (char) 10
+    static char cr = (char) 13
     
 
     /-- Convenience functions for building an HTML table.
@@ -699,16 +698,16 @@ core {
      --     }
      --/
 
-    start_table(table_attribs, row_attribs, cell_attribs) [|
+    dynamic start_table(table_attribs, row_attribs, cell_attribs) [|
         <table {= table_attribs; =}><tr {= row_attribs; =}><td {= cell_attribs; =}>
     |]
-    next_row(row_attribs, cell_attribs) [|
+    dynamic next_row(row_attribs, cell_attribs) [|
         </td></tr><tr {= row_attribs; =}><td {= cell_attribs; =}>
     |]
-    next_column(cell_attribs) [|
+    dynamic next_column(cell_attribs) [|
         </td><td {= cell_attribs; =}>
     |]
-    end_table [|
+    dynamic end_table [|
         </td></tr></table>
     |]
 
@@ -1027,7 +1026,7 @@ core {
      * Base class for errors.
      */
     
-    error(int stat, msg, canto_context ctx),
+    dynamic error(int stat, msg, canto_context ctx),
          (int stat, msg),
          (msg, canto_context ctx),
          (msg) {
@@ -1045,7 +1044,7 @@ core {
      *  Standard error page.
      */
 
-    public page error_page(request r),(error err) {
+    public dynamic page error_page(request r),(error err) {
         title = [| Error |]
         color bgcolor = "#EEDDAA"
 
@@ -1054,7 +1053,7 @@ core {
         error_div(r);        
     }    
     
-    public component error_div(request r),(error err) {
+    public dynamic component error_div(request r),(error err) {
         
         error_message {
             with (err) { err.message; }
