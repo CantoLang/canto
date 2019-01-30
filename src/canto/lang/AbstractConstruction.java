@@ -2,7 +2,7 @@
  * 
  * AbstractConstruction.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -42,7 +42,7 @@ abstract public class AbstractConstruction extends AbstractNode implements Const
     /** The construction can be stored in the cache but not retrieved. */
     public static final int CACHE_STORABLE = 2;
 
-    /** The construction cannot be stored or retrieved from the cache. */
+    /** The construction can be stored or retrieved from the cache. */
     public static final int FULLY_CACHEABLE = 3;
 
 

@@ -305,6 +305,15 @@ core {
     
     exec_interface exec(cmd), (cmd, string{} env), (cmd, string{} env, file run_dir) = canto.runtime.Exec.execFactory(cmd, env, run_dir);
     
+    exec exec_wait(cmd), (cmd, string{} env), (cmd, string{} env, file run_dir) {
+        exec exec_obj = (run_dir ?? exec(cmd, env, run_dir) : (env ?? exec(cmd, env) : exec(cmd)))
+
+        exec_obj;
+
+        for int i from 0 until (!exec_obj.is_running) {
+            sleep(50);
+        }
+    }
 
 	/----- System Information -----/
 

@@ -3,6 +3,17 @@
 # script to run canto in an appropriate fashion
 #
 
+usage()
+{
+    echo
+    echo "Usage: ${0##*/} server {start|stop|run|restart|status} [server_args]"
+    echo "   or: ${0##*/} scriptname [script_args]"
+    echo
+    exit 1
+}
+
+[ $# -gt 0 ] || usage
+
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"

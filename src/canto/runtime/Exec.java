@@ -86,7 +86,7 @@ public class Exec {
             normalIn = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             processRunner = new ProcessRunner(process);
             processRunner.start();
-            
+
         } catch (Exception e) {
             execException = e;
         }
