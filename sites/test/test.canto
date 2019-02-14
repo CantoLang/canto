@@ -553,13 +553,19 @@ site test {
         name = "Corresponding Super Test"
         key = "corresponding_super"
 
-        expected = "ABCDEFGH"
+        expected = "ABCDEFGHIJKLMNOP"
 
         a = "A"
         b = "x"
         c = "C"
         d = "x"
         ef = "E"
+        
+        i = "I"
+        j = "x"
+        k = "K"
+        l = "x"
+        mn = "M"
         
         local_defs {
             this a [/]
@@ -584,11 +590,40 @@ site test {
             this gh = "H"
         }
         
+        more_defs {
+            i i [/]
+            j j = "J"
+            k k [/]
+            l l = "L"
+            mn mn {
+                super;
+                "N";
+            }
+            
+            op {
+                "O";
+                sub;
+            }
+            
+            i;
+            j;
+        }
+        
+        more_defs more_subs {
+            op op = "P"
+        }
+
         local_defs;
         local_defs.c;
         local_defs.d;
         local_defs.ef;
         local_subs.gh;  
+
+        more_defs;
+        more_defs.k;
+        more_defs.l;
+        more_defs.mn;
+        more_subs.op;  
     }       
 
 
@@ -6508,6 +6543,10 @@ x67 {=
             
         }
     }
+
+public refl {
+ this_domain.sites.count;
+}
 
     site_test {
         definition site_defs = site.defs
