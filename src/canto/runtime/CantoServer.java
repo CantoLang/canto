@@ -917,7 +917,10 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         respond(request, response);
     }
 
-    protected void respond(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /**
+	 * @throws ServletException
+	 */
+    protected void respond(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String contextPath = request.getContextPath();
         String ru = request.getRequestURI();
         
@@ -959,7 +962,10 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         continueResponse(site, request, response);
     }
         
-    private void continueResponse(final CantoSite site, final HttpServletRequest request, final HttpServletResponse response) {    
+    /**
+	 * @throws IOException
+	 */
+    private void continueResponse(final CantoSite site, final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         final AsyncContext async = request.startAsync(request, response); //Start Async Processing
         
         async.setTimeout(asyncTimeout);
@@ -1136,7 +1142,10 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         return status;
     }
 
-    public int respond(CantoSite site, String name, Request request, Session session, PrintWriter writer) throws Redirection {
+    /**
+	 * @throws IOException
+	 */
+    public int respond(CantoSite site, String name, Request request, Session session, PrintWriter writer) throws IOException, Redirection {
         
         Construction cantoRequest = createRequestArg(site, request);
         Construction cantoSession = createSessionArg(site, request.getSession());

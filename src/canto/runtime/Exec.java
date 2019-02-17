@@ -2,7 +2,7 @@
  * 
  * Exec.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -20,21 +20,21 @@ import java.util.Map;
 
 public class Exec {
 
-    public static Exec execFactory(String command, Object envObj, Object dirObj) {
+    public static Exec execFactory(String command, Map<String, String> envObj, Object dirObj) {
         if (dirObj == null) {
             if (envObj == null) {
                 return new Exec(command);
             } else {
-                return new Exec(command, (Map<String, String>) envObj);
+                return new Exec(command, envObj);
             }
         } else if (dirObj instanceof CantoFile) {
-            return new Exec(command, (Map<String, String>) envObj, (CantoFile) dirObj);
+            return new Exec(command, envObj, (CantoFile) dirObj);
 
         } else if (dirObj instanceof File) {
-            return new Exec(command, (Map<String, String>) envObj, (File) dirObj);
+            return new Exec(command, envObj, (File) dirObj);
             
         } else {
-            return new Exec(command, (Map<String, String>) envObj, new File(dirObj.toString()));
+            return new Exec(command, envObj, new File(dirObj.toString()));
         }
     }
     

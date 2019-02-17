@@ -2,7 +2,7 @@
  * 
  * Utils.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -77,7 +77,8 @@ public class Utils {
         }
     }
     
-    public static List<Object> append(List<Object> list, Object addition) {
+    @SuppressWarnings("unchecked")
+	public static List<Object> append(List<Object> list, Object addition) {
         List<Object> returnList = new ArrayList<Object>(list);
         if (addition instanceof Collection<?>) {
             returnList.addAll((Collection<? extends Object>) addition);

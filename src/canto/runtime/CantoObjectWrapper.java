@@ -2,7 +2,7 @@
  * 
  * CantoObjectWrapper.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -162,7 +162,7 @@ public class CantoObjectWrapper {
         }
         
         if (obj instanceof List) {
-        	return ((List) obj).toArray();
+            return ((List<?>) obj).toArray();
         } else if (obj instanceof Object[]) {
             return (Object[]) obj;
         } else {
