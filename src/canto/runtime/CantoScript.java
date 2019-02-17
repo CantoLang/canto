@@ -2,7 +2,7 @@
  * 
  * CantoScript.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -26,7 +26,7 @@ import canto.parser.ParseException;
 
 public class CantoScript {
     public static final String NAME = "CantoScript";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = Version.VERSION;
     public static final String NAME_AND_VERSION = NAME + " " + VERSION;
 
     protected Site mainScript = null;

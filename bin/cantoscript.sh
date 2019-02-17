@@ -64,9 +64,6 @@ then
     fi
 fi
 
-cd "$CANTO_HOME"
-CANTO_HOME=$PWD
-
 echo "CANTO_HOME is $CANTO_HOME"
 
 #####################################################
