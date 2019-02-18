@@ -2,7 +2,7 @@
  * 
  * CantoCompiler.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -181,7 +181,7 @@ public class CantoCompiler {
         long startTime = System.currentTimeMillis();
 
         String logFileName = null;
-        String inFilter = "*.can";
+        String inFilter = "*.canto";
 
         String cantoPath = null;
         String pageName = null;
@@ -189,7 +189,7 @@ public class CantoCompiler {
         boolean multiThreaded = false;
         boolean autoLoadCore = true;
 
-        System.out.println( "\ncantoc compiler for Canto\nCopyright (c) 2002-2013 by cantolang.org\n" );
+        System.out.println( "\ncantoc compiler for Canto\nCopyright (c) 2018-2019 by cantolang.org\n" );
         //System.out.println( "Definition caching " + ( Instantiation.cachingEnabled ? "enabled" : "disabled" ) );
         for ( int i = 0; i < args.length; i++ ) {
             if ( args[ i ].charAt( 0 ) == '-' && args[ i ].length() > 1 ) {

@@ -6523,6 +6523,7 @@ x67 {=
             [| <ul><li><b>base_url: </b> |]           this_server.base_url;
             [| </li><li><b>file_base: </b> |]         this_server.file_base;
             [| </li><li><b>nominal_address: </b> |]   this_server.nominal_address;
+            [| </li><li><b>version: </b> |]           this_server.version;
             [| </li></ul> |]
             
             [| <h4>here</h4>  |]
@@ -6535,7 +6536,7 @@ x67 {=
             [| </li></ul> |]
 
             [| <h4>environment variables</h4> |]
-            [| <ul><li><b>BENTO_HOME: </b> |]         $("BENTO_HOME");
+            [| <ul><li><b>CANTO_HOME: </b> |]         $("CANTO_HOME");
             [| </li><li><b>HOME: </b> |]              $("HOME");
             [| </li><li><b>HOSTNAME: </b> |]          $("HOSTNAME");
             [| </li><li><b>PATH: </b> |]              $("PATH");

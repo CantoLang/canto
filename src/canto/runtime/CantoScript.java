@@ -19,12 +19,12 @@ import canto.parser.ParseException;
 /**
  * Run a Canto program from the command line.
  *
- * CantoRunner compiles a Canto site, instantiates an object and outputs the result.
+ * CantoScript compiles a Canto script, instantiates main and outputs the result.
  *
  * @author Michael St. Hippolyte
  */
 
-public class CantoScript {
+public class CantoScript implements canto_processor {
     public static final String NAME = "CantoScript";
     public static final String VERSION = Version.VERSION;
     public static final String NAME_AND_VERSION = NAME + " " + VERSION;
@@ -248,6 +248,7 @@ public class CantoScript {
         param = initParams.get("verbose");
         if ("true".equalsIgnoreCase(param)) {
             SiteBuilder.verbosity = SiteBuilder.VERBOSE;
+            SiteBuilder.echoSystemOut = true;
         }
         
         logFileName = initParams.get("log");
@@ -330,7 +331,9 @@ public class CantoScript {
             System.err.println("Unable to instantiate script context: " + r.getMessage());
             return;
         }
-        
+
+        addExternalObject(scriptContext, this, "this_processor", "canto_processor");
+
         String expr = "main";
         expr = expr + "([";
         for (int i = 0; i < args.length; i++) {
@@ -367,30 +370,6 @@ public class CantoScript {
         }
     }
     
-    //
-    // CantoProcessor interface
-    //
-
-    /** Returns the name of this processor. **/
-    public String name() {
-        return NAME;
-    }
-
-    /** The highest Canto version number supported by this processor. **/
-    public String version() {
-        return VERSION;
-    }
-
-    /** Properties associated with this processor. **/
-    public Map<String, Object> props() {
-        return properties;
-    }
-
-
-    public String domain_type() {
-        return Name.SCRIPT;
-    }
-    
     /** Writes to log file and system out. **/
     static void slog(String msg) {
         slog(msg, false);
@@ -404,7 +383,7 @@ public class CantoScript {
     public boolean load(String cantoPath, boolean recurse) throws Exception {
         boolean loadError = false;
 
-        slog(NAME_AND_VERSION, true);
+        slog(NAME_AND_VERSION);
         slog("cantopath: " + cantoPath);
 
         SiteLoader.LoadOptions options = SiteLoader.getDefaultLoadOptions();
@@ -467,6 +446,83 @@ public class CantoScript {
         return parseResult;
     }
 
+    /** Creates an external definition for the specified object and adds the definition
+     *  to the core.  The external definition will have the specified name.  If supertype
+     *  is non-null, and a type by that name exists, the external definition will have
+     *  that type as its supertype.
+     */
+    public void addExternalObject(Context context, Object object, String name, String supertype) {
+        Site owner = mainScript;
+        Definition superdef = (supertype == null ? null : getDefinition(context, supertype));
+        Type st = (superdef == null ? null : superdef.getType());
+        Definition newDef = new ExternalDefinition(name, owner, owner, st, Definition.PUBLIC_ACCESS, Definition.GLOBAL, object, null);
+        owner.addDefinition(newDef, true);
+    }
+
+    private Definition getDefinition(Context context, String name) {
+        Definition def = null;
+        NameNode nameNode = (name.indexOf('.') > 0 ? new ComplexName(name) : new NameNode(name));
+        def = mainScript.getChildDefinition(nameNode, context);
+        if (def == null && sharedCore != null) {
+            def = sharedCore.getChildDefinition(nameNode, context);
+        }
+        return def;
+    }
+ 
+    //
+    // CantoProcessor interface
+    //
+
+    /** Returns the name of this processor. **/
+    public String name() {
+        return NAME;
+    }
+
+    /** The highest Canto version number supported by this processor. **/
+    public String version() {
+        return VERSION;
+    }
+
+    /** Properties associated with this processor. **/
+    public Map<String, Object> props() {
+        return properties;
+    }
+
+    public String domain_type() {
+        return Name.SCRIPT;
+    }
+    
+    /** Compile the Canto source files found at the locations specified in <code>cantopath</code>
+     *  and return a CantoDomain object.  If a location is a directory and <code>recursive</code>
+     *  is true, scan subdirectories recursively for Canto source files.  If <code>autoloadCore</code>
+     *  is true, and the core definitions required by the system cannot be found in the files
+     *  specified in <code>cantopath</code>, the processor will attempt to load the core
+     *  definitions automatically from a known source (e.g. from the same jar file that the
+     *  processor was loaded from).
+     */
+    public canto_domain compile(String siteName, String cantopath, boolean recursive, boolean autoloadCore) {
+        CantoSite site = new CantoSite(siteName, this);
+        site.load(cantopath, "*.canto", recursive, multithreaded, autoloadCore, sharedCore);
+        return site;
+    }
+
+    /** Compile Canto source code passed in as a string and return a canto_domain object.  If
+     *  <code>autoloadCore</code> is true, and the core definitions required by the system cannot
+     *  be found in the files specified in <code>cantopath</code>, the processor will attempt to
+     *  load the core definitions automatically from a known source (e.g. from the same jar file
+     *  that the processor was loaded from).
+     */
+    public canto_domain compile(String siteName, String cantotext, boolean autoloadCore) {
+        return null;
+    }
+
+    /** Compile Canto source code passed in as a string and merge the result into the specified
+     *  canto_domain.  If there is a fatal error in the code, the result is not merged and
+     *  a Redirection is thrown.
+     */
+    public void compile_into(canto_domain domain, String cantotext) throws Redirection {
+        ;
+    }
 
 }
 

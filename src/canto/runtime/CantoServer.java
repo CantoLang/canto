@@ -975,7 +975,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             public void run() {
                 try {
                     String qstring = (request.getQueryString() == null ? "" : "?" + request.getQueryString());
-                    log("Request: " + request.getRequestURI() + qstring);
+                    slog("Request: " + request.getRequestURI() + qstring);
                     int status = respond(site, request, response, servletContext);
                     if (status >= 400) {
                         response.sendError(status);
@@ -997,7 +997,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
                         slog("Request error");
                     }
                 } catch (Exception e) {
-                    log("Exception in response continuation: " + e.toString());
+                    slog("Exception in response continuation: " + e.toString());
                     e.printStackTrace();
                 }
             }

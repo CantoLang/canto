@@ -1,0 +1,5 @@
+script canto_info {
+    public main {
+        this_processor.version;
+    }
+}
