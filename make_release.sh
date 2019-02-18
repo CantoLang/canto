@@ -33,6 +33,7 @@ function make_jar() {
 }
 
 make_jar
-zip $CANTO_RELEASE_FILE lib install.sh
+rm $CANTO_RELEASE_FILE
+zip $CANTO_RELEASE_FILE lib/canto.jar lib/jetty-all.jar lib/servlet-api-3.1.jar install.sh
 
 
