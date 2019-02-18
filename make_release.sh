@@ -32,7 +32,7 @@ function make_jar() {
     jar cvf lib/canto.jar -C classes canto -C classes cantocore bin *.sh LICENSE README.md
 }
 
-#make_jar
-echo $CANTO_RELEASE_FILE
+make_jar
+zip $CANTO_RELEASE_FILE lib install.sh
 
 
