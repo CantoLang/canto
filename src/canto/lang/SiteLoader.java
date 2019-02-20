@@ -2,7 +2,7 @@
  * 
  * SiteLoader.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -63,6 +63,7 @@ public class SiteLoader {
     private String internalPath;
     private String sourceString;
     private boolean recursive;
+    private boolean internalRecursive;
     private boolean multiThreaded;
     private boolean loadCore;
     private boolean configurable;
@@ -189,6 +190,7 @@ public class SiteLoader {
 
         log("site name is " + (siteName == null ? "null; running default site" : siteName));
         
+        internalRecursive = recursive;
         if (configurable) {
             internalPath = null;
             try {
@@ -227,6 +229,7 @@ public class SiteLoader {
                 	if (siteName.equals(name)) {
                 		siteConfig = sc;
                 		internalPath = sc.cantopath();
+                        internalRecursive = sc.recursive();
                 	}
                 	site.setSiteConfig(sc);
                 } else {
@@ -237,6 +240,7 @@ public class SiteLoader {
                     	if (siteName.equals(name)) {
                     		siteConfig = sc;
                     		internalPath = sc.cantopath();
+                    		internalRecursive = sc.recursive();
                     		break;
                     	}
                     }
@@ -251,7 +255,7 @@ public class SiteLoader {
             if (internalPath != null && internalPath.length() > 0 && !internalPath.equals(externalPath)) {
                 String[] paths = parsePath(internalPath);
                 for (int i = 0; i < paths.length; i++) {
-                    loadFile(new File(paths[i]), filter, loaders, recursive, true);
+                    loadFile(new File(paths[i]), filter, loaders, internalRecursive, true);
                 }
 
                 int secondStepSize = loaders.size() - firstStepSize;
