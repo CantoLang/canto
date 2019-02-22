@@ -6,7 +6,7 @@ site test {
     extern java java.**
 
     copyright [|
-        Copyright &copy; 2018 by <a href="http://cantolang.org">cantolang.org</a><br>
+        Copyright &copy; 2018, 2019 by <a href="http://cantolang.org">cantolang.org</a><br>
     |]
 
     /------------------------------------------------------------------/
@@ -3027,7 +3027,12 @@ oct9 {=
         name = "Serialization Test"
         key = "serialization"
 
-        expected = "ABCDEFGH"
+        expected = "ABCDEFGHIJ"
+
+        serializable(str) ijobj(str) {
+            keep: i [/]
+            keep: j [/]
+        }
         
         keep: serializable obj1 {
             keep: a = "A"
@@ -3037,6 +3042,15 @@ oct9 {=
                 keep: f = "F"
                 keep: g = "G"
             }
+            ijobj iobj {
+                keep: i = "I"
+            }
+            ijobj jobj {
+                keep: j = "J"
+            }
+            
+            keep: ijobj[] ij = [ iobj, jobj ]
+
         }
              
         keep: serializable(str) obj2(str) {
@@ -3046,7 +3060,9 @@ oct9 {=
             keep: serializable(s) fg(s) {
                 keep: f [/]
                 keep: g [/]
-            }            
+            }
+
+            keep: ijobj[] ij = []            
         }
 
         obj3_nms[] = [ "h" ]
@@ -3069,9 +3085,17 @@ oct9 {=
         obj3(obj3_nms, obj3_vals);
         
         obj3.h;
+        
+        //obj2.ij[0].i;
+        //obj2.ij[1].j;
     }
 
-st {=
+public st {=
+        serializable(str) ijobj(str) {
+            keep: i [/]
+            keep: j [/]
+        }
+        
         keep: serializable obj1 {
             keep: a = "A"
             keep: bc[] = [ "B", "C" ]
@@ -3080,6 +3104,15 @@ st {=
                 keep: f = "F"
                 keep: g = "G"
             }
+            ijobj iobj {
+                keep: i = "I"
+            }
+            ijobj jobj {
+                keep: j = "J"
+            }
+            
+            keep: ijobj[] ij = [ iobj, jobj ]
+
         }
              
         keep: serializable(str) obj2(str) {
@@ -3089,23 +3122,67 @@ st {=
             keep: serializable(s) fg(s) {
                 keep: f [/]
                 keep: g [/]
-            }            
+            }
+
+            keep: ijobj[] ij = []            
         }
 
-    obj3_nms[] = [ "h" ]
-    obj3_vals[] = [ "H" ]
-    
-    keep: serializable(nms, vals) obj3(nms[], vals[]) {
-        keep: h [/]
-    } 
-    
-    obj1.serialize;
-    
-    obj3(obj3_nms, obj3_vals);
-    
-    obj3.h;
+        obj3_nms[] = [ "h" ]
+        obj3_vals[] = [ "H" ]
+        
+        keep: serializable(nms, vals) obj3(nms[], vals[]) {
+            keep: h [/]
+        }  
+
+        obj1.serialize;
+ /--------------       
+        obj2(obj1.serialize);
+
+        obj2.a;
+        obj2.bc[0];
+        obj2.bc[1];
+        obj2.de["d"];
+        obj2.de["e"];
+        obj2.fg.f;
+        obj2.fg.g;
+        
+        obj3(obj3_nms, obj3_vals);
+        
+        obj3.h;
+        
+        obj2.ij[0].i;
+        obj2.ij[1].j;
+--------------------/        
 =}  
-  
+
+public stij {
+        serializable(str) ijobj(str) {
+            keep: i [/]
+            keep: j [/]
+        }
+        
+        keep: serializable obj1 {
+            ijobj iobj {
+                keep: i = "I"
+            }
+            ijobj jobj {
+                keep: j = "J"
+            }
+            keep: ijobj[] ij = [ iobj, jobj ]
+        }
+             
+        keep: serializable(str) obj2(str) {
+            keep: ijobj[] ij = []            
+        }
+
+        obj1.serialize;
+        
+        obj2(obj1.serialize);
+        
+        obj2.ij[0].i;
+        obj2.ij[1].j;
+
+}  
 
 st2 {=
         serializable oa {

@@ -321,9 +321,9 @@ core {
                         ", ";
                     }
                     c;
-                    if (owner.defs[c] isa serializable) {
-                        ".keep";
-                    }
+                    //if (owner.defs[c] isa serializable) {
+                    //    ".keep";
+                    //}
                     ": ";
                     handle_def(owner.defs[c]);
                 }
@@ -333,9 +333,9 @@ core {
                         ", ";
                     }
                     df.name;
-                    if (df isa serializable) {
-                        ".keep";
-                    }
+                    //if (df isa serializable) {
+                    //    ".keep";
+                    //}
                     ": ";
                     handle_def(df);
                 }
