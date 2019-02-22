@@ -3,6 +3,16 @@
 # Execute a Canto script
 # 
 
+usage()
+{
+    echo
+    echo "Usage: cantoscript.sh scriptname [script_args]"
+    echo
+    exit 1
+}
+
+[ $# -gt 0 ] || usage
+
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
