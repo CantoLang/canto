@@ -3027,14 +3027,14 @@ oct9 {=
         name = "Serialization Test"
         key = "serialization"
 
-        expected = "ABCDEFGHIJ"
+        expected = "ABCDEFGHIJKL"
 
         serializable(str) ijobj(str) {
             keep: i [/]
             keep: j [/]
         }
         
-        keep: serializable obj1 {
+        serializable obj1 {
             keep: a = "A"
             keep: bc[] = [ "B", "C" ]
             keep: de{} = { "d": "D", "e": "E"  }
@@ -3050,72 +3050,16 @@ oct9 {=
             }
             
             keep: ijobj[] ij = [ iobj, jobj ]
-
-        }
-             
-        keep: serializable(str) obj2(str) {
-            keep: a [/]
-            keep: bc[] = []
-            keep: de{} = {}
-            keep: serializable(s) fg(s) {
-                keep: f [/]
-                keep: g [/]
-            }
-
-            keep: ijobj[] ij = []            
-        }
-
-        obj3_nms[] = [ "h" ]
-        obj3_vals[] = [ "H" ]
-        
-        keep: serializable(nms, vals) obj3(nms[], vals[]) {
-            keep: h [/]
-        }  
-
-        obj2(obj1.serialize);
-
-        obj2.a;
-        obj2.bc[0];
-        obj2.bc[1];
-        obj2.de["d"];
-        obj2.de["e"];
-        obj2.fg.f;
-        obj2.fg.g;
-        
-        obj3(obj3_nms, obj3_vals);
-        
-        obj3.h;
-        
-        //obj2.ij[0].i;
-        //obj2.ij[1].j;
-    }
-
-public st {=
-        serializable(str) ijobj(str) {
-            keep: i [/]
-            keep: j [/]
-        }
-        
-        keep: serializable obj1 {
-            keep: a = "A"
-            keep: bc[] = [ "B", "C" ]
-            keep: de{} = { "d": "D", "e": "E"  }
-            keep: serializable fg {
-                keep: f = "F"
-                keep: g = "G"
-            }
-            ijobj iobj {
-                keep: i = "I"
-            }
-            ijobj jobj {
-                keep: j = "J"
-            }
             
-            keep: ijobj[] ij = [ iobj, jobj ]
-
+            keep: serializable kl_parent {
+                keep: serializable kl {
+                    keep: k = "K"
+                    keep: l = "L"
+                }
+            }
         }
              
-        keep: serializable(str) obj2(str) {
+        serializable(str) obj2(str) {
             keep: a [/]
             keep: bc[] = []
             keep: de{} = {}
@@ -3125,6 +3069,13 @@ public st {=
             }
 
             keep: ijobj[] ij = []            
+
+            keep: serializable kl_parent {
+                keep: serializable kl {
+                    keep: k [/]
+                    keep: l [/]
+                }
+            }
         }
 
         obj3_nms[] = [ "h" ]
@@ -3134,8 +3085,6 @@ public st {=
             keep: h [/]
         }  
 
-        obj1.serialize;
- /--------------       
         obj2(obj1.serialize);
 
         obj2.a;
@@ -3152,8 +3101,11 @@ public st {=
         
         obj2.ij[0].i;
         obj2.ij[1].j;
---------------------/        
-=}  
+        
+        obj2.kl_parent.kl.k;
+        obj2.kl_parent.kl.l;
+    }
+
 
 public stij {
         serializable(str) ijobj(str) {
@@ -3161,7 +3113,7 @@ public stij {
             keep: j [/]
         }
         
-        keep: serializable obj1 {
+        serializable obj1 {
             ijobj iobj {
                 keep: i = "I"
             }
@@ -3171,7 +3123,7 @@ public stij {
             keep: ijobj[] ij = [ iobj, jobj ]
         }
              
-        keep: serializable(str) obj2(str) {
+        serializable(str) obj2(str) {
             keep: ijobj[] ij = []            
         }
 
@@ -3183,6 +3135,88 @@ public stij {
         obj2.ij[1].j;
 
 }  
+
+public stbc {
+        serializable obj1 {
+            keep: bc[] = [ "B", "C" ]
+        }
+             
+        serializable(str) obj2(str) {
+            keep: bc[] = []
+        }
+        obj1.serialize;
+        obj2(obj1.serialize);
+        obj2.bc[0];
+        obj2.bc[1];
+}
+
+public stk {
+        serializable obj1 {            
+            keep: serializable y {
+              keep: k = "K"
+            }
+        }
+        obj1.serialize;
+}
+
+public stm {
+        serializable obj1 {            
+            keep: serializable y {
+              keep: m = "M"
+            }
+        }
+        obj1.serialize;
+}
+
+public stkl {
+        serializable obj1 {
+            keep: serializable kl_parent {
+                keep: serializable kl {
+                    keep: l = "L"
+                    keep: m = "M"
+                }
+                keep: k = "K"
+            }
+        }
+             
+        serializable(str) obj2(str) {
+            keep: serializable kl_parent {
+                keep: serializable kl {
+                    keep: k [/]
+                    keep: l [/]
+                }
+            }
+        }
+        obj1.serialize;
+        obj2(obj1.serialize);
+        obj2.kl_parent.kl.k;
+        obj2.kl_parent.kl.l;
+}
+
+public dstij {
+        str = "{ ij.keep: [ { i: \"I\", j: \"\" }, { i: \"\", j: \"J\" } ] }"
+
+        serializable(str) obj2(str) {
+            keep: ijobj[] ij = []            
+        }
+
+        obj2(str);
+        
+        obj2.ij[0].i;
+        obj2.ij[1].j;
+
+}  
+
+public dstbc {
+        str = '{ bc: [ "B", "C" ] }'
+             
+        serializable(str) obj2(str) {
+            keep: bc[] = []
+        }
+        obj2(str);
+        obj2.bc[0];
+        obj2.bc[1];
+}
 
 st2 {=
         serializable oa {

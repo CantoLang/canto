@@ -2,7 +2,7 @@
  * 
  * AbstractType.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -71,6 +71,12 @@ abstract public class AbstractType extends NameNode implements Type {
 
     public boolean isInstance(Object obj, Context context) {
         String name = getName();
+        
+        // if we are checking for a definition, and this is a Definition,
+        // return true
+        //if ("definition".equals(name) && obj instanceof Definition) {
+        //    return true;
+        //}
         
         // if the object is an instantiation, first check for static type match
         if (obj instanceof Instantiation) {

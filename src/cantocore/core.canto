@@ -264,10 +264,7 @@ core {
             dynamic handle_def(definition d) {
                 t{} = d.get_table
 
-                if (d isa serializable) {
-                    d.serialize;
-
-                } else if (d.is_array) {
+                if (d.is_array) {
                     "[ ";
                     for item in d.get_array and int i from 0 {
                         if (i > 0) {
@@ -276,6 +273,8 @@ core {
 
                         if (item isa definition) {
                             handle_def(item);
+                        } else if (item isa serializable) {
+                            item.serialize;
                         } else {
                             "\"";
                             item;
@@ -294,6 +293,8 @@ core {
                         if (t[k] isa definition) {
                             ".keep: ";
                             handle_def(t[k]);
+                        } else if (t[k] isa serializable) {
+                            t[k].serialize;
                         } else if (t[k] isa number) {
                             t[k];                        
                         } else {
@@ -303,6 +304,9 @@ core {
                         }
                     }
                     " }";
+
+                } else if (d isa serializable) {
+                    d.serialize;
 
                 } else {                    
                     "\"";
@@ -321,9 +325,9 @@ core {
                         ", ";
                     }
                     c;
-                    //if (owner.defs[c] isa serializable) {
-                    //    ".keep";
-                    //}
+                    if (owner.defs[c] isa serializable) {
+                        ".keep";
+                    }
                     ": ";
                     handle_def(owner.defs[c]);
                 }
@@ -333,9 +337,9 @@ core {
                         ", ";
                     }
                     df.name;
-                    //if (df isa serializable) {
-                    //    ".keep";
-                    //}
+                    if (df isa serializable) {
+                        ".keep";
+                    }
                     ": ";
                     handle_def(df);
                 }
@@ -346,11 +350,28 @@ core {
      
      
     deserializable(str),(field_names[], field_values[]) {
+        dynamic deserialize_def(definition d) {
+            d;
+        }
+        
+        dynamic deserialize_construction(construction c) {
+            c;
+        }
+        
         if (str) {
             log("deserializing " + type + " from string \"" + str + "\"");    
             deserialized_obj{} = table.parse(str)
-            for k in deserialized_obj.keys {
-                here.put(k, deserialized_obj[k]);
+            for m in deserialized_obj.keys {
+                if (deserialized_obj[m] isa definition) {
+                    log("  ...caching " + m + " which is a def");
+                    here.put(m, deserialize_def(deserialized_obj[m]));
+                } else if (deserialized_obj[m] isa construction) {
+                    log("  ...caching " + m + " which is a construction");
+                    here.put(m, deserialize_construction(deserialized_obj[m]));
+                } else {       
+                    log("  ...caching " + m + " which is not a def");
+                    here.put(m, deserialized_obj[m]);
+                }
             }
         } else if (field_names) {
             log("deserializing " + type + " from field names and values");

@@ -2,7 +2,7 @@
  * 
  * Context.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -3559,9 +3559,9 @@ public class Context {
         if (entry.def == null) {
             throw new NullPointerException("attempt to push null definition onto context stack");
         }
-if (!(entry.def instanceof NamedDefinition)) {
- System.out.println("!!!pushing non-NamedDef " + entry.def.getFullName());
-}
+//if (!(entry.def instanceof NamedDefinition)) {
+// System.out.println("!!!pushing non-NamedDef " + entry.def.getFullName());
+//}
         if (entry.def instanceof Site) {
             // if we are pushing a site, share the cache from the
             // root entry

@@ -751,6 +751,9 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
+if (((NameNode)reference).getName().equals("m")) {
+  System.out.println("inst 755");
+}
            if (isParam || isParamChild) {
                return context.getParameterDefinition((NameNode) reference, isContainerParameter(context));
        

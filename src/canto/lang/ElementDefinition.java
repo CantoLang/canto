@@ -148,7 +148,7 @@ public class ElementDefinition extends AnonymousDefinition {
             }
         } else if (element instanceof ValueMap) {
             ValueMap map = (ValueMap) element;
-            return new ElementDefinition(this, map.get(name)); 
+            return new ElementDefinition(this, map.get(name.getName())); 
         }
         return null;
     }
