@@ -554,7 +554,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
             }
 
             // it's not a parameter, get the definition and return its type
-            Definition def = getDefinition(context, resolver);
+            Definition def = getDefinition(context, resolver, false);
             if (def != null) {
                 if (def instanceof ElementReference) {
                     try {
@@ -731,12 +731,12 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
     *  on behalf of another definition (an alias, for example).
     */
    public Definition getDefinition(Context context) {
-       return getDefinition(context, null);
+       return getDefinition(context, null, false);
    }
 
 
    /** Returns the definition associated with this instance in the given context. */
-   public Definition getDefinition(Context context, Definition resolver) {
+   public Definition getDefinition(Context context, Definition resolver, boolean localScope) {
        if (reference instanceof Definition) {
            return (Definition) reference;
 
@@ -758,7 +758,7 @@ if (((NameNode)reference).getName().equals("m")) {
                return context.getParameterDefinition((NameNode) reference, isContainerParameter(context));
        
            } else {
-               return (Definition) lookup((NameNode) reference, context, false, resolver);
+               return (Definition) lookup((NameNode) reference, context, false, resolver, localScope);
            }
        } catch (Redirection r) {
            return null;
@@ -849,7 +849,7 @@ if (((NameNode)reference).getName().equals("m")) {
      *  definition; if no definition is found, AbstractNode.UNDEFINED, which is a static
      *  instance of Object, is returned.
      */
-    private Object lookup(NameNode name, Context context, boolean generate, Definition resolver) throws Redirection {
+    private Object lookup(NameNode name, Context context, boolean generate, Definition resolver, boolean localScope) throws Redirection {
         if (context == null) {
             throw new Redirection(Redirection.STANDARD_ERROR, "Instantiation requires a context; none provided.");
         }
@@ -1040,7 +1040,7 @@ if (((NameNode)reference).getName().equals("m")) {
 //            }
             
             if (def == null) {
-                def = lookupDef(name, prefixIndexes, getParent(), owner, classDef, context, resolver);
+                def = lookupDef(name, prefixIndexes, getParent(), owner, classDef, context, resolver, localScope);
                 dereferencedIndexes = true;
                 if (def == null) {
                     return (generate ? UNDEFINED : null);
@@ -1148,7 +1148,7 @@ if (((NameNode)reference).getName().equals("m")) {
         return data;
     }
 
-    private static Definition lookupDef(NameNode name, List<Index> indexes, CantoNode parent, NamedDefinition owner, Definition classDef, Context context, Definition resolver) throws Redirection {
+    private static Definition lookupDef(NameNode name, List<Index> indexes, CantoNode parent, NamedDefinition owner, Definition classDef, Context context, Definition resolver, boolean localScope) throws Redirection {
         Definition def = null;
         ArgumentList args = name.getArguments();
         Definition defclass = context.peek().def;
@@ -1225,7 +1225,7 @@ if (((NameNode)reference).getName().equals("m")) {
             }
         }
 
-        if (def == null) {
+        if (def == null && localScope) {
 
             // remaining resolution sequence:
             //
@@ -1374,39 +1374,43 @@ if (((NameNode)reference).getName().equals("m")) {
                             container = ComplexDefinition.getComplexOwner(container.getOwner());
                         }
                     }
+                }
+                    
+                if (def == null) {
+
                     // classDef is the definition, if any, resolved statically by
                     // considering only the type hierarchy of the instance.
                     // If classDef is external, let other code handle it,
                     // because classDef might be a partial definition
-                    if (def == null && classDef != null && !classDef.isExternal()) {
+                    if (classDef != null && !classDef.isExternal()) {
                         // def will have most likely already been resolved
                         // to classDef by earlier code.  But it may have been
                         // missed. This could happen if the original instance's 
                         // owner is a NamedDefinition but not a ComplexDefinition
                         def = classDef;
-                    }
-                }
+
+                    } else {
     
-                // for the remaining possibilities, restore the name variable
-                // (if the name is multipart, name will have been set to just
-                // the first part), get the applicable definition table and call
-                // it.  The definition table will check all three possibilities
-                // (joined site, explicit and external) in the proper order.
-                if (def == null) {
-                    ComplexDefinition complexOwner = ComplexDefinition.getComplexOwner(owner);
-                    DefinitionTable definitions = complexOwner.getDefinitionTable();
-                    def = definitions.getDefinition(null, name);
-                    
-                    if (def == null) {
-                        
-                        def = owner.getSite().getAdoptedDefinition(null, name);
+                        // for the remaining possibilities, restore the name variable
+                        // (if the name is multipart, name will have been set to just
+                        // the first part), get the applicable definition table and call
+                        // it.  The definition table will check all three possibilities
+                        // (joined site, explicit and external) in the proper order.
+                        ComplexDefinition complexOwner = ComplexDefinition.getComplexOwner(owner);
+                        DefinitionTable definitions = complexOwner.getDefinitionTable();
+                        def = definitions.getDefinition(null, name);
                         
                         if (def == null) {
-
-                            Core core = owner.getSite().getCore();
-                            if (core != null) {
-                                DefinitionTable coreDefinitions = core.getDefinitionTable();
-                                def = coreDefinitions.getDefinition(null, name);
+                            
+                            def = owner.getSite().getAdoptedDefinition(null, name);
+                            
+                            if (def == null) {
+    
+                                Core core = owner.getSite().getCore();
+                                if (core != null) {
+                                    DefinitionTable coreDefinitions = core.getDefinitionTable();
+                                    def = coreDefinitions.getDefinition(null, name);
+                                }
                             }
                         }
                     }
@@ -1778,7 +1782,7 @@ if (((NameNode)reference).getName().equals("m")) {
                 data = instantiate(context, definition);
 
             } else {
-                data = lookup(nameNode, context, true, null);
+                data = lookup(nameNode, context, true, null, false);
             }
 
         } else if (reference instanceof Definition) {

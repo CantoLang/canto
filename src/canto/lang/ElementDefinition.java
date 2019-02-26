@@ -184,7 +184,7 @@ public class ElementDefinition extends AnonymousDefinition {
                             ParameterList aliasParams = childDef.getParamsForArgs(aliasArgs, resolutionContext);
                             resolutionContext.push(childDef, aliasParams, aliasArgs, false);
                             try {
-                                Definition aliasDef = aliasInstance.getDefinition(resolutionContext, this);
+                                Definition aliasDef = aliasInstance.getDefinition(resolutionContext, this, false);
                                 if (aliasDef != null) {
                                     child = aliasDef.getDefInstance(aliasArgs, aliasInstance.getIndexes());
                                 }

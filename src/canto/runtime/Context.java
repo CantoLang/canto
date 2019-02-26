@@ -920,7 +920,7 @@ public class Context {
                         if (definition.isParamAlias()) {
                             aliasInstance = aliasInstance.getUltimateInstance(this);
                         }
-                        aliasDef = aliasInstance.getDefinition(this, definition);
+                        aliasDef = aliasInstance.getDefinition(this, definition, false);
                         //if (aliasDef != null) {
                         //    return construct(aliasDef, aliasInstance.getArguments());
                         //}
@@ -2745,7 +2745,7 @@ public class Context {
             
                     ArgumentList aliasArgs = aliasInstance.getArguments();
                     List<Index> aliasIndexes = aliasInstance.getIndexes();
-                    Definition aliasDef = aliasInstance.getDefinition(this, def);  // def or nextDef?
+                    Definition aliasDef = aliasInstance.getDefinition(this, def, false);  // def or nextDef?
                     if (aliasDef == null) {
                         break;
                     }

@@ -910,7 +910,7 @@ public class NamedDefinition extends AnonymousDefinition {
     public CollectionDefinition getCollectionDefinition(Context context, ArgumentList args) throws Redirection {
         if (isAlias()) {
             Instantiation aliasInstance = getAliasInstance();
-            Definition aliasDef = aliasInstance.getDefinition(context, this);
+            Definition aliasDef = aliasInstance.getDefinition(context, this, false);
             if (aliasDef != null && aliasDef.isCollection()) {
                 return aliasDef.getCollectionDefinition(context, aliasInstance.getArguments());
             }            
@@ -1093,7 +1093,7 @@ public class NamedDefinition extends AnonymousDefinition {
                 if (aliasInstance == null) {
                     break;
                 }
-                Definition aliasDef = aliasInstance.getDefinition(context, this);  // def or nextDef?
+                Definition aliasDef = aliasInstance.getDefinition(context, this, false);  // def or nextDef?
                 if (aliasDef == null) {
                     break;
                 }
@@ -1448,7 +1448,7 @@ public class NamedDefinition extends AnonymousDefinition {
                     NameNode name = instance.getReferenceName();
                     // avoid regression
                     if (name != null && !node.equals(name) && !hasChildDefinition(name.getName()) && (resolver == null || !resolver.getNameNode().equals(name))) {
-                        Definition contentDef = instance.getDefinition(context, this);
+                        Definition contentDef = instance.getDefinition(context, this, false);
                         if (contentDef == null || contentDef == this) {
                             Type contentType = instance.getType(context, generate);
                             if (contentType != null) {
@@ -1971,7 +1971,7 @@ public class NamedDefinition extends AnonymousDefinition {
                 Construction construction = ((Construction) contents).getUltimateConstruction(context);
             
                 if (construction instanceof Instantiation) {
-                    Definition contentDef = ((Instantiation) construction).getDefinition(context, this);
+                    Definition contentDef = ((Instantiation) construction).getDefinition(context, this, false);
                     ArgumentList contentArgs = null;
                     ParameterList contentParams = null;
     
