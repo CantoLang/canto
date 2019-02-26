@@ -1225,7 +1225,7 @@ if (((NameNode)reference).getName().equals("m")) {
             }
         }
 
-        if (def == null && localScope) {
+        if (def == null && !localScope) {
 
             // remaining resolution sequence:
             //
