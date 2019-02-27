@@ -1375,43 +1375,43 @@ if (((NameNode)reference).getName().equals("m")) {
                         }
                     }
                 }
-                    
+            }
+        }
+
+        if (def == null) {
+
+            // classDef is the definition, if any, resolved statically by
+            // considering only the type hierarchy of the instance.
+            // If classDef is external, let other code handle it,
+            // because classDef might be a partial definition
+            if (classDef != null && !classDef.isExternal()) {
+                // def will have most likely already been resolved
+                // to classDef by earlier code.  But it may have been
+                // missed. This could happen if the original instance's 
+                // owner is a NamedDefinition but not a ComplexDefinition
+                def = classDef;
+
+            } else {
+
+                // for the remaining possibilities, restore the name variable
+                // (if the name is multipart, name will have been set to just
+                // the first part), get the applicable definition table and call
+                // it.  The definition table will check all three possibilities
+                // (joined site, explicit and external) in the proper order.
+                ComplexDefinition complexOwner = ComplexDefinition.getComplexOwner(owner);
+                DefinitionTable definitions = complexOwner.getDefinitionTable();
+                def = definitions.getDefinition(null, name);
+                
                 if (def == null) {
+                    
+                    def = owner.getSite().getAdoptedDefinition(null, name);
+                    
+                    if (def == null) {
 
-                    // classDef is the definition, if any, resolved statically by
-                    // considering only the type hierarchy of the instance.
-                    // If classDef is external, let other code handle it,
-                    // because classDef might be a partial definition
-                    if (classDef != null && !classDef.isExternal()) {
-                        // def will have most likely already been resolved
-                        // to classDef by earlier code.  But it may have been
-                        // missed. This could happen if the original instance's 
-                        // owner is a NamedDefinition but not a ComplexDefinition
-                        def = classDef;
-
-                    } else {
-    
-                        // for the remaining possibilities, restore the name variable
-                        // (if the name is multipart, name will have been set to just
-                        // the first part), get the applicable definition table and call
-                        // it.  The definition table will check all three possibilities
-                        // (joined site, explicit and external) in the proper order.
-                        ComplexDefinition complexOwner = ComplexDefinition.getComplexOwner(owner);
-                        DefinitionTable definitions = complexOwner.getDefinitionTable();
-                        def = definitions.getDefinition(null, name);
-                        
-                        if (def == null) {
-                            
-                            def = owner.getSite().getAdoptedDefinition(null, name);
-                            
-                            if (def == null) {
-    
-                                Core core = owner.getSite().getCore();
-                                if (core != null) {
-                                    DefinitionTable coreDefinitions = core.getDefinitionTable();
-                                    def = coreDefinitions.getDefinition(null, name);
-                                }
-                            }
+                        Core core = owner.getSite().getCore();
+                        if (core != null) {
+                            DefinitionTable coreDefinitions = core.getDefinitionTable();
+                            def = coreDefinitions.getDefinition(null, name);
                         }
                     }
                 }

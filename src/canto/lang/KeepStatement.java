@@ -180,7 +180,7 @@ public class KeepStatement extends CantoStatement {
             }
         }
         for (int i = 0; i < names.length; i++) {
-            resolvedInstances[i] = new ResolvedInstance(instances[i], context, false);
+            resolvedInstances[i] = new ResolvedInstance(instances[i], context, false, true);
         }
         if (addAs && as.getName() != Name.THIS) {
             instances[names.length] = new Instantiation(as);
@@ -216,7 +216,7 @@ public class KeepStatement extends CantoStatement {
             }
         }
         for (int i = 0; i < names.length; i++) {
-            defs[i] = instances[i].getDefinition(context);
+            defs[i] = instances[i].getDefinition(context, null, true);
             if (defs[i] == null) {
                 throw new Redirection(Redirection.STANDARD_ERROR, "Undefined name in keep statement: " + instances[i].getName());
             }

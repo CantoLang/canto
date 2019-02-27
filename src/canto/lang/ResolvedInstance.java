@@ -23,6 +23,7 @@ public class ResolvedInstance extends Instantiation implements Value {
 
     private Context resolutionContext;
     private boolean sharedContext = false;
+    private boolean localScope = false;
     private Object data;
     private Definition def;
 
@@ -109,6 +110,11 @@ public class ResolvedInstance extends Instantiation implements Value {
     }
 
 
+    public ResolvedInstance(Instantiation instance, Context context, boolean shared, boolean localScope) {
+        this(instance, context, shared);
+        this.localScope = localScope;
+    }
+        
     public ResolvedInstance(Instantiation instance, Context context, boolean shared) {
         super();
 
@@ -235,7 +241,7 @@ public class ResolvedInstance extends Instantiation implements Value {
     public Definition getDefinition(Context context) {
         //resolutionContext.validateSize();
         if (def == null) {
-            return super.getDefinition(resolutionContext);
+            return super.getDefinition(resolutionContext, null, localScope);
         } else {
             return def;
         }
@@ -277,7 +283,7 @@ public class ResolvedInstance extends Instantiation implements Value {
     public Definition getDefinition() {
         //resolutionContext.validateSize();
         if (def == null) {
-            def = super.getDefinition(resolutionContext);
+            def = super.getDefinition(resolutionContext, null, localScope);
         }
         return def;
     }

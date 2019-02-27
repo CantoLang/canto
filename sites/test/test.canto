@@ -3162,7 +3162,9 @@ public stk {
 public stm {
         serializable obj1 {            
             keep: serializable y {
-              keep: m = "M"
+                keep: serializable z {
+                    keep: m = "M"
+                }
             }
         }
         obj1.serialize;
@@ -3217,6 +3219,20 @@ public dstbc {
         obj2.bc[0];
         obj2.bc[1];
 }
+
+public dstm {
+    str = "{ y.keep: { z.keep: { m: \"M\" } } }"
+    serializable(str) obj2(str) {            
+        keep: serializable y {
+            keep: serializable z { 
+                keep: m [/]
+            }
+        }
+    }
+    obj2(str);
+    obj2.y.z.m;
+}
+    
 
 st2 {=
         serializable oa {
