@@ -1139,11 +1139,34 @@ public class NamedDefinition extends AnonymousDefinition {
         }
 
         if (lastNode.getName().equals(Name.KEYS)) {
-            Definition keysDef = new KeysDefinition(this, context);
-            if (generate) {
-                return keysDef.instantiate(args, indexes, context);
+            if (n <= 1) {
+                Definition keysDef = new KeysDefinition(this, context);
+                if (generate) {
+                    return keysDef.instantiate(args, indexes, context);
+                } else {
+                    return keysDef.getDefInstance(null, indexes);
+                }
             } else {
-                return keysDef.getDefInstance(null, indexes);
+                NameNode mapNode = new ComplexName(node, 0, n - 1);
+                DefinitionInstance defInstance = (DefinitionInstance) getChild(mapNode, args, indexes, parentArgs, context, false, trySuper, parentObj, resolver);
+                Definition mapDef = defInstance.def;
+                if (mapDef == null) {
+                    return (generate ? UNDEFINED : null);
+                } else if (mapDef instanceof DynamicObject) {
+                    mapDef = (Definition) ((DynamicObject) mapDef).initForContext(context, args, indexes);
+                }
+
+                CollectionDefinition collectionDef = mapDef.getCollectionDefinition(context, args);
+                if (collectionDef != null) {
+                    return collectionDef.getChild(lastNode, args, indexes, parentArgs, context, generate, trySuper, parentObj, null);
+                }
+
+                Definition keysDef = new KeysDefinition(mapDef, context);
+                if (generate) {
+                    return keysDef.instantiate(args, indexes, context);
+                } else {
+                    return keysDef.getDefInstance(null, indexes);
+                }
             }
             
         } else if (lastNode.getName() == Name.COUNT) {

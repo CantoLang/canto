@@ -225,7 +225,7 @@ core {
 
     /** Interface for owners of child definitions. **/
     definition_owner {
-        definition[] defs = [&]
+        definition{} defs = [&]
         definition[] children_of_type(type_name) = [&]
         definition[] descendants_of_type(type_name) = [&]
     }
@@ -350,26 +350,21 @@ core {
      
      
     deserializable(str),(field_names[], field_values[]) {
-        dynamic deserialize_def(definition d) {
-            d;
+        dynamic deserialize_def(definition d, obj) {
+ 
         }
         
-        dynamic deserialize_construction(construction c) {
-            c;
-        }
-        
+        definition{} this_defs = owner.defs
+       
         if (str) {
             log("deserializing " + type + " from string \"" + str + "\"");    
             deserialized_obj{} = table.parse(str)
             for m in deserialized_obj.keys {
-                if (deserialized_obj[m] isa definition) {
-                    log("  ...caching " + m + " which is a def");
-                    here.put(m, deserialize_def(deserialized_obj[m]));
-                } else if (deserialized_obj[m] isa construction) {
-                    log("  ...caching " + m + " which is a construction");
-                    here.put(m, deserialize_construction(deserialized_obj[m]));
+                if (m in this_defs.keys && this_defs[m] isa deserializable) {
+                    log("  ...caching " + m + " which is a deserializable");
+                    here.put(m, deserialize_def(this_defs[m], deserialized_obj[m]));
                 } else {       
-                    log("  ...caching " + m + " which is not a def");
+                    log("  ...caching " + m + " which is not a deserializable");
                     here.put(m, deserialized_obj[m]);
                 }
             }

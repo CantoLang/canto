@@ -3232,7 +3232,15 @@ public dstm {
     obj2(str);
     obj2.y.z.m;
 }
-    
+
+public dsta {
+    str = "{ a: \"A\" }"
+    serializable(str) obj2(str) {            
+        keep: a [/]
+    }
+    obj2(str);
+    obj2.a;
+}    
 
 st2 {=
         serializable oa {
