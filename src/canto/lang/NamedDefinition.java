@@ -2,7 +2,7 @@
  * 
  * NamedDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -201,14 +201,6 @@ public class NamedDefinition extends AnonymousDefinition {
         return identity;
     }
     
-
-    /** Set this node as the owner for a generated node. */
-    public void initNode(AbstractNode node) {
-        node.setOwner(getOwner());
-        node.resolve();
-    }
-  
-   
     public boolean isOwner() {
         return ownerOfDefs;
     }
@@ -216,7 +208,6 @@ public class NamedDefinition extends AnonymousDefinition {
     protected void setIsOwner(boolean flag) {
         ownerOfDefs = flag;
     }
-
    
     /** Returns true if this definition represents a collection. */
     public boolean isCollection() {

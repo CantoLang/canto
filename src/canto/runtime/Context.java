@@ -510,12 +510,12 @@ public class Context {
         return null;
     }
 
-    private Object constructSuper(NamedDefinition def, ArgumentList args, NamedDefinition instantiatedDef) throws Redirection {
+    private Object constructSuper(Definition def, ArgumentList args, Definition instantiatedDef) throws Redirection {
         return constructSuper(def, args, instantiatedDef, null);
     }
 
     
-    private Object constructSuper(NamedDefinition def, ArgumentList args, NamedDefinition instantiatedDef, LinkedList<Definition> nextList) throws Redirection {
+    private Object constructSuper(Definition def, ArgumentList args, Definition instantiatedDef, LinkedList<Definition> nextList) throws Redirection {
         Object data = null;
         boolean pushed = false;
         boolean hasMore = (nextList != null && nextList.size() > 0);
@@ -577,7 +577,7 @@ public class Context {
                     if (data instanceof Value) {
                         data = ((Value) data).getValue();
                     } else if (data instanceof AbstractNode) {
-                        instantiatedDef.initNode((AbstractNode) data);
+                        ((AbstractNode) instantiatedDef).initNode((AbstractNode) data);
                     }
 
                 } else if (numConstructions > 1) {
@@ -651,7 +651,7 @@ public class Context {
         return data;
     }
 
-    public Object constructSub(NamedDefinition def, NamedDefinition instantiatedDef) throws Redirection {
+    public Object constructSub(Definition def, Definition instantiatedDef) throws Redirection {
         Object data = getLocalData("sub", null, null); // getData(null, "sub", null, null, null);
         if (data != null) {
             return data;
@@ -689,7 +689,7 @@ public class Context {
     }
     
 
-    private Object constructSub(Definition def, NamedDefinition instantiatedDef, LinkedList<Definition> nextList) throws Redirection {
+    private Object constructSub(Definition def, Definition instantiatedDef, LinkedList<Definition> nextList) throws Redirection {
         Object data = null;    
         List<Construction> constructions = def.getConstructions(this);
         boolean hasMoreNext = (nextList != null && nextList.size() > 0);
@@ -755,7 +755,7 @@ public class Context {
                     if (data instanceof Value) {
                         data = ((Value) data).getValue();
                     } else if (data instanceof AbstractNode) {
-                        instantiatedDef.initNode((AbstractNode) data);
+                        ((AbstractNode) instantiatedDef).initNode((AbstractNode) data);
                     }
 
 
@@ -3613,7 +3613,8 @@ public class Context {
                         String keepKeepKey = scopedef.getName() + ".keep";
                         String globalKeepKeepKey = makeGlobalKey(scopedef.getFullNameInContext(this)) + ".keep";
                         while (prev != null) {
-                            Map<String, Object> keepKeep = (Map<String, Object>) prev.get(keepKeepKey, globalKeepKeepKey, null, true);
+                            @SuppressWarnings("unchecked")
+							Map<String, Object> keepKeep = (Map<String, Object>) prev.get(keepKeepKey, globalKeepKeepKey, null, true);
                             if (keepKeep != null) {
                                 topEntry.addKeepKeep(keepKeep);
                                 break;
@@ -3646,9 +3647,10 @@ public class Context {
                     String keepKeepKey = scopedef.getName() + ".keep";
                     String globalKeepKeepKey = makeGlobalKey(scopedef.getFullNameInContext(this)) + ".keep";
                     while (prev != null) {
-                        Object keepKeep = prev.get(keepKeepKey, globalKeepKeepKey, null, true);
+                    	@SuppressWarnings("unchecked")
+						Map<String, Object> keepKeep = (Map<String, Object>) prev.get(keepKeepKey, globalKeepKeepKey, null, true);
                         if (keepKeep != null) {
-                            topEntry.addKeepKeep((Map<String, Object>) keepKeep);
+                            topEntry.addKeepKeep( keepKeep);
                             break;
                         }
                         prev = prev.link;
@@ -4139,7 +4141,8 @@ if (unpushedEntries == null) {
         return context;
     }
   
-    private static Object getKeepdData(Map<String, Object> cache, String key) {
+    @SuppressWarnings("unchecked")
+	private static Object getKeepdData(Map<String, Object> cache, String key) {
         Object data = null;
 
         data = cache.get(key);
@@ -5237,9 +5240,11 @@ if (unpushedEntries == null) {
                 if (ix > 0) {
                     String prefix = key.substring(0, ix);
                     String childKey = key.substring(ix + 1);
-                    Map<String, Object> parentKeepKeep = (Map<String, Object>) cache.get(prefix + ".keep");
+                    @SuppressWarnings("unchecked")
+					Map<String, Object> parentKeepKeep = (Map<String, Object>) cache.get(prefix + ".keep");
                     if (parentKeepKeep != null) {
-                        Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
+                        @SuppressWarnings("unchecked")
+						Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
                         if (parentKeepMap != null) {
                             localPut(parentKeepKeep, parentKeepMap, childKey, holder, false);
                         }
@@ -5329,7 +5334,8 @@ if (unpushedEntries == null) {
             return cache;
         }
 
-        Map<String, Object> getKeepKeep() {
+        @SuppressWarnings("unchecked")
+		Map<String, Object> getKeepKeep() {
             if (keepMap == null) {
                 keepMap = newHashMap(Pointer.class);
             }
@@ -5362,7 +5368,7 @@ if (unpushedEntries == null) {
                 if (containerEntry != null) {
                     String key = def.getName() + ".keep";
                     Map<String, Object> containerKeep = containerEntry.getKeep();
-                    Map<String, Object> containerKeepKeep = (Map<String, Object>) containerKeep.get(key);
+					Map<String, Object> containerKeepKeep = (Map<String, Object>) containerKeep.get(key);
                     if (containerKeepKeep == null) {
                         keepKeep.put("from", keepMap);
                         if (def.getDurability() != Definition.DYNAMIC) {
@@ -5374,7 +5380,8 @@ if (unpushedEntries == null) {
             return keepKeep;
         }
 
-        void addKeepKeep(Map<String, Object> cache) {
+        @SuppressWarnings("unchecked")
+		void addKeepKeep(Map<String, Object> cache) {
             if (keepKeep == null) {
                 keepKeep = newHashMap(Object.class);
             }

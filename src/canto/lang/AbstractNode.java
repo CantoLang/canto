@@ -2,7 +2,7 @@
  * 
  * AbstractNode.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -125,6 +125,12 @@ abstract public class AbstractNode extends CantoCompilerVisitDestination impleme
     /** Resolves any references.  Assumes that the owner of this node has been set. **/
     public void resolve() {}
     
+    /** Set this node as the owner for a generated node. */
+    public void initNode(AbstractNode node) {
+        node.setOwner(getOwner());
+        node.resolve();
+    }
+
     /** Gets the name of this node.  The default name is just the class name, but nodes types that have
      *  meaningful names should override this to return the name.
      */

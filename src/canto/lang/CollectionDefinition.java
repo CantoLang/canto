@@ -2,7 +2,7 @@
  * 
  * CollectionDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -417,7 +417,8 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
             return collection;
 
         } else if (collection instanceof Map<?,?>) {
-            Map<String, Object> map = new InstantiatedMap((Map<String, Object>) collection, this, context);
+            @SuppressWarnings("unchecked")
+			Map<String, Object> map = new InstantiatedMap(((Map<String, Object>) collection), this, context);
             return map;
 
         } else {
@@ -469,7 +470,12 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         if (element == null) {
             return null;
         } else if (element instanceof Definition) {
-            return (Definition) element;
+            Definition def = (Definition) element;
+        	if (getElementType().isTypeOf("definition")) {
+                return new AliasedDefinition((NamedDefinition) def, def.getNameNode());
+            } else {
+                return def;
+            }
         } else if (element instanceof AbstractNode) {
             return new ElementDefinition(this, element);
         } else if (element instanceof Holder) {

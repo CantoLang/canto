@@ -2,7 +2,7 @@
  * 
  * AliasedDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -19,9 +19,9 @@ import canto.runtime.*;
 */
 
 public class AliasedDefinition extends ExternalDefinition {
-    NamedDefinition def;
+    AnonymousDefinition def;
 
-    public AliasedDefinition(NamedDefinition def, NameNode alias) {
+    public AliasedDefinition(AnonymousDefinition def, NameNode alias) {
         super(def.getNameNode(), def.getParent(), def.getOwner(), null, Definition.SITE_ACCESS, Definition.IN_CONTEXT, def, null);
         this.def = def;
         setName(alias);
@@ -105,7 +105,7 @@ public class AliasedDefinition extends ExternalDefinition {
     }
     
     DefinitionTable getDefinitionTable() {
-        return def.getDefinitionTable();
+        return ((AnonymousDefinition) def).getDefinitionTable();
     }
 
     /** Create the type corresponding to this definition.  This is a copy of  

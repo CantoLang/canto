@@ -360,7 +360,7 @@ core {
             log("deserializing " + type + " from string \"" + str + "\"");    
             deserialized_obj{} = table.parse(str)
             for m in deserialized_obj.keys {
-                if (m in this_defs.keys && this_defs[m] isa deserializable) {
+                if (m in this_defs.keys && this_defs[m].is_a("deserializable")) {
                     log("  ...caching " + m + " which is a deserializable");
                     here.put(m, deserialize_def(this_defs[m], deserialized_obj[m]));
                 } else {       
