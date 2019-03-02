@@ -374,6 +374,9 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         return new ElementReference(instance, indexes);
     }
 
+    /**
+     * @throws Redirection  
+     */
     protected Object instantiateCollectionObject(Context context, Object collection) throws Redirection {
         //Type st = getSuper();
         // this seems to be unnecessary
@@ -470,11 +473,11 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         if (element == null) {
             return null;
         } else if (element instanceof Definition) {
-            Definition def = (Definition) element;
         	if (getElementType().isTypeOf("definition")) {
-                return new AliasedDefinition((NamedDefinition) def, def.getNameNode());
+        	    Definition def = (Definition) element;
+                return new ElementDefinition(this, new AliasedDefinition(def, def.getNameNode()));
             } else {
-                return def;
+                return (Definition) element;
             }
         } else if (element instanceof AbstractNode) {
             return new ElementDefinition(this, element);

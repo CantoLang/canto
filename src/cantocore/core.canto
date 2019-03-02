@@ -351,7 +351,7 @@ core {
      
     deserializable(str),(field_names[], field_values[]) {
         dynamic deserialize_def(definition d, obj) {
- 
+            log("  ...deserializing " + d.name + ", passed object is " + obj);
         }
         
         definition{} this_defs = owner.defs

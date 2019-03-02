@@ -334,6 +334,8 @@ public class ExternalDefinition extends ComplexDefinition {
             if (clazz == null) {
                 clazz = Definition.class;
             }
+        } else if (clazz == Void.class || clazz == Void.TYPE) {
+            clazz = Object.class;
         }
         return clazz;
     }

@@ -19,10 +19,10 @@ import canto.runtime.*;
 */
 
 public class AliasedDefinition extends ExternalDefinition {
-    AnonymousDefinition def;
+    Definition def;
 
-    public AliasedDefinition(AnonymousDefinition def, NameNode alias) {
-        super(def.getNameNode(), def.getParent(), def.getOwner(), null, Definition.SITE_ACCESS, Definition.IN_CONTEXT, def, null);
+    public AliasedDefinition(Definition def, NameNode alias) {
+        super(def.getNameNode(), ((AbstractNode) def).getParent(), def.getOwner(), null, Definition.SITE_ACCESS, Definition.IN_CONTEXT, def, null);
         this.def = def;
         setName(alias);
         Site site = def.getSite();
