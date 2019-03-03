@@ -2,14 +2,13 @@
  * 
  * NameNode.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
 package canto.lang;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * NameNode is the base class of Nodes which represent names (including type

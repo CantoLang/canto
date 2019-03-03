@@ -351,7 +351,20 @@ core {
      
     deserializable(str),(field_names[], field_values[]) {
         dynamic deserialize_def(definition d, obj) {
-            log("  ...deserializing " + d.name + ", passed object is " + obj);
+            t{} = d.get_table
+
+            if (array.is_array(obj)) {
+                log("  ...deserializing " + d.name + ", passed object is an array");
+                for item in obj {
+                    deserialize_def(item.def, item);    
+                }
+
+            } else if (table.is_table(obj)) {
+                log("  ...deserializing " + d.name + ", passed object is a table");
+                for k in t.keys {
+                    deserialize_def(t[k].def, t[k]);
+                }
+            }
         }
         
         definition{} this_defs = owner.defs

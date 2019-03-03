@@ -2,7 +2,7 @@
  * 
  * AnonymousDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -72,7 +72,11 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
         }
     }
 
-    // methods defined by Canto definition  
+    // methods defined by Canto definition
+    
+    public Definition def() {
+        return this;
+    }
 
     /** Returns true if this definition equals or is a subdefinition of the
      *  passed type.
@@ -946,7 +950,9 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
         return data;
     }
 
-    /** Get a child of this definition as a definition. This only works for named definitions. */
+    /** Get a child of this definition as a definition. This only works for named definitions. 
+     *  @throws Redirection 
+     */
     public Definition getDefinitionChild(NameNode childName, Context context, ArgumentList args) throws Redirection {
         return null;
     }

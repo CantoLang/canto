@@ -2,7 +2,7 @@
  * 
  * Array.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import canto.lang.Core;
+import canto.lang.Construction;
 import canto.lang.Definition;
 import canto.lang.CantoArray;
 import canto.lang.Initializer;
@@ -21,7 +22,6 @@ import canto.lang.Resolver;
 import canto.lang.Site;
 import canto.lang.Validater;
 import canto.parser.CantoParser;
-import canto.parser.ParseException;
 import canto.parser.ParsedCollectionDefinition;
 
 import java.io.StringReader;
@@ -34,6 +34,16 @@ import java.io.StringReader;
  */
 
 public class Array {
+
+    public static boolean is_array(Context context, Object obj) {
+        if (obj instanceof Definition) {
+            return ((Definition) obj).is_array();
+        } else if (obj instanceof Construction) {
+            return ((Construction) obj).getType(context, false).isArray();
+        } else {
+            return (obj.getClass().isArray() || obj instanceof List<?>);
+        }
+    }
     
     public static Object get(Object arrayObject, int index) {
         if (arrayObject == null) {
@@ -103,6 +113,7 @@ public class Array {
             int size = java.lang.reflect.Array.getLength(arrayObject);
             return Arrays.copyOf((Object[]) arrayObject, size);
         } else if (arrayObject instanceof List<?>) {
+            @SuppressWarnings("unchecked")
             List<Object> list = (List<Object>) arrayObject;
             return new ArrayList<Object>(list);
         } else {
@@ -135,7 +146,7 @@ public class Array {
         }
     }
     
-    public static Object parse(Context context, String str) throws ParseException, Redirection {
+    public static Object parse(Context context, String str) throws Redirection {
         try {
             CantoParser parser = new CantoParser(new StringReader("parse[]=" + str));
             Definition owner = context.getDefiningDef();

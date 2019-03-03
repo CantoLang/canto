@@ -2,7 +2,7 @@
  * 
  * Table.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -12,6 +12,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import canto.lang.Construction;
 import canto.lang.Core;
 import canto.lang.Definition;
 import canto.lang.Initializer;
@@ -20,7 +21,6 @@ import canto.lang.Resolver;
 import canto.lang.Site;
 import canto.lang.Validater;
 import canto.parser.CantoParser;
-import canto.parser.ParseException;
 import canto.parser.ParsedCollectionDefinition;
 
 /**
@@ -31,6 +31,16 @@ import canto.parser.ParsedCollectionDefinition;
 
 public class Table {
     
+    public static boolean is_table(Context context, Object obj) {
+        if (obj instanceof Definition) {
+            return ((Definition) obj).is_table();
+        } else if (obj instanceof Construction) {
+            return ((Construction) obj).getType(context, false).isTable();
+        } else {
+            return (obj instanceof Map<?, ?>);
+        }
+    }
+
     public static Object get(Object tableObject, Object key) {
         if (tableObject != null && tableObject instanceof Map<?, ?>) {
             @SuppressWarnings("unchecked")
@@ -86,7 +96,7 @@ public class Table {
         }        
     }
 
-    public static Map<String, Object> parse(Context context, String str) throws ParseException, Redirection {
+    public static Map<String, Object> parse(Context context, String str) throws Redirection {
         try {
             CantoParser parser = new CantoParser(new StringReader("parse[]=" + str));
             Definition owner = context.getDefiningDef();

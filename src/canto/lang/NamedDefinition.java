@@ -153,7 +153,7 @@ public class NamedDefinition extends AnonymousDefinition {
      *  alias is a child of one of this definition's ancestors, because such an alias
      *  can lead to circular definitions.
      */
-    public void checkAlias() throws Redirection {
+    public void checkAlias() {
         if (alias != null) {
             boolean notAlias = false;
             String aliasName = alias.getName();

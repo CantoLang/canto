@@ -135,10 +135,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
      */
     public void resolveKeeps() {}
 
-    public void resolveDims() {
-    	
-    }
-    
+    public void resolveDims() {}
     
     public Object getChild(NameNode node, ArgumentList args, List<Index> indexes, ArgumentList parentArgs, Context argContext, boolean generate, boolean trySuper, Object parentObj, Definition resolver) throws Redirection {
         if (Name.COUNT.equals(node.getName())) {
@@ -208,7 +205,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         Dim majorDim = (Dim) dims.get(numDims - 1);
         majorDimType = majorDim.getType();
         //if (builder == null) {
-        //    setTable(majorDim.isTable());        	
+        //    setTable(majorDim.isTable());
         //}
     }
         
@@ -305,7 +302,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
                 setTable(false);
             }
         }
-    	return builder.createCollectionInstance(context, args, indexes);
+        return builder.createCollectionInstance(context, args, indexes);
     }
 
     /** Wraps the passed data in a collection instance in the specified context with the specified
@@ -375,7 +372,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
     }
 
     /**
-     * @throws Redirection  
+     * @throws Redirection 
      */
     protected Object instantiateCollectionObject(Context context, Object collection) throws Redirection {
         //Type st = getSuper();
@@ -421,7 +418,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
 
         } else if (collection instanceof Map<?,?>) {
             @SuppressWarnings("unchecked")
-			Map<String, Object> map = new InstantiatedMap(((Map<String, Object>) collection), this, context);
+            Map<String, Object> map = new InstantiatedMap(((Map<String, Object>) collection), this, context);
             return map;
 
         } else {
@@ -473,8 +470,8 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         if (element == null) {
             return null;
         } else if (element instanceof Definition) {
-        	if (getElementType().isTypeOf("definition")) {
-        	    Definition def = (Definition) element;
+            if (getElementType().isTypeOf("definition")) {
+                Definition def = (Definition) element;
                 return new ElementDefinition(this, new AliasedDefinition(def, def.getNameNode()));
             } else {
                 return (Definition) element;

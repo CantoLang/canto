@@ -344,6 +344,7 @@ abstract public class AbstractConstruction extends AbstractNode implements Const
 
     /** Return the definition of the object referenced by any indexes.  If there are no
      *  indexes, or if indexes are not applicable, return the passed definition.
+     *  @throws Redirection 
      */
     Definition dereference(Context context, Definition def) throws Redirection {
         return def;    
@@ -353,6 +354,9 @@ abstract public class AbstractConstruction extends AbstractNode implements Const
         return getData(context, null);
     }
     
+    /**
+     * @throws Redirection  
+     */
     public Instantiation getUltimateInstance(Context context) throws Redirection {
         return null;
     }
