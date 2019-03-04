@@ -350,23 +350,6 @@ core {
      
      
     deserializable(str),(field_names[], field_values[]) {
-        dynamic deserialize_def(definition d, obj) {
-            t{} = d.get_table
-
-            if (array.is_array(obj)) {
-                log("  ...deserializing " + d.name + ", passed object is an array");
-                for item in obj {
-                    deserialize_def(item.def, item);    
-                }
-
-            } else if (table.is_table(obj)) {
-                log("  ...deserializing " + d.name + ", passed object is a table");
-                for k in t.keys {
-                    deserialize_def(t[k].def, t[k]);
-                }
-            }
-        }
-        
         definition{} this_defs = owner.defs
        
         if (str) {
@@ -375,7 +358,7 @@ core {
             for m in deserialized_obj.keys {
                 if (m in this_defs.keys && this_defs[m].is_a("deserializable")) {
                     log("  ...caching " + m + " which is a deserializable");
-                    here.put(m, deserialize_def(this_defs[m], deserialized_obj[m]));
+                    here.put(m + ".keep", deserialized_obj[m]);
                 } else {       
                     log("  ...caching " + m + " which is not a deserializable");
                     here.put(m, deserialized_obj[m]);

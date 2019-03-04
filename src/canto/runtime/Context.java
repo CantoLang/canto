@@ -5240,8 +5240,12 @@ if (unpushedEntries == null) {
                 if (ix > 0) {
                     String prefix = key.substring(0, ix);
                     String childKey = key.substring(ix + 1);
+                    Object keepObj = cache.get(prefix + ".keep");
+                    if (keepObj instanceof Holder) {
+                        keepObj = ((Holder) keepObj).data;
+                    }
                     @SuppressWarnings("unchecked")
-					Map<String, Object> parentKeepKeep = (Map<String, Object>) cache.get(prefix + ".keep");
+					Map<String, Object> parentKeepKeep = (Map<String, Object>) keepObj;
                     if (parentKeepKeep != null) {
                         @SuppressWarnings("unchecked")
 						Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
