@@ -3221,6 +3221,14 @@ public dstbc {
 }
 
 public dstm {
+    serializable obj1 {            
+        keep: serializable y {
+            keep: serializable z {
+                keep: m = "M"
+            }
+        }
+    }
+
     str = "{ y.keep: { z.keep: { m: \"M\" } } }"
     serializable(str) obj2(str) {            
         keep: serializable y {
@@ -3229,6 +3237,7 @@ public dstm {
             }
         }
     }
+    obj1.y.z.m;
     obj2(str);
     obj2.y.z.m;
 }
