@@ -2,7 +2,7 @@
  * 
  * ComplexType.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -67,7 +67,7 @@ public class ComplexType extends AbstractType implements Initializable {
            String name = ((Name) children[0]).getName();
            for (int i = 1; i < children.length; i++) {
                if (children[i] instanceof Any) {
-                   children[i] = new ArgumentList(new SingleItemList(children[i]));
+                   children[i] = new ArgumentList(new SingleItemList<Construction>((Construction) children[i]));
                    continue;
 
                } else if (!(children[i] instanceof Name)) {

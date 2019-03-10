@@ -2,13 +2,12 @@
  * 
  * ResolvedTable.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
 package canto.lang;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +20,7 @@ class ResolvedTable extends ResolvedCollection {
     protected Map<String, Object> table = null;
     private CollectionDefinition collectionDef = null;
 
+    @SuppressWarnings("unchecked")
     public ResolvedTable(Definition def, Context context, ArgumentList args, List<Index> indexes) throws Redirection {
         super(def, context, args, indexes);
 
@@ -51,6 +51,7 @@ class ResolvedTable extends ResolvedCollection {
 //        }
     }
 
+    @SuppressWarnings("unchecked")
     public ResolvedTable(Definition def, Context context, ArgumentList args, List<Index> indexes, Object tableData) throws Redirection {
         super(def, context, args, indexes);
 
@@ -84,6 +85,7 @@ class ResolvedTable extends ResolvedCollection {
     /** Creates a table based on the definition.  If the contents of the definition are
      *  of an unexpected type, a ClassCastException is thrown.
      */
+    @SuppressWarnings("unchecked")
     private Map<String, Object> createTable(CollectionDefinition def, Context context, ArgumentList args) throws Redirection {
         
         ParameterList params = def.getParamsForArgs(args, context);

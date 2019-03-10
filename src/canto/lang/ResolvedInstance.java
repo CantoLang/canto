@@ -2,7 +2,7 @@
  * 
  * ResolvedInstance.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -22,7 +22,6 @@ import canto.runtime.*;
 public class ResolvedInstance extends Instantiation implements Value {
 
     private Context resolutionContext;
-    private boolean sharedContext = false;
     private boolean localScope = false;
     private Object data;
     private Definition def;
@@ -77,7 +76,6 @@ public class ResolvedInstance extends Instantiation implements Value {
     public ResolvedInstance(Definition def, Context context, ArgumentList args, List<Index> indexes) throws Redirection {
         super(def, args, indexes);
 
-        sharedContext = false;
         if (def instanceof BoundDefinition) {
             resolutionContext = ((BoundDefinition) def).getBoundContext();
         } else if (!def.isIdentity()) {
@@ -118,8 +116,6 @@ public class ResolvedInstance extends Instantiation implements Value {
     public ResolvedInstance(Instantiation instance, Context context, boolean shared) {
         super();
 
-        sharedContext = shared;
-        
         // make a writeable clone unless shared flag is true
         resolutionContext = shared ? context : context.clone(false);
         data = null;

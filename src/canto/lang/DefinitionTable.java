@@ -2,13 +2,11 @@
  * 
  * DefinitionTable.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
 package canto.lang;
-
-import canto.runtime.Context;
 
 /**
 * A DefinitionTable supports the lookup of definitions by name.
