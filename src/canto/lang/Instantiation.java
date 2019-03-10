@@ -630,32 +630,27 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
                         cacheability = CACHE_STORABLE;
                     } else {
                         cacheability = FULLY_CACHEABLE;
-                        try {
-                            boolean dynamic = false;
-                            if (isParam) {
-                                Object arg;
-                                ArgumentList argArgs = null;
-                                arg = context.getArgumentForParameter(nameNode, false, inContainer);
-                                if (arg != null) {
-                                    if (arg instanceof ArgumentList) {
-                                        dynamic = ((ArgumentList) arg).isDynamic();
-                                    } else if (arg != ArgumentList.MISSING_ARG && arg instanceof Instantiation) {
-                                        argArgs = ((Instantiation) arg).getArguments();
-                                        if (argArgs != null) {
-                                            dynamic = argArgs.isDynamic();
-                                        }
+                        boolean dynamic = false;
+                        if (isParam) {
+                            Object arg;
+                            ArgumentList argArgs = null;
+                            arg = context.getArgumentForParameter(nameNode, false, inContainer);
+                            if (arg != null) {
+                                if (arg instanceof ArgumentList) {
+                                    dynamic = ((ArgumentList) arg).isDynamic();
+                                } else if (arg != ArgumentList.MISSING_ARG && arg instanceof Instantiation) {
+                                    argArgs = ((Instantiation) arg).getArguments();
+                                    if (argArgs != null) {
+                                        dynamic = argArgs.isDynamic();
                                     }
                                 }
-
-                            } else {
-                                dynamic = nameNode.isDynamic();
-                            }
-                            if (dynamic) {
-                                cacheability = CACHE_STORABLE;
                             }
 
-                        } catch (Redirection r) {
-                            return NOT_CACHEABLE_INFO;    
+                        } else {
+                            dynamic = nameNode.isDynamic();
+                        }
+                        if (dynamic) {
+                            cacheability = CACHE_STORABLE;
                         }
                     }
 

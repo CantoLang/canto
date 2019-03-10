@@ -1350,15 +1350,15 @@ public class Context {
     
     /** Returns data cached in the context via a keep statement.  
      */
-    public Object getContextData(String name) throws Redirection {
+    public Object getContextData(String name) {
         return getContextData(name, false);
     }
     
-    public Holder getContextHolder(String name) throws Redirection {
+    public Holder getContextHolder(String name) {
         return (Holder) getContextData(name, true);
     }
 
-    private Object getContextData(String name, boolean getHolder) throws Redirection {
+    private Object getContextData(String name, boolean getHolder) {
         if (name == null || cache == null || keepMap == null) {
             return null;
         }
@@ -1411,7 +1411,7 @@ public class Context {
      *  equivalent of the specified definition in the current context, or null if there is none.
      */
     
-    public Definition getKeepdDefinition(Definition def, ArgumentList args) throws Redirection {
+    public Definition getKeepdDefinition(Definition def, ArgumentList args) {
         String name = def.getName();
         String fullName = def.getFullNameInContext(this);
         Definition defInKeep = getDefinition(name, fullName, args);
@@ -1475,7 +1475,7 @@ public class Context {
     /** Returns the definition associated with cached data for a specified name
      *  in the current context, or null if there is none.
      */
-    public Definition getDefinition(String name, String fullName, ArgumentList args) throws Redirection {
+    public Definition getDefinition(String name, String fullName, ArgumentList args) {
         if (topEntry == null || name == null || name.length() == 0) {
             return null;
         }
@@ -1535,13 +1535,15 @@ public class Context {
      *  in the current context.
      */
     public void putData(Definition def, ArgumentList args, List<Index> indexes, String name, Object data) throws Redirection {
-        Logger.vlog(" - - - storing " + name + " in cache - - - ");
         putData(def, args, def, args, indexes, name, data, null);
     }    
     /** Keeps data associated with the specified name
      *  in the current context.
      */
     synchronized public void putData(Definition nominalDef, ArgumentList nominalArgs, Definition def, ArgumentList args, List<Index> indexes, String name, Object data, ResolvedInstance resolvedInstance) throws Redirection {
+        if (data != null || resolvedInstance != null) {
+            Logger.vlog(" - - - storing " + name + " in cache - - - ");
+        }
         if (topEntry != null && name != null && name.length() > 0) {
             int maxKeepLevels = getMaxKeepLevels(nominalDef);
             updateDynamicKeeps(name, args);
@@ -1696,7 +1698,7 @@ public class Context {
         return false;
     }
 
-    public Object getArgumentForParameter(NameNode name, boolean checkForChild, boolean inContainer) throws Redirection {
+    public Object getArgumentForParameter(NameNode name, boolean checkForChild, boolean inContainer) {
         if (topEntry == null || topEntry == rootEntry) {
             return null;
         }
@@ -2102,7 +2104,7 @@ public class Context {
         return data;
     }
 
-    private List<Index> instantiateIndexes(List<Index> indexes) throws Redirection {
+    private List<Index> instantiateIndexes(List<Index> indexes) {
         if (indexes == null || indexes.size() == 0) {
             return indexes;
         }
@@ -2117,7 +2119,7 @@ public class Context {
         return instantiatedIndexes;
     }
     
-    public List<Index> resolveIndexes(List<Index> indexes) throws Redirection {
+    public List<Index> resolveIndexes(List<Index> indexes) {
         if (indexes == null || indexes.size() == 0) {
             return indexes;
         }
@@ -2132,7 +2134,7 @@ public class Context {
         return resolvedIndexes;
     }
     
-    private ArgumentList resolveArguments(ArgumentList args) throws Redirection {
+    private ArgumentList resolveArguments(ArgumentList args) {
         if (args == null || args.size() == 0) {
             return args;
         }
@@ -3350,7 +3352,7 @@ public class Context {
      *  by those parameters.  If no arguments reference parameters, the original
      *  argument list is returned. 
      */
-    public ArgumentList getUltimateArgs(ArgumentList args) throws Redirection {
+    public ArgumentList getUltimateArgs(ArgumentList args) {
         if (args == null) {
             return null;
         }
@@ -3842,7 +3844,7 @@ if (unpushedEntries == null) {
         return definingDef;
     }
 
-    public void pushParam(DefParameter param, Construction arg) throws Redirection {
+    public void pushParam(DefParameter param, Construction arg) {
         if (size >= maxSize) {
             throw new RuntimeException("blown context");
         } else if (size < 1) {

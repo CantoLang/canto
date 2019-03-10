@@ -2,7 +2,7 @@
  * 
  * CantoSite.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -516,7 +516,7 @@ public class CantoSite extends CantoDomain {
         return CantoServer.OK;
     }
 
-    public boolean respondWithFile(File file, String mimeType, OutputStream out) throws IOException {
+    public boolean respondWithFile(File file, String mimeType, OutputStream out) {
         // Just record the request and return false, indicating that the caller should
         // handle the file transfer using an appropriate default mechanism
         recordRequest(file.getName(), fileTracker);
@@ -826,7 +826,7 @@ public class CantoSite extends CantoDomain {
             Definition[] defs = site.getDefinitions();
             ArrayList<CantoNode> list = new ArrayList<CantoNode>();
             for (int i = 0; i < defs.length; i++) {
-                if (defs[i].getOwner().equals(site) && childmap.get(defs[i]) == null) {
+                if (defs[i].getOwner().equals(site) && childmap.get((CantoNode) defs[i]) == null) {
                     list.add((CantoNode) defs[i]);
                 }
             }
