@@ -2,7 +2,7 @@
  * 
  * TypeList.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -711,7 +711,7 @@ class MultiDefinition extends NamedDefinition {
         return nextList;
     }
 
-    protected Definition getDefinitionFlavor(Context context, ParameterList params) throws Redirection {
+    protected Definition getDefinitionFlavor(Context context, ParameterList params) {
         Definition selectedDef;
         if (params == null) {
             if (definitions == null || definitions.size() < 1) {

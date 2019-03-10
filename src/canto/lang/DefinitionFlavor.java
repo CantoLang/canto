@@ -2,7 +2,7 @@
  * 
  * DefinitionFlavor.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -24,7 +24,7 @@ public class DefinitionFlavor extends ComplexDefinition {
     public Definition def;
     public ParameterList params;
 
-    public DefinitionFlavor(Definition def, Context context, ParameterList params) throws Redirection {
+    public DefinitionFlavor(Definition def, Context context, ParameterList params) {
         // the context shouldn't be needed, pass null
         super(def, null);
         this.def = def;

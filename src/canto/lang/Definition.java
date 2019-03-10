@@ -109,7 +109,7 @@ public interface Definition extends Name {
      *  flavor that matches the passed arguments; otherwise, simply returns the original
      *  definition.
      */
-    public Definition getDefinitionForArgs(ArgumentList args, Context argContext) throws Redirection;
+    public Definition getDefinitionForArgs(ArgumentList args, Context argContext);
 
     /** Returns true if this definition contains a <code>sub</code> statement,
      *  or is empty and <code>hasSub</code> called on its superdefinition (if any)

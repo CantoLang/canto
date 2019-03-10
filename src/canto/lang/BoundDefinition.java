@@ -2,7 +2,7 @@
  * 
  * BoundDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -39,7 +39,7 @@ public class BoundDefinition extends NamedDefinition {
     public boolean isGlobal()                  { return def.isGlobal(); }
     public Type getType()                      { return def.getType(); }
     
-    public Definition getDefinitionForArgs(ArgumentList args, Context argContext) throws Redirection {
+    public Definition getDefinitionForArgs(ArgumentList args, Context argContext) {
         return def.getDefinitionForArgs(args, boundContext);    
     }
 

@@ -1077,7 +1077,7 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
         return getMatch(args, argContext);
     }
 
-    public Definition getDefinitionForArgs(ArgumentList args, Context argContext) throws Redirection {
+    public Definition getDefinitionForArgs(ArgumentList args, Context argContext) {
         ParameterList params = getParamsForArgs(args, argContext);
         // if args is nonnull and params is null or smaller than args, there is no match.
         if (args != null && args.size() > 0 && (params == null || params.size() < args.size())) {
@@ -1087,7 +1087,7 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
         }
     }
 
-    protected Definition getDefinitionFlavor(Context context, ParameterList params) throws Redirection {
+    protected Definition getDefinitionFlavor(Context context, ParameterList params) {
         List<ParameterList> paramLists = getParamLists();
         if (paramLists != null && paramLists.size() > 1) {
             return new DefinitionFlavor(this, context, params);

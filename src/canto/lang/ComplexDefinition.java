@@ -37,7 +37,7 @@ public class ComplexDefinition extends NamedDefinition {
         super();
     }
 
-    public ComplexDefinition(Definition def, Context context) throws Redirection {
+    public ComplexDefinition(Definition def, Context context) {
         super(def, context);
         if (def instanceof ComplexDefinition) {
             definitions = ((ComplexDefinition)def).definitions;

@@ -40,7 +40,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
         super();
     }
 
-    public CollectionDefinition(CollectionDefinition def, Context context) throws Redirection {
+    public CollectionDefinition(CollectionDefinition def, Context context) {
         super(def, context);
         setDims(def.dims);
     }

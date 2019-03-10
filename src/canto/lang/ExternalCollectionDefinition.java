@@ -2,13 +2,12 @@
  * 
  * ExternalCollectionDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
 package canto.lang;
 
-import java.lang.reflect.*;
 import java.util.*;
 
 import canto.runtime.Context;

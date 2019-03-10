@@ -2,7 +2,7 @@
  * 
  * KeysDefinition.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018, 2019 by cantolang.org
  * All rights reserved.
  */
 
@@ -100,6 +100,7 @@ public class KeysDefinition extends CollectionDefinition {
 
             instance = tableDef.getCollectionInstance(context, args, indexes);
             if (instance != null) {
+                @SuppressWarnings("unchecked")
                 Map<String,?> map = (Map<String,?>) instance.getCollectionObject();
                 if (map != null && map.size() > 0) {
                     keys = new ArrayList<String>(new TreeSet<String>(map.keySet()));
