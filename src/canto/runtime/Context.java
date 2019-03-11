@@ -2181,7 +2181,7 @@ public class Context {
         Context fallbackContext = this;
         Definition argDef = null;
         ArgumentList args = null;
-        List<Index> argIndexes = null;
+        List<Index> argIndexes = (instance != null ? instance.getIndexes() : null);
 
         numUnpushes = Math.max((size > 1 && !param.isInFor() ? 1 : 0), numUnpushes);
 
@@ -2276,7 +2276,6 @@ public class Context {
                         }
 
                         instance = (Instantiation) a;
-               
                         arg = a;
                         param = p;
                         if (!p.isInFor()) {
@@ -2284,6 +2283,9 @@ public class Context {
                             numUnpushes++;
                         }
                     }
+                    //if (instance.getIndexes() == null && argIndexes != null) {
+                    //    instance.setIndexes(argIndexes);
+                    //}
                     if (instance.isParameterChild()) {
                         NameNode compName = new ComplexName(instance.getReferenceName(), childName);
                         data = resolutionContext.getParameter(compName, instance.isContainerParameter(resolutionContext), Object.class);

@@ -57,7 +57,7 @@ public class DefinitionFlavor extends ComplexDefinition {
     /** Calls the delegate.  Throws a ClassCastException if the delegate definition
      *  is not a ComplexDefinition.
      */
-    protected Definition getExplicitDefinition(NameNode name, ArgumentList args, Context argContext) throws Redirection {
+    protected Definition getExplicitDefinition(NameNode name, ArgumentList args, Context argContext) {
         return ((ComplexDefinition) def).getExplicitDefinition(name, args, argContext);
     }
 

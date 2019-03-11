@@ -2582,7 +2582,7 @@ public dtcet {
         name = "Table Parameter Test"
         key = "table_param"
 
-        expected = "ABCDEFGHIJ"
+        expected = "ABCDEFGHIJK"
 
         x{} = { "a":"A", "b":"B" }
         y{} = { "c":"C", "d":"D" }
@@ -2597,7 +2597,18 @@ public dtcet {
         show_foo_ij(f{}) {
            f["foo_i"].i;
            f["foo_j"].j;
-        } 
+        }
+  
+        show_k(t{}) {
+           show_kk(t["a"]);
+        }
+        show_kk(kk) {
+            if (kk.count == 1) {
+                "K";
+            } else {
+                "x";
+            }
+        }
 
         show_ab(bb[], p, q) {
             bb[p];
@@ -2618,8 +2629,37 @@ public dtcet {
         show(y);
         show(z);
         show_foo_ij(foos);
+        show_k(x);
     }
 
+
+public tpt {
+        x{} = { "a":"A", "b":"B" }
+        z{}{} = { "t1":{ "e":"E", "f":"F"}, "t2":{ "g":"G", "h":"H" } }
+
+        dynamic show(aa) {
+            for k in aa.keys {
+                if (aa[k].count > 1) {
+                    show(aa[k]);
+                } else {
+                    aa[k];
+                }
+            }
+        }
+        show_k(t{}) {
+           show_kk(t["a"]);
+        }
+        show_kk(kk) {
+            if (kk.count == 1) {
+                "K";
+            } else {
+                "x";
+            }
+        }
+        show(y);
+        show(z);
+        show_k(x);
+}
    
     public test_case multidimensional_table_test {
         int category = collections
@@ -3251,53 +3291,52 @@ public dsta {
     obj2.a;
 }    
 
-st2 {=
-        serializable oa {
-            keep:
-            a = "A"
-        }
-        
-        serializable od {
-            keep:
-            dd{} = { d: "D" }
-        }
-        
-        serializable ob {
-            keep:
-            b[] = [ "B" ]
-        }
+public flatst {
+    tbl{} = { a: "A", b: { ba: "B", bb: { c: "C" } } }
+  
+    obj {
+        a [/]
+    }
 
-        serializable of {
-            keep:
-            serializable(s) f(s) {
-                keep:
-                ff = "F"
-            }            
+    obj obj1 {
+        a = "A";
+    }
+
+    obj{} ot = { z: obj1 }  
+    
+    showt(t{}) {
+        showc(t["a"]);
+    }
+    
+    showc(x) {
+        x.count;
+    }
+    
+    showtbl(t) {
+        if (t.def.is_table) {
+            "{";
+            for k in t.keys {
+                k;
+                ": ";
+                showtbl(t[k]);
+                ",";
+            }
+            "}";
+        } else {
+            t;
+            ",";
         }
+    }
+    show(obj x) {
+        x.a;
+    }
+    
+    //tbl.count;
+    //show(ot["z"]);
+    showt(tbl);
+    //showtbl(tbl);
+}
 
-        dynamic show(z) {
-            z;
-            br;
-        } 
-
-        ob.serialize;
-        show(oa.serialize);
-        show(ob.serialize);
-        show(od.serialize);
-        show(of.serialize); 
-             
-        keep: serializable(str) o2(str) {
-            keep:
-            serializable(s) fg(s) {
-                keep:
-                f [/]
-            }            
-        }
-
-        o2("{ fg.keep: { f: \"F\" } }");
-
-        o2.fg.f;
-=}
 
     public test_case sort_test {
         int category = utilities

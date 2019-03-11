@@ -195,7 +195,17 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
         return args;
     }
 
-    protected void setIndexes(List<Index> indexes) {
+    public void addIndexes(List<Index> indexes) {
+        if (indexes != null) {
+            if (this.indexes != null) {
+                this.indexes.addAll(indexes);
+            } else {
+                this.indexes = indexes;
+            }
+        }
+    }
+
+    public void setIndexes(List<Index> indexes) {
         this.indexes = indexes;
     }
 

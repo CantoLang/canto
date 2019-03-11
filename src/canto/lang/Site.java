@@ -499,27 +499,26 @@ public class Site extends ComplexDefinition {
                     }
                     CollectionDefinition supercollection = null;
                     // find array definition
-                    try {
-                        for (NamedDefinition nd = getSuperDefinition(); nd != null; nd = nd.getSuperDefinition()) {
-                            if (nd instanceof ComplexDefinition) {
-                                Definition superDef = ((ComplexDefinition) nd).getExplicitDefinition(nameNode, null, null);
-                                if (superDef != null && superDef instanceof CollectionDefinition) {
-                                    supercollection = (CollectionDefinition) superDef;
-                                    break;
-                                }
+                    for (NamedDefinition nd = getSuperDefinition(); nd != null; nd = nd.getSuperDefinition()) {
+                        if (nd instanceof ComplexDefinition) {
+                            Definition superDef = ((ComplexDefinition) nd).getExplicitDefinition(nameNode, null, null);
+                            if (superDef != null && superDef instanceof CollectionDefinition) {
+                                supercollection = (CollectionDefinition) superDef;
+                                break;
                             }
                         }
-                        if (supercollection == null) {
-                            while (owner != null) {
-                                Definition superDef = owner.getChildDefinition(nameNode, null);
-                                if (superDef != null && superDef instanceof CollectionDefinition) {
-                                    supercollection = (CollectionDefinition) superDef;
-                                    break;
-                                }
-                                owner = owner.getOwner();
+                    }
+                    if (supercollection == null) {
+                        while (owner != null) {
+                            Definition superDef = owner.getChildDefinition(nameNode, null);
+                            if (superDef != null && superDef instanceof CollectionDefinition) {
+                                supercollection = (CollectionDefinition) superDef;
+                                break;
                             }
-                            if (supercollection == null) {
-                                throw new IllegalArgumentException("Reference to unknown array or table");
+                            owner = owner.getOwner();
+                        }
+                        if (supercollection == null) {
+                            throw new IllegalArgumentException("Reference to unknown array or table");
                             }
                         }
  
@@ -528,9 +527,6 @@ public class Site extends ComplexDefinition {
                         collection.setName(supercollection.getNameNode());
                         collection.add(def);
                         put(key, collection);
-                    } catch (Redirection r) {
-                        throw new IllegalStateException("Encountered redirection while resolving array or table reference");
-                    }
                 } else {
                     put(key, def);
                 }

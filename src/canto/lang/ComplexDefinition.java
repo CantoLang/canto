@@ -130,7 +130,7 @@ public class ComplexDefinition extends NamedDefinition {
     }
 
 
-    protected Definition getExplicitDefinition(NameNode node, ArgumentList args, Context context) throws Redirection {
+    protected Definition getExplicitDefinition(NameNode node, ArgumentList args, Context context) {
         Definition def = getExplicitChildDefinition(node);
         if (def != null) {
             if (def.isFormalParam()) {
