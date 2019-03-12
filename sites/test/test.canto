@@ -2619,8 +2619,10 @@ public dtcet {
             for k in aa.keys {
                 if (aa[k].count > 1) {
                     show(aa[k]);
-                } else {
+                } else if (aa[k].count == 1) {
                     aa[k];
+                } else{
+                    "x";
                 }
             }
         }
@@ -2640,12 +2642,27 @@ public tpt {
         dynamic show(aa) {
             for k in aa.keys {
                 if (aa[k].count > 1) {
-                    show(aa[k]);
-                } else {
+                    show_x(aa[k]);
+                } else if (aa[k].count == 1) {
                     aa[k];
+                } else{
+                    "x";
                 }
             }
         }
+        
+        dynamic show_x(bb) {
+            for j in bb.keys {
+                if (bb[j].count > 1) {
+                    show_x(bb[j]);
+                } else if (bb[j].count == 1) {
+                    bb[j];
+                } else{
+                    "x";
+                }
+            }
+        }
+        
         show_k(t{}) {
            show_kk(t["a"]);
         }
@@ -2656,7 +2673,6 @@ public tpt {
                 "x";
             }
         }
-        show(y);
         show(z);
         show_k(x);
 }

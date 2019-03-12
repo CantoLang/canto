@@ -2177,14 +2177,13 @@ public class Context {
                 entry = entry.link;
             }
         }
+        numUnpushes = Math.max((size > 1 && !param.isInFor() ? 1 : 0), numUnpushes);
 
         Context fallbackContext = this;
         Definition argDef = null;
         ArgumentList args = null;
-        List<Index> argIndexes = (instance != null ? instance.getIndexes() : null);
-
-        numUnpushes = Math.max((size > 1 && !param.isInFor() ? 1 : 0), numUnpushes);
-
+        ResolvedInstance ri = null;
+        
         try {
             for (int i = 0; i < numUnpushes; i++) {
                 unpush();
@@ -2218,6 +2217,10 @@ public class Context {
         
             } else {
                 if (instance != null && instance.isParameterKind()) {
+                    
+                    ri = (ResolvedInstance) getParameter(instance.getReferenceName(), instance.isContainerParameter(this), ResolvedInstance.class);
+                    System.out.println("ri is " + (ri == null ? "null" : "not null") + " at ctx 2221");
+                    
                     Context resolutionContext = this;
                     while (instance.isParameterKind()) {
                         if (instance instanceof ResolvedInstance) {
@@ -2339,7 +2342,7 @@ public class Context {
 
             if (argDef != null) {
                 args = (instance != null ? instance.getArguments() : null);
-                argIndexes = (instance != null ? instance.getIndexes() : null);
+                List<Index> argIndexes = (instance != null ? instance.getIndexes() : null);
                 if (argDef.isIdentity() && (instance == null || !(instance instanceof ResolvedInstance))) {
                     Holder holder = getDefHolder(argDef.getName(), argDef.getFullNameInContext(this), args, argIndexes, false);
                     if (holder != null) {

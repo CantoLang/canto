@@ -198,6 +198,9 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
     public void addIndexes(List<Index> indexes) {
         if (indexes != null) {
             if (this.indexes != null) {
+                if (this.indexes instanceof SingleItemList) {
+                    this.indexes = new ArrayList<Index>(this.indexes);
+                }
                 this.indexes.addAll(indexes);
             } else {
                 this.indexes = indexes;
