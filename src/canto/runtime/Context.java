@@ -2217,11 +2217,12 @@ public class Context {
         
             } else {
                 if (instance != null && instance.isParameterKind()) {
-
                     ri = (ResolvedInstance) getParameter(instance.getReferenceName(), instance.isContainerParameter(this), ResolvedInstance.class);
                     System.out.println("ri is " + (ri == null ? "null" : "not null") + " at ctx 2221");
-                    System.out.println("calling getDescendant");
-                    return ri.getResolutionContext().getDescendant(ri.getDefinition(), ri.getArguments(), childName, true, ri.getValue());
+                    if (ri != null) {
+                        System.out.println("calling getDescendant");
+                        return ri.getResolutionContext().getDescendant(ri.getDefinition(), ri.getArguments(), childName, true, ri.getValue());
+                    }
                     
 //                    Context resolutionContext = this;
 //                    while (instance.isParameterKind()) {

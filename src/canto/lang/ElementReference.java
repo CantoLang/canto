@@ -54,7 +54,7 @@ public class ElementReference extends AnonymousDefinition {
     
     public boolean isCollection() {
         if (collectionDef instanceof CollectionDefinition) {
-        	return (((CollectionDefinition) collectionDef).getDimSize() > indexes.size());
+        	return (((CollectionDefinition) collectionDef).getDims().size() > indexes.size());
         } else {
     	    return false;
         }
