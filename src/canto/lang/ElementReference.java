@@ -43,6 +43,10 @@ public class ElementReference extends AnonymousDefinition {
         }
         return ib.toString();
     }
+    
+    public List<Index> getIndexes() {
+        return indexes;
+    }
 
     public boolean isAnonymous() {
         return false;

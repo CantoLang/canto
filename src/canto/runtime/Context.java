@@ -2224,82 +2224,82 @@ public class Context {
                         return ri.getResolutionContext().getDescendant(ri.getDefinition(), ri.getArguments(), childName, true, ri.getValue());
                     }
                     
-//                    Context resolutionContext = this;
-//                    while (instance.isParameterKind()) {
-//                        if (instance instanceof ResolvedInstance) {
-//                            resolutionContext = ((ResolvedInstance) instance).getResolutionContext();
-//                        }
-//                        String checkName = instance.getName();
-//                        NameNode instanceName = instance.getReferenceName();
-//                        Entry entry = resolutionContext.topEntry;
-//                        if (instance.isContainerParameter(resolutionContext)) {
-//                            while (entry != null) {
-//                                if (entry.paramIsPresent(instanceName, true)) {
-//                                    break;
-//                                }
-//                                entry = entry.link;
-//                            }
-//                            if (entry == null) {
-//                                return null;
-//                            }
-//                        }
-//                
-//                        args = entry.args;
-//                        int numArgs = args.size();
-//                        ParameterList params = entry.params;
-//                        int numParams = params.size();
-//      
-//                        DefParameter p = null;
-//                        Object a = null;
-//                        int i;
-//                        int n = (numParams > numArgs ? numArgs : numParams);
-//                        for (i = n - 1; i >= 0; i--) {
-//                            p = params.get(i);
-//                            String paramName = p.getName();
-//                            if (checkName.equals(paramName)) {
-//                                a = args.get(i);
-//                                break;
-//                            }
-//                        }
-//                        if (a == null) {
-//                            break;
-//                        }
-//                
-//                        if (a instanceof Value && !(a instanceof Instantiation)) {
-//                            Object o = ((Value) a).getValue();
-//                            a = o;
-//                        }
-//                
-//                        if (a instanceof Definition) {
-//                            if (a instanceof NamedDefinition && p.getType().isTypeOf("definition")) {
-//                                argDef = new AliasedDefinition((NamedDefinition) a, instance.getReferenceName());
-//                            } else {
-//                                argDef = (Definition) a;
-//                            }
-//                            break;
-//                        } else if (!(a instanceof Instantiation)) {
-//                            break;
-//                        }
-//
-//                        instance = (Instantiation) a;
-//                        arg = a;
-//                        param = p;
-//                        if (!p.isInFor()) {
-//                            unpush();
-//                            numUnpushes++;
-//                        }
-//                    }
-//                    //if (instance.getIndexes() == null && argIndexes != null) {
-//                    //    instance.setIndexes(argIndexes);
-//                    //}
-//                    if (instance.isParameterChild()) {
-//                        NameNode compName = new ComplexName(instance.getReferenceName(), childName);
-//                        data = resolutionContext.getParameter(compName, instance.isContainerParameter(resolutionContext), Object.class);
-//                        // trying to avoid multiple instantiation attempts, so commented this out.
-//                        //if (data == null || data == NullValue.NULL_VALUE) {
-//                        //    data = getParameter(compName, instance.isContainerParameter(this), Object.class);
-//                        //}
-//                    }
+                    Context resolutionContext = this;
+                    while (instance.isParameterKind()) {
+                        if (instance instanceof ResolvedInstance) {
+                            resolutionContext = ((ResolvedInstance) instance).getResolutionContext();
+                        }
+                        String checkName = instance.getName();
+                        NameNode instanceName = instance.getReferenceName();
+                        Entry entry = resolutionContext.topEntry;
+                        if (instance.isContainerParameter(resolutionContext)) {
+                            while (entry != null) {
+                                if (entry.paramIsPresent(instanceName, true)) {
+                                    break;
+                                }
+                                entry = entry.link;
+                            }
+                            if (entry == null) {
+                                return null;
+                            }
+                        }
+                
+                        args = entry.args;
+                        int numArgs = args.size();
+                        ParameterList params = entry.params;
+                        int numParams = params.size();
+      
+                        DefParameter p = null;
+                        Object a = null;
+                        int i;
+                        int n = (numParams > numArgs ? numArgs : numParams);
+                        for (i = n - 1; i >= 0; i--) {
+                            p = params.get(i);
+                            String paramName = p.getName();
+                            if (checkName.equals(paramName)) {
+                                a = args.get(i);
+                                break;
+                            }
+                        }
+                        if (a == null) {
+                            break;
+                        }
+                
+                        if (a instanceof Value && !(a instanceof Instantiation)) {
+                            Object o = ((Value) a).getValue();
+                            a = o;
+                        }
+                
+                        if (a instanceof Definition) {
+                            if (a instanceof NamedDefinition && p.getType().isTypeOf("definition")) {
+                                argDef = new AliasedDefinition((NamedDefinition) a, instance.getReferenceName());
+                            } else {
+                                argDef = (Definition) a;
+                            }
+                            break;
+                        } else if (!(a instanceof Instantiation)) {
+                            break;
+                        }
+
+                        instance = (Instantiation) a;
+                        arg = a;
+                        param = p;
+                        if (!p.isInFor()) {
+                            unpush();
+                            numUnpushes++;
+                        }
+                    }
+                    //if (instance.getIndexes() == null && argIndexes != null) {
+                    //    instance.setIndexes(argIndexes);
+                    //}
+                    if (instance.isParameterChild()) {
+                        NameNode compName = new ComplexName(instance.getReferenceName(), childName);
+                        data = resolutionContext.getParameter(compName, instance.isContainerParameter(resolutionContext), Object.class);
+                        // trying to avoid multiple instantiation attempts, so commented this out.
+                        //if (data == null || data == NullValue.NULL_VALUE) {
+                        //    data = getParameter(compName, instance.isContainerParameter(this), Object.class);
+                        //}
+                    }
             
                 }
         
@@ -2991,8 +2991,13 @@ public class Context {
         // Note: this fails when there is an index on an aliased collection definition
         if (indexes != null && indexes.size() > 0 && def.isCollection()) {
             CollectionDefinition collectionDef = def.getCollectionDefinition(this, args);
-
             if (collectionDef != null) {
+                if (def instanceof ElementReference) {
+                    List<Index> combinedIndexes = new ArrayList<Index>(((ElementReference) def).getIndexes());
+                    combinedIndexes.addAll(indexes);
+                    indexes = combinedIndexes;
+                }
+                
                 indexes = resolveIndexes(indexes);
                 def = collectionDef.getElementReference(this, args, indexes);
             } else {
