@@ -2182,7 +2182,6 @@ public class Context {
         Context fallbackContext = this;
         Definition argDef = null;
         ArgumentList args = null;
-        ResolvedInstance ri = null;
         
         try {
             for (int i = 0; i < numUnpushes; i++) {
@@ -2216,16 +2215,33 @@ public class Context {
                 data = wrapper.getChildData(childName);
         
             } else {
-                if (instance != null && instance.isParameterKind()) {
+                if (arg instanceof Chunk) {
                     argDef = param.getDefinitionFor(this, (Chunk) arg);
-                    System.out.println("calling getDescendant");
-                    data = getDescendant(argDef, instance.getArguments(), childName, true, null);
-//                    if (data != null) {
-//                        return data;
-//                    } else {
-//                        argDef = null;
-//                    }
-                    
+        
+                    if (arg instanceof ResolvedInstance) {
+                        fallbackContext = ((ResolvedInstance) arg).getResolutionContext();
+                    }
+            
+                } else if (arg instanceof Map<?,?> && arg != null) {
+                    String nm = childName.getName();
+                    if (nm.equals("keys")) {
+                        Set<?> keySet = ((Map<?,?>) arg).keySet();
+                        List<String> keys = new ArrayList<String>(keySet.size());
+                        Iterator<?> it = keySet.iterator();
+                        while (it.hasNext()) {
+                            keys.add(it.next().toString());
+                        }
+                        data = keys;
+                
+                    } else {
+                        data = ((Map<?,?>) arg).get(childName.getName());
+                    }
+    
+                } else {
+                    data = arg;
+                }
+
+                if (instance != null && instance.isParameterKind()) {
                     Context resolutionContext = this;
                     while (instance.isParameterKind()) {
                         if (instance instanceof ResolvedInstance) {
@@ -2297,44 +2313,10 @@ public class Context {
                     if (instance.isParameterChild()) {
                         NameNode compName = new ComplexName(instance.getReferenceName(), childName);
                         data = resolutionContext.getParameter(compName, instance.isContainerParameter(resolutionContext), Object.class);
-                        // trying to avoid multiple instantiation attempts, so commented this out.
-                        //if (data == null || data == NullValue.NULL_VALUE) {
-                        //    data = getParameter(compName, instance.isContainerParameter(this), Object.class);
-                        //}
-                    }
-            
-                }
-        
-                if (data == null && argDef == null) {
-                    if (arg instanceof Chunk) {
-                        argDef = param.getDefinitionFor(this, (Chunk) arg);
-            
-                        if (arg instanceof ResolvedInstance) {
-                            fallbackContext = ((ResolvedInstance) arg).getResolutionContext();
-                        }
-                
-                    } else if (arg instanceof Map<?,?> && arg != null) {
-                        String nm = childName.getName();
-                        if (nm.equals("keys")) {
-                            Set<?> keySet = ((Map<?,?>) arg).keySet();
-                            List<String> keys = new ArrayList<String>(keySet.size());
-                            Iterator<?> it = keySet.iterator();
-                            while (it.hasNext()) {
-                                keys.add(it.next().toString());
-                            }
-                            data = keys;
-                    
-                        } else {
-                            data = ((Map<?,?>) arg).get(childName.getName());
-                        }
-        
-                    } else {
-                        data = arg;
                     }
                 }
-            }
+            }        
 
-    
             if (data != null) {
                 // if the name is indexed, and the argument is raw data, then get
                 // the appropriate item in the collection.  In such a case, the data

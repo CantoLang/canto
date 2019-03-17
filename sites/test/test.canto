@@ -1578,6 +1578,19 @@ site test {
         }
     }
 
+public lpt {
+        dynamic foo(a) {
+            x = a
+        }
+
+        dynamic bar(foo f) {
+            f.x;
+        }
+        foo[] de = [ foo("D"), foo("E") ]
+        for foo f in de {
+            bar(f);
+        }
+}
 
     public test_case nested_parameter_test {
         int category = parameters
