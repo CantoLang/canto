@@ -9,6 +9,7 @@
 package canto.lang;
 
 import java.util.List;
+import java.util.Map;
 
 import canto.runtime.Context;
 import canto.runtime.CantoObjectWrapper;
@@ -218,8 +219,9 @@ public class ElementDefinition extends AnonymousDefinition {
                     }
                 }
             }
-        } else if (element instanceof ValueMap) {
-            ValueMap map = (ValueMap) element;
+       } else if (element instanceof Map<?,?>) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> map = (Map<String, Object>) element;
             Object obj = map.get(name.getName());
             if (generate) {
                 return obj;

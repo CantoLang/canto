@@ -3265,7 +3265,12 @@ public stkl {
 }
 
 public dstij {
-        str = "{ ij.keep: [ { i: \"I\", j: \"\" }, { i: \"\", j: \"J\" } ] }"
+        str = "{ ij: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
+
+        serializable(str) ijobj(str) {
+            keep: i [/]
+            keep: j [/]
+        }
 
         serializable(str) obj2(str) {
             keep: ijobj[] ij = []            
