@@ -5023,6 +5023,11 @@ if (unpushedEntries == null) {
         }
 
         private void put(String key, Holder holder, Context context, int maxLevels) {
+
+if (key.equals("m") || key.endsWith(".m")) {
+ System.out.println(" ...in entry " + this.toString() + " put key: " + key + " holder: " + holder.toString());    
+}
+            
             boolean kept = false;
             Definition nominalDef = holder.nominalDef;
             Map<String, Object> localKeep = getKeep();

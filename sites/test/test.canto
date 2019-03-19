@@ -3178,8 +3178,8 @@ oct9 {=
 
 public stij {
         serializable(str) ijobj(str) {
-            keep: i [/]
-            keep: j [/]
+            keep: i = "x"
+            keep: j = "x"
         }
         
         serializable obj1 {
@@ -3241,15 +3241,35 @@ public stm {
 
 public stkl {
         serializable obj1 {
-            keep: serializable kl_parent {
-                keep: serializable kl {
+            keep: serializable klm {
+                keep: k = "K"
+                keep: serializable lm {
                     keep: l = "L"
                     keep: m = "M"
                 }
-                keep: k = "K"
             }
         }
              
+        serializable(str) obj2(str) {
+            keep: serializable klm {
+                keep: k = "x"
+                keep: serializable lm {
+                    keep: l = "x"
+                    keep: m = "x"
+                }
+            }
+        }
+        obj1.serialize;
+        obj2(obj1.serialize);
+        obj2.klm.k;
+        obj2.klm.lm.l;
+        obj2.klm.lm.m;
+}
+
+public dstk {
+
+        ser = "{ kl_parent.keep: { kl.keep: { l: \"L\", m: \"M\" } , k: \"K\" } }"
+        
         serializable(str) obj2(str) {
             keep: serializable kl_parent {
                 keep: serializable kl {
@@ -3258,14 +3278,12 @@ public stkl {
                 }
             }
         }
-        obj1.serialize;
-        obj2(obj1.serialize);
+        obj2(ser);
         obj2.kl_parent.kl.k;
-        obj2.kl_parent.kl.l;
 }
 
 public dstij {
-        str = "{ ij: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
+        str = "{ ij.keep: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
 
         serializable(str) ijobj(str) {
             keep: i [/]
@@ -3307,11 +3325,11 @@ public dstm {
     serializable(str) obj2(str) {            
         keep: serializable y {
             keep: serializable z { 
-                keep: m [/]
+                keep: m = "x"
             }
         }
     }
-    obj1.y.z.m;
+    //obj1.y.z.m;
     obj2(str);
     obj2.y.z.m;
 }
