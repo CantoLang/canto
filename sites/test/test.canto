@@ -37,7 +37,7 @@ site test {
                               cache_test, cached_aliased_parameter_test, cached_array_test,
                               cached_child_of_alias_test, cached_external_object_test, 
                               cached_identity_test, cached_object_test, 
-                              cached_obj_array_child_test, char_utilities_test,
+                              cached_obj_array_child_test, char_utilities_test, child_keep_test,
                               children_of_global_test, children_of_overridden_super_test, 
                               children_of_parameterized_super_test, children_of_static_test,
                               collection_parse_test, collection_operators_test, collection_utilities_test,
@@ -3313,25 +3313,30 @@ public dstbc {
 }
 
 public dstm {
-    serializable obj1 {            
+    keep: serializable obj1 {            
         keep: serializable y {
             keep: serializable z {
-                keep: m = "M"
+                keep: m(x) = x
+                
+                m("M");
             }
+            z;
         }
+        y;
     }
 
-    str = "{ y.keep: { z.keep: { m: \"M\" } } }"
-    serializable(str) obj2(str) {            
+    ser = "{ y.keep: { z.keep: { m: \"M\" } } }"
+    serializable(ostr) obj2(ostr) {            
         keep: serializable y {
             keep: serializable z { 
                 keep: m = "x"
             }
         }
     }
-    //obj1.y.z.m;
-    obj2(str);
-    obj2.y.z.m;
+    obj1;
+    obj1.y.z.m;
+    //obj2(ser);
+    //obj2.y.z.m;
 }
 
 public dsta {
@@ -4485,25 +4490,56 @@ kt {=
         test_cache["d"];
     }
 
-dkt {=
-    test_cache{} = {}
-
-        bkey = "b"
-        keep_B {
-            keep by bkey in test_cache: w = "B"
-
-            eval(w);
-        }
-        
-    keep_B;         
-    "-";
-    test_cache["b"];
-=}
 
     public test_case nested_keep_test {
         int category = caching
         name = "Nested Keep Test"
         key = "nested_keep"
+
+        expected = "ABC"
+        
+        keep: abc {
+            keep: a(x) = x
+            keep: bc {
+                keep: b(y) = y
+                keep: cc {
+                    keep: c(z) = z
+                    c("C");
+                }
+                b("B");
+                cc;
+            }
+            a("A");
+            bc;
+        }
+
+        eval(abc);
+        abc.a;
+        abc.bc.b;
+        abc.bc.cc.c;        
+    }
+
+public nkt {
+        keep: ab {
+            keep: a(x) = x
+            keep: bb {
+                keep: b(y) = y
+                b("B");
+            }
+            a("A");
+            bb;
+        }
+
+        ab;
+        ab.a;
+        ab.bb.b;
+}
+
+
+    public test_case child_keep_test {
+        int category = caching
+        name = "Child Keep Test"
+        key = "child_keep"
 
         expected = "ABCDEFGHIJK"
 
@@ -4563,18 +4599,6 @@ dkt {=
         ijk_container.j;
         ijk_container.k;
     }
-
-nkt {=
-    abcd_container {
-        b(x) = x
-        b("B");
-    }
-    abcd_container;
-    abcd_container.b; 
-    abcd_container(: :);
-    "-";
-    abcd_container.b; 
-=}
 
     public test_case cached_identity_test {
         int category = caching
@@ -4754,76 +4778,6 @@ cit {=
         mwp.cv.f;
     }
 
-hinit {=
-    cnit;
-    ss1;
-    cnit;
-=}
-
-cnit {=
-        wo {
-            keep: a [/]
-            keep: pl b [/]
-        }
-        
-        vo {
-            keep: f = "x"
-        } 
-    
-        pl {
-            keep: c = "x"
-        }
-        
-        wo mwo {
-            a = "A"
-            pl b = mpl
-        }
-        
-        vo mvo {
-            f = "F" 
-        }
-        
-        pl mpl {
-            c = "C"
-            
-            "B";
-        }
-        
-        t {
-            d [/]
-        }
-
-        t mct {
-            d = "D"
-        }
-        
-        wp(wo w, vo v, z) {
-            keep: wo woa = w
-            keep: pl cp(pl p) = p
-            keep: wo cw(wo ww) = ww
-            keep: cz(y) = y
-            keep: vo cv(vo vv) = vv
-            
-            keep: ct(t x) = x
-           
-            cw(woa);
-            cp(woa.b);
-            ct(mct);
-            cz(z);
-            cv(v);
-        }
-    
-        wp mwp(wp z) = z
-        
-        eval(mwp(wp(mwo, mvo, "E")));
-            
-        mwp.cw.a;
-        mwp.cp;
-        mwp.cp.c;
-        mwp.ct.d;
-        mwp.cz;
-        mwp.cv.f;
-=}
 
     public test_case cached_child_of_alias_test {
         int category = caching
@@ -4953,26 +4907,6 @@ cnit {=
         so_ho("I");
     }
 
-ccat {=
-      
-        obj {
-            keep: child(z) = z
-            sub;
-        }
-
-        obj subobj_a {
-            child("A");
-        }
-
-        obj cached_obj(obj o) = o
-        
-        obj aliased_cached_obj = cached_obj
-        
-        eval(cached_obj(subobj_a));
-        
-        aliased_cached_obj.child; 
-=}
-    
     
     public test_case cached_aliased_parameter_test {
         int category = parameters

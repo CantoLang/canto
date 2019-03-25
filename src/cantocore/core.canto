@@ -353,14 +353,14 @@ core {
         definition{} this_defs = owner.defs
        
         if (str) {
-            log("deserializing " + type + " from string \"" + str + "\"");    
+            //log("deserializing " + type + " from string \"" + str + "\"");    
             deserialized_obj{} = table.parse(str)
             for m in deserialized_obj.keys {
                 if (m in this_defs.keys && this_defs[m].is_a("deserializable")) {
-                    log("  ...caching " + m + " which is a deserializable");
+                    //log("  ...caching " + m + " which is a deserializable");
                     here.put(m + ".keep", deserialized_obj[m]);
                 } else {       
-                    log("  ...caching " + m + " which is not a deserializable");
+                    //log("  ...caching " + m + " which is not a deserializable");
                     here.put(m, deserialized_obj[m]);
                 }
             }

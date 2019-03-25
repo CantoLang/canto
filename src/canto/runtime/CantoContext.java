@@ -84,10 +84,10 @@ public class CantoContext implements canto_context {
             init();
         }
         // strip off .keep if it's there
-        int ix = name.indexOf(".keep");
-        if (ix > 0) {
-            name = name.substring(0,  ix);
-        }
+        //int ix = name.indexOf(".keep");
+        //if (ix > 0) {
+        //    name = name.substring(0,  ix);
+        //}
         
         // find the definition if any corresponding to this name
         Instantiation instance = new Instantiation(new NameNode(name), context.peek().def);
