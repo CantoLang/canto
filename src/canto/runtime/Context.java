@@ -3757,6 +3757,8 @@ if (!isCorrectSize()) {
             definingDef = topEntry.def;
             if (sharesKeeps(entry, topEntry, false)) {
                 addKeepsFromEntry(entry);
+            } else if (entry.keepMap != null) {
+                //topEntry.cache.put
             }
         } else {
             stateCount = -1;
@@ -4141,7 +4143,7 @@ if (unpushedEntries == null) {
     }
   
     @SuppressWarnings("unchecked")
-	private static Object getKeepdData(Map<String, Object> cache, String key) {
+	private static Object getKeepData(Map<String, Object> cache, String key) {
         Object data = null;
 
         data = cache.get(key);
@@ -4155,14 +4157,14 @@ if (unpushedEntries == null) {
                 if (obj != null && obj instanceof Holder) {
                     Holder holder = (Holder) obj;
                     if (holder.data != null && holder.data instanceof Map<?,?>) {
-                        data = getKeepdData((Map<String, Object>) holder.data, restOfKey); 
+                        data = getKeepData((Map<String, Object>) holder.data, restOfKey); 
                     }
                 }
                 if (data == null) {
                     String keepKeepKey = firstKey + ".keep";
                     Map<String, Object> keepKeep = (Map<String, Object>) cache.get(keepKeepKey);
                     if (keepKeep != null) {
-                        data = getKeepdData(keepKeep, restOfKey);
+                        data = getKeepData(keepKeep, restOfKey);
                     }
                 }
             }
@@ -4918,7 +4920,7 @@ if (unpushedEntries == null) {
     
             if (data == null && c != null) {
                 String ckey = (c == globalKeep ? globalKey : key);
-                data = getKeepdData(c, ckey);
+                data = getKeepData(c, ckey);
                 if (data != null) {
 
                     if (data instanceof ElementDefinition) {
@@ -5023,11 +5025,6 @@ if (unpushedEntries == null) {
         }
 
         private void put(String key, Holder holder, Context context, int maxLevels) {
-
-if (key.equals("m") || key.endsWith(".m")) {
- System.out.println(" ...in entry " + this.toString() + " put key: " + key + " holder: " + holder.toString());    
-}
-            
             boolean kept = false;
             Definition nominalDef = holder.nominalDef;
             Map<String, Object> localKeep = getKeep();
@@ -5351,17 +5348,22 @@ if (key.equals("m") || key.endsWith(".m")) {
             if (keepKeep == null) {
                 // cache the keep cache in the owner entry in the context
                 Entry containerEntry = getOwnerContainerEntry(def);
-                if (containerEntry != null) {
+                if (containerEntry != null && containerEntry != this) {
                     String key = def.getName() + ".keep";
                     Map<String, Object> containerKeep = containerEntry.getKeep();
                     synchronized (containerKeep) {
                         keepKeep = (Map<String, Object>) containerKeep.get(key);
                         if (keepKeep == null) {
-                            keepKeep = newHashMap(Object.class);
-                            if (def.getDurability() != Definition.DYNAMIC) {
-                                containerKeep.put(key, keepKeep);
+                            Map<String, Object> containerKeepKeep = containerEntry.getKeepKeep();
+                            keepKeep = (Map<String, Object>) containerKeepKeep.get(key);
+                            if (keepKeep == null) {
+                                keepKeep = newHashMap(Object.class);
+                                if (def.getDurability() != Definition.DYNAMIC) {
+                                    containerKeep.put(key, keepKeep);
+                                    containerKeepKeep.put(key, keepKeep);
+                                }
+                                keepKeep.put("from", keepMap);
                             }
-                            keepKeep.put("from", keepMap);
                         } else {
                             vlog(" ---)> retrieving keep cache for " + def.getName() + " from " + containerEntry.def.getName());
                         }
