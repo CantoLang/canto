@@ -78,8 +78,11 @@ public class AliasedDefinition extends ExternalDefinition {
             // this is to make sure an object wrapper is created
             // when this definition is instantiated
             return this;
+        } else if (def instanceof AliasedDefinition) {
+            return def.getUltimateDefinition(context);
+        } else {
+            return def;
         }
-        return def;
     }
 
     public Definition getAliasedDefinition(Context context) {

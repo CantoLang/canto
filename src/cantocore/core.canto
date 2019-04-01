@@ -325,7 +325,7 @@ core {
                         ", ";
                     }
                     c;
-                    if (owner.defs[c] isa serializable) {
+                    if (!owner.defs[c].is_array && !owner.defs[c].is_table && owner.defs[c] isa serializable) {
                         ".keep";
                     }
                     ": ";
@@ -337,7 +337,7 @@ core {
                         ", ";
                     }
                     df.name;
-                    if (df isa serializable) {
+                    if (!df.is_array && !df.is_table && df isa serializable) {
                         ".keep";
                     }
                     ": ";

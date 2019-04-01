@@ -3198,10 +3198,10 @@ public stij {
 
         obj1.serialize;
         
-        obj2(obj1.serialize);
+        //obj2(obj1.serialize);
         
-        obj2.ij[0].i;
-        obj2.ij[1].j;
+        //obj2.ij[0].i;
+        //obj2.ij[1].j;
 
 }  
 
@@ -3283,7 +3283,7 @@ public dstk {
 }
 
 public dstij {
-        str = "{ ij.keep: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
+        str = "{ ij: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
 
         serializable(str) ijobj(str) {
             keep: i [/]
@@ -3313,7 +3313,7 @@ public dstbc {
 }
 
 public dstm {
-    keep: serializable obj1 {            
+    serializable obj1 {            
         keep: serializable y {
             keep: serializable z {
                 keep: m(x) = x
@@ -3334,9 +3334,9 @@ public dstm {
         }
     }
     obj1;
-    obj1.y.z.m;
-    //obj2(ser);
-    //obj2.y.z.m;
+    obj1.serialize;
+    obj2(ser);
+    obj2.y.z.m;
 }
 
 public dsta {
@@ -4496,7 +4496,7 @@ kt {=
         name = "Nested Keep Test"
         key = "nested_keep"
 
-        expected = "ABC"
+        expected = "ABCD"
         
         keep: abc {
             keep: a(x) = x
@@ -4504,7 +4504,12 @@ kt {=
                 keep: b(y) = y
                 keep: cc {
                     keep: c(z) = z
+                    keep: dd {
+                        keep: d(w) = w
+                        d("D");
+                    }
                     c("C");
+                    dd;
                 }
                 b("B");
                 cc;
@@ -4517,6 +4522,7 @@ kt {=
         abc.a;
         abc.bc.b;
         abc.bc.cc.c;        
+        abc.bc.cc.dd.d;
     }
 
 public nkt {

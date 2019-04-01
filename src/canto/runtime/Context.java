@@ -171,6 +171,10 @@ public class Context {
     private DefinitionInstance getContextDefInstance(Definition definition, ArgumentList args) {
         DefinitionInstance contextDefInstance = null;
 
+        if (definition instanceof AliasedDefinition) {
+            definition = definition.getUltimateDefinition(this);
+        }
+        
         // first resolve element references to element definitions,
         // which are handled below
         if (definition instanceof ElementReference) {
@@ -4143,28 +4147,28 @@ if (unpushedEntries == null) {
     }
   
     @SuppressWarnings("unchecked")
-	private static Object getKeepData(Map<String, Object> cache, String key) {
+	private static Object getKeepData(Map<String, Object> cache, String key, String fullKey) {
         Object data = null;
 
         data = cache.get(key);
 
-        if (data == null) {
-            int ix = key.indexOf('.');
+        if (data == null && fullKey != null) {
+            int ix = fullKey.indexOf('.');
             if (ix > 0) {
-                String firstKey = key.substring(0, ix);
-                String restOfKey = key.substring(ix + 1);
+                String firstKey = fullKey.substring(0, ix);
+                String restOfKey = fullKey.substring(ix + 1);
                 Object obj = cache.get(firstKey);
                 if (obj != null && obj instanceof Holder) {
                     Holder holder = (Holder) obj;
                     if (holder.data != null && holder.data instanceof Map<?,?>) {
-                        data = getKeepData((Map<String, Object>) holder.data, restOfKey); 
+                        data = getKeepData((Map<String, Object>) holder.data, key, restOfKey); 
                     }
                 }
                 if (data == null) {
                     String keepKeepKey = firstKey + ".keep";
                     Map<String, Object> keepKeep = (Map<String, Object>) cache.get(keepKeepKey);
                     if (keepKeep != null) {
-                        data = getKeepData(keepKeep, restOfKey);
+                        data = getKeepData(keepKeep, key, restOfKey);
                     }
                 }
             }
@@ -4920,7 +4924,7 @@ if (unpushedEntries == null) {
     
             if (data == null && c != null) {
                 String ckey = (c == globalKeep ? globalKey : key);
-                data = getKeepData(c, ckey);
+                data = getKeepData(c, ckey, globalKey);
                 if (data != null) {
 
                     if (data instanceof ElementDefinition) {
