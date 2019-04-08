@@ -5249,14 +5249,18 @@ if (unpushedEntries == null) {
                     if (keepObj instanceof Holder) {
                         keepObj = ((Holder) keepObj).data;
                     }
-                    @SuppressWarnings("unchecked")
-					Map<String, Object> parentKeepKeep = (Map<String, Object>) keepObj;
-                    if (parentKeepKeep != null) {
+                    try {
                         @SuppressWarnings("unchecked")
-						Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
-                        if (parentKeepMap != null) {
-                            localPut(parentKeepKeep, parentKeepMap, childKey, holder, false);
+    					Map<String, Object> parentKeepKeep = (Map<String, Object>) keepObj;
+                        if (parentKeepKeep != null) {
+                            @SuppressWarnings("unchecked")
+    						Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
+                            if (parentKeepMap != null) {
+                                localPut(parentKeepKeep, parentKeepMap, childKey, holder, false);
+                            }
                         }
+                    } catch (Exception e) {
+                        System.err.println("Exception getting parent keep map: " + e);
                     }
                 }
             }

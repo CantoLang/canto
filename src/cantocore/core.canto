@@ -291,7 +291,6 @@ core {
                         }
                         k;
                         if (t[k] isa definition) {
-                            ".keep: ";
                             handle_def(t[k]);
                         } else if (t[k] isa serializable) {
                             t[k].serialize;
