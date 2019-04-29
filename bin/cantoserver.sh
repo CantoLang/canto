@@ -412,9 +412,8 @@ case "$ACTION" in
         status
     ;;
 
-  *)
-    usage
-
+    *)
+        usage
     ;;
 esac
 

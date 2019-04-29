@@ -1548,6 +1548,10 @@ public class Context {
         if (data != null || resolvedInstance != null) {
             Logger.vlog(" - - - storing " + name + " in cache - - - ");
         }
+        if (name.endsWith(".keep")) {
+            System.out.println(" ----- direct put of " + name + "," + " value is " + (data == null ? "null" : (" a " + data.getClass().getName())));
+            (new Throwable()).printStackTrace();
+        }
         if (topEntry != null && name != null && name.length() > 0) {
             int maxKeepLevels = getMaxKeepLevels(nominalDef);
             updateDynamicKeeps(name, args);
@@ -5261,6 +5265,7 @@ if (unpushedEntries == null) {
                         }
                     } catch (Exception e) {
                         System.err.println("Exception getting parent keep map: " + e);
+                        e.printStackTrace();
                     }
                 }
             }
@@ -5362,6 +5367,7 @@ if (unpushedEntries == null) {
                     synchronized (containerKeep) {
                         keepKeep = (Map<String, Object>) containerKeep.get(key);
                         if (keepKeep == null) {
+System.out.println(".....adding keepkeep for " + key);                            
                             Map<String, Object> containerKeepKeep = containerEntry.getKeepKeep();
                             keepKeep = (Map<String, Object>) containerKeepKeep.get(key);
                             if (keepKeep == null) {
@@ -5390,6 +5396,7 @@ if (unpushedEntries == null) {
                     if (containerKeepKeep == null) {
                         keepKeep.put("from", keepMap);
                         if (def.getDurability() != Definition.DYNAMIC) {
+                            System.out.println("  ........adding keepkeep for " + key);                            
                             containerKeep.put(key, keepKeep);
                         }
                     }        
