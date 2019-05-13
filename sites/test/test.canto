@@ -3325,7 +3325,7 @@ public dstm {
         y;
     }
 
-    ser = "{ y.keep: { z.keep: { m: \"M\" } } }"
+    ser = "{ y: { z: { m: \"M\" } } }"
     serializable(ostr) obj2(ostr) {            
         keep: serializable y {
             keep: serializable z { 
@@ -3333,8 +3333,8 @@ public dstm {
             }
         }
     }
-    obj1;
-    obj1.serialize;
+    //obj1;
+    //obj1.serialize;
     obj2(ser);
     obj2.y.z.m;
 }

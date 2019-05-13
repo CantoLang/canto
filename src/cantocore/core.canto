@@ -324,9 +324,9 @@ core {
                         ", ";
                     }
                     c;
-                    if (!owner.defs[c].is_array && !owner.defs[c].is_table && owner.defs[c] isa serializable) {
-                        ".keep";
-                    }
+                    //if (!owner.defs[c].is_array && !owner.defs[c].is_table && owner.defs[c] isa serializable) {
+                    //    ".keep";
+                    //}
                     ": ";
                     handle_def(owner.defs[c]);
                 }
@@ -336,9 +336,9 @@ core {
                         ", ";
                     }
                     df.name;
-                    if (!df.is_array && !df.is_table && df isa serializable) {
-                        ".keep";
-                    }
+                    //if (!df.is_array && !df.is_table && df isa serializable) {
+                    //    ".keep";
+                    //}
                     ": ";
                     handle_def(df);
                 }
@@ -361,6 +361,8 @@ core {
             if (obj.def isa deserializable) {
                 log("obj is a deserializable, is a " + obj.type);
                 new_table;
+            } else if (!obj) {
+                log("obj is null");
             } else {
                 log("obj is not a deserializable, is a " + obj.type);
                 new_table;
@@ -377,7 +379,7 @@ core {
                         here.put(m, deserialized_obj[m]);
                     } else {
                         log("  ...caching " + m + " which is a deserializable");
-                        here.put(m + ".keep", table_for(deserialized_obj[m]));
+                        here.put(m + ".keep", deserialized_obj[m]);
                     }
                 } else {       
                     //log("  ...caching " + m + " which is not a deserializable");
