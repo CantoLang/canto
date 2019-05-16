@@ -4177,6 +4177,27 @@ if (unpushedEntries == null) {
                 }
             }
         }
+        if (data == null) {
+            int ix = key.indexOf('.');
+            if (ix > 0) {
+                String firstKey = key.substring(0, ix);
+                String restOfKey = key.substring(ix + 1);
+                Object obj = cache.get(firstKey);
+                if (obj != null && obj instanceof Holder) {
+                    Holder holder = (Holder) obj;
+                    if (holder.data != null && holder.data instanceof Map<?,?>) {
+                        data = getKeepData((Map<String, Object>) holder.data, key, restOfKey); 
+                    }
+                }
+                if (data == null) {
+                    String keepKeepKey = firstKey + ".keep";
+                    Map<String, Object> keepKeep = (Map<String, Object>) cache.get(keepKeepKey);
+                    if (keepKeep != null) {
+                        data = getKeepData(keepKeep, restOfKey, null);
+                    }
+                }
+            }
+        }
         return data;
     }
     
