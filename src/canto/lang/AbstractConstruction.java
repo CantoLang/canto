@@ -560,7 +560,13 @@ abstract public class AbstractConstruction extends AbstractNode implements Const
                         //if (isParameter() && nominalDef != null && !name.equals(nominalDef.getName())) {
                         //    name = nominalDef.getName();
                         //}
-                        context.putData(nominalDef, nominalArgs, def, defArgs, indexes, defName, data, ri);
+                        if (holder != null && holder.nominalDef == nominalDef && holder.nominalArgs == nominalArgs
+                                           && holder.def == def && holder.args == defArgs
+                                           && holder.data == data && holder.resolvedInstance == ri) {
+                            context.putData(defName, holder, indexes);
+                        } else {
+                            context.putData(nominalDef, nominalArgs, def, defArgs, indexes, defName, data, ri);
+                        }
                     }
                 }
                 return data;

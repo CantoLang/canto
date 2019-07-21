@@ -1544,21 +1544,26 @@ public class Context {
     /** Keeps data associated with the specified name
      *  in the current context.
      */
-    synchronized public void putData(Definition nominalDef, ArgumentList nominalArgs, Definition def, ArgumentList args, List<Index> indexes, String name, Object data, ResolvedInstance resolvedInstance) throws Redirection {
-        if (data != null || resolvedInstance != null) {
+    public void putData(Definition nominalDef, ArgumentList nominalArgs, Definition def, ArgumentList args, List<Index> indexes, String name, Object data, ResolvedInstance resolvedInstance) throws Redirection {
+        Holder holder = new Holder(nominalDef, nominalArgs, def, args, this, data, resolvedInstance);
+        putData(name, holder, indexes);
+    }
+        
+    synchronized public void putData(String name, Holder holder, List<Index> indexes) throws Redirection {
+        if (holder.data != null || holder.resolvedInstance != null) {
             Logger.vlog(" - - - storing " + name + " in cache - - - ");
         }
         if (name.endsWith(".keep")) {
-            System.out.println(" ----- direct put of " + name + "," + " value is " + (data == null ? "null" : (" a " + data.getClass().getName())));
+            System.out.println(" ----- direct put of " + name + "," + " value is " + (holder.data == null ? "null" : (" a " + holder.data.getClass().getName())));
             (new Throwable()).printStackTrace();
         }
         if (topEntry != null && name != null && name.length() > 0) {
-            int maxKeepLevels = getMaxKeepLevels(nominalDef);
-            updateDynamicKeeps(name, args);
+            int maxKeepLevels = getMaxKeepLevels(holder.nominalDef);
+            updateDynamicKeeps(name, holder.args);
 
             // use indexes as part of the key otherwise a cached element may be confused with a cached array 
             String key = addIndexesToKey(name, indexes);
-            topEntry.put(key, nominalDef, nominalArgs, def, args, this, data, resolvedInstance, maxKeepLevels);
+            topEntry.put(key, holder, this, maxKeepLevels);
         }
     }
 
@@ -5048,12 +5053,7 @@ if (unpushedEntries == null) {
          *  If the definition parameter is non-null, the data and the definition are
          *  wrapped in a Holder, which is cached.
          */
-        public void put(String key, Definition nominalDef, ArgumentList nominalArgs, Definition def, ArgumentList args, Context context, Object data, ResolvedInstance resolvedInstance, int maxLevels) {
-            Holder holder = new Holder(nominalDef, nominalArgs, def, args, context, data, resolvedInstance);
-            put(key, holder, context, maxLevels);
-        }
-
-        private void put(String key, Holder holder, Context context, int maxLevels) {
+        public void put(String key, Holder holder, Context context, int maxLevels) {
             boolean kept = false;
             Definition nominalDef = holder.nominalDef;
             Map<String, Object> localKeep = getKeep();

@@ -67,7 +67,6 @@ public class SiteLoader {
     private boolean multiThreaded;
     private boolean loadCore;
     private boolean configurable;
-    private boolean allowUnresolvedInstances;
     private String filter;
     private Object[] sources = null;
     private Node[] parseResults = null;
@@ -83,7 +82,6 @@ public class SiteLoader {
         this.multiThreaded = options.multiThreaded;
         this.loadCore = options.autoLoadCore;
         this.configurable = options.configurable;
-        this.allowUnresolvedInstances = options.allowUnresolvedInstances;
     }
 
     public SiteLoader(Core core, String siteName, String src, boolean isUrl) {

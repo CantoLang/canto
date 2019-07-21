@@ -636,7 +636,6 @@ The following example shows a definition with a single parameter and a correspon
         hello(nm) {
             [| <h1>Hello, {= nm; =}</h1> |]
         }
-
         hello("World");
     }
 ```
@@ -646,10 +645,8 @@ In the above, ```hello``` is defined with a single untyped parameter called ```n
     greetings {
         hello {
             nm = "World"
-
             [| <h1>Hello, {= nm; =}</h1> |]
         }
-
         hello;
     }
 ```
@@ -660,7 +657,6 @@ But this works only because in the initial version we instantiated ```hello``` j
         hello(nm) {
             [| <h1>Hello, {= nm; =}</h1> |]
         }
-
         hello("World");
     }
 ```
@@ -671,7 +667,6 @@ Just like other definitions, the name of a parameter must be unique in the scope
         hello {
             [| <h1>Hello, {= nm; =}</h1> |]
         }
-
         hello;
     }
 ```
@@ -1273,17 +1268,13 @@ which yields the following output:
 
 The ```keep``` keyword supports various options to further customize and control caching; these are described in the following sections.
 
-###12.2 Cache Exposure
+###12.2 Cache Options
 
+```keep as x```, where ```x``` is any valid name, specifies the name with which a definition's results are cached.  , a f  ```keep as``` specifies the name by which a definition's results are cached (cache aliasing).
 
+```keep by x```, where x is a definition name, makes it possible to dynamically generate the name by which a definition's results are cached (cache by key).
 
-###12.3 Cache Aliasing
-
-Canto allows a program to explicitly specify the name with which a definition's results are cached.  , a f  ```keep as``` specifies the name by which a definition's results are cached (cache aliasing).  This allows
-
-```keep by``` makes it possible to dynamically generate the name by which a definition's results are cached (cache by key).
-
-Finally, ```keep in``` allows the programmer to specify the table in which a definitions's results are cached (cache exposure).
+Finally, ```keep in x```, where x is the name of a defined table, allows the programmer to specify a table other that the default cache in which a definitions's results are cached (cache exposure).
 
 Exposing and controlling Canto's caching mechanism in this way forms the basis of a number of advanced techniques for managing state.  It also carries the potential of seamlessly integrating Canto's caching with external persistence mechanisms such as databases.
 
@@ -1294,7 +1285,7 @@ A scope always exists in a context.  This context is conceptually a stack, with 
 
 These contexts have two properties that are relevant to a Canto application.  One is that they are threadsafe; that is, Canto can construct many responses simultaneously, each one with its own context.  The second is that a context encapsulates the entire application state for a thread.
 
-Canto supports direct access to provides a special keyword, ```here```, provides the mechanism for capturing a continuation; and another keyword, continue, resumes a continuation.
+Canto supports direct access to provides a special keyword, ```here```, to access the context directly, for example to get or put values directly in the cache.
 
 
 

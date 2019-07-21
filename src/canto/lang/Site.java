@@ -175,6 +175,7 @@ public class Site extends ComplexDefinition {
     public Definition[] getDefinitions() {
         DefinitionHash defTable = (DefinitionHash) getDefinitionTable();
         synchronized (defTable) {
+            @SuppressWarnings("unchecked")
             Collection<Definition> defColl = (Collection<Definition>) defTable.values();
             Definition[] defs = new Definition[defColl.size()];
             defs = (Definition[]) defColl.toArray(defs);
@@ -184,7 +185,8 @@ public class Site extends ComplexDefinition {
     
     public void addDefinitionTable(DefinitionTable definitionTable) {
         DefinitionHash defTable = (DefinitionHash) getDefinitionTable();
-    	Set<Map.Entry<String, Definition>> defEntries = ((Map<String, Definition>) definitionTable).entrySet();
+    	@SuppressWarnings("unchecked")
+        Set<Map.Entry<String, Definition>> defEntries = ((Map<String, Definition>) definitionTable).entrySet();
     	Iterator<Map.Entry<String, Definition>> it = defEntries.iterator();
     	
     	while (it.hasNext()) {
@@ -194,6 +196,7 @@ public class Site extends ComplexDefinition {
     }
 
     /** Returns the definition table for this site, in the form of a Map. **/
+    @SuppressWarnings("unchecked")
     public Map<String, Definition> getDefinitionMap() {
         return (Map<String, Definition>) getDefinitionTable();
     }
@@ -204,6 +207,7 @@ public class Site extends ComplexDefinition {
      */
     public void addDefinitions(String type, List<Definition> list) {
         DefinitionHash defTable = (DefinitionHash) getDefinitionTable();
+        @SuppressWarnings("unchecked")
         Iterator<Definition> it = (Iterator<Definition>) defTable.values().iterator();
         synchronized (defTable) {
             while (it.hasNext()) {
@@ -228,6 +232,7 @@ public class Site extends ComplexDefinition {
      */
     public void addSubdefinitions(String type, List<Definition> list) {
         DefinitionHash defTable = (DefinitionHash) getDefinitionTable();
+        @SuppressWarnings("unchecked")
         Iterator<Definition> it = (Iterator<Definition>) defTable.values().iterator();
         synchronized (defTable) {
             while (it.hasNext()) {
@@ -544,6 +549,7 @@ public class Site extends ComplexDefinition {
          *  might be local or external.  Unless the definition is external, either
          *  <code>ownerName<code> or <code>node</code> must start with the site name.
          */
+        @SuppressWarnings("unchecked")
         public Definition getDefinition(NamedDefinition owner, NameNode node) {
             String ownerName = (owner == null ? "" : owner.getFullName());
             String name = node.getName();
@@ -633,17 +639,6 @@ public class Site extends ComplexDefinition {
             }
             return (Definition) entry;
         }
-
-        private ExternalDefinition fixArgs(ExternalDefinition externalDef, ArgumentList args) {
-            ArgumentList defArgs = externalDef.getArguments();
-            if ((args != null && !args.equals(defArgs)) || (args == null && defArgs != null)) {
-                log("would have rehaggled arguments for definition for " + externalDef.getFullName());
-                return externalDef; //.newForArgs(args);
-            } else {
-                return externalDef;
-            }
-        }
-
 
         /** Returns the internal definition (i.e., external definitions are
          *  ignored) for the indicated name in the context of the indicated owner,

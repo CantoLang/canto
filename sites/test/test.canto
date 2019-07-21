@@ -3333,8 +3333,9 @@ public dstm {
             }
         }
     }
-    //obj1;
-    //obj1.serialize;
+    obj1;
+    obj1.serialize;
+    obj1.y.z.m;
     obj2(ser);
     obj2.y.z.m;
 }
