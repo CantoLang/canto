@@ -257,7 +257,7 @@ core {
 
     /** object serialization **/
 
-    deserializable(*) serializable(str),(field_names[], field_values[]) {
+    serializable {
  
         dynamic serialize(child_names[]) {
 
@@ -307,13 +307,12 @@ core {
                 } else if (d isa serializable) {
                     d.serialize;
 
-                } else {                    
+                } else {
                     "\"";
                     d.get;
                     "\"";
                 }
             }
-            
 
             /--- serialize this object ---/
 
@@ -345,61 +344,59 @@ core {
             }
             " }\n";
         }
-    }        
-     
-     
-    deserializable(str),(field_names[], field_values[]) {
-        definition{} this_defs = owner.defs
-        definition{} this_keep_defs = owner.keep_defs
 
-        dynamic table_for(obj) {
-            new_table{} = { for definition kdf in obj.this_keep_defs {
-                               kdf.type: kdf.type
-                            }
-                          }
-                         
-            if (obj.def isa deserializable) {
-                log("obj is a deserializable, is a " + obj.type);
-                new_table;
-            } else if (!obj) {
-                log("obj is null");
-            } else {
-                log("obj is not a deserializable, is a " + obj.type);
-                new_table;
-            }
-        }
-       
-        if (str) {
-            //log("deserializing " + type + " from string \"" + str + "\"");    
-            deserialized_obj{} = table.parse(str)
-            for m in deserialized_obj.keys {
-                if (m in this_defs.keys && this_defs[m].is_a("deserializable")) {
-                    if (this_defs[m].is_array) {
-                        log("  ...caching " + m + " which is a deserializable array");
-                        here.put(m, deserialized_obj[m]);
-                    } else {
-                        log("  ...caching " + m + " which is a deserializable");
-                        here.put(m + ".keep", deserialized_obj[m]);
-                    }
-                } else {       
-                    //log("  ...caching " + m + " which is not a deserializable");
-                    here.put(m, deserialized_obj[m]);
+        dynamic deserialize(str),(field_names[], field_values[]) {
+            definition{} this_defs = owner.owner.defs
+            definition{} this_keep_defs = owner.owner.keep_defs
+
+            dynamic table_for(objdef) {
+                new_table{} = { for definition kdf in objdef.keep_defs {
+                                   kdf.type: kdf.type
+                                }
+                              }
+
+                if (objdef isa serializable) {
+                    log("obj is a serializable, is a " + objdef.name);
+                    new_table;
+                } else if (!objdef) {
+                    log("obj is null");
+                } else {
+                    log("obj is not a serializable, is a " + objdef.name);
+                    new_table;
                 }
             }
-        } else if (field_names) {
-            log("deserializing " + type + " from field names and values");
-            for nm in field_names and val in field_values {
-                log("  ....field name: " + nm + "  value: " + val); 
-                here.put(nm, val);
+
+            if (str) {
+                //log("deserializing " + type + " from string \"" + str + "\"");
+                deserialized_obj{} = table.parse(str)
+                for m in deserialized_obj.keys {
+                    if (m in this_defs.keys && this_defs[m].is_a("serializable")) {
+                        if (this_defs[m].is_array) {
+                            log("  ...caching " + m + " which is a serializable array");
+                            here.put(m, deserialized_obj[m]);
+                        } else {
+                            log("  ...caching " + m + " which is a serializable");
+                            here.put(m + ".keep", deserialized_obj[m]);
+                        }
+                    } else {
+                        //log("  ...caching " + m + " which is not a deserializable");
+                        here.put(m, deserialized_obj[m]);
+                    }
+                }
+            } else if (field_names) {
+                log("deserializing " + type + " from field names and values");
+                for nm in field_names and val in field_values {
+                    log("  ....field name: " + nm + "  value: " + val); 
+                    here.put(nm, val);
+                }
+            } else with (str) {
+                log("deserializing " + type + " from string, but string is null");
+            } else with (field_names) {
+                log("deserializing " + type + " from field names, but field name array is null");
+            } else {
+                log("deserializing " + type + ", but no arguments passed");
             }
-        } else with (str) {
-            log("deserializing " + type + " from string, but string is null");    
-        } else with (field_names) {
-            log("deserializing " + type + " from field names, but field name array is null");
-        } else {
-            log("deserializing " + type + ", but no arguments passed");
         }
-        sub;
     }
 
 

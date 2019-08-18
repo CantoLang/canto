@@ -3098,7 +3098,7 @@ oct9 {=
 
         expected = "ABCDEFGHIJKL"
 
-        serializable(str) ijobj(str) {
+        serializable ijobj {
             keep: i [/]
             keep: j [/]
         }
@@ -3128,11 +3128,11 @@ oct9 {=
             }
         }
              
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: a [/]
             keep: bc[] = []
             keep: de{} = {}
-            keep: serializable(s) fg(s) {
+            keep: serializable fg {
                 keep: f [/]
                 keep: g [/]
             }
@@ -3150,11 +3150,11 @@ oct9 {=
         obj3_nms[] = [ "h" ]
         obj3_vals[] = [ "H" ]
         
-        keep: serializable(nms, vals) obj3(nms[], vals[]) {
+        keep: serializable obj3 {
             keep: h [/]
         }  
 
-        obj2(obj1.serialize);
+        obj2.deserialize(obj1.serialize);
 
         obj2.a;
         obj2.bc[0];
@@ -3164,7 +3164,7 @@ oct9 {=
         obj2.fg.f;
         obj2.fg.g;
         
-        obj3(obj3_nms, obj3_vals);
+        obj3.deserialize(obj3_nms, obj3_vals);
         
         obj3.h;
         
@@ -3177,7 +3177,7 @@ oct9 {=
 
 
 public stij {
-        serializable(str) ijobj(str) {
+        serializable ijobj {
             keep: i = "x"
             keep: j = "x"
         }
@@ -3192,13 +3192,13 @@ public stij {
             keep: ijobj[] ij = [ iobj, jobj ]
         }
              
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: ijobj[] ij = []            
         }
 
         obj1.serialize;
         
-        //obj2(obj1.serialize);
+        //obj2.deserialize(obj1.serialize);
         
         //obj2.ij[0].i;
         //obj2.ij[1].j;
@@ -3210,11 +3210,11 @@ public stbc {
             keep: bc[] = [ "B", "C" ]
         }
              
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: bc[] = []
         }
         obj1.serialize;
-        obj2(obj1.serialize);
+        obj2.deserialize(obj1.serialize);
         obj2.bc[0];
         obj2.bc[1];
 }
@@ -3250,7 +3250,7 @@ public stkl {
             }
         }
              
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: serializable klm {
                 keep: k = "x"
                 keep: serializable lm {
@@ -3260,7 +3260,7 @@ public stkl {
             }
         }
         obj1.serialize;
-        obj2(obj1.serialize);
+        obj2.deserialize(obj1.serialize);
         obj2.klm.k;
         obj2.klm.lm.l;
         obj2.klm.lm.m;
@@ -3268,9 +3268,9 @@ public stkl {
 
 public dstk {
 
-        ser = "{ kl_parent.keep: { kl.keep: { l: \"L\", m: \"M\" } , k: \"K\" } }"
+        ser = "{ kl_parent.keep: { kl.keep: { l: \"L\", k: \"K\" } }"
         
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: serializable kl_parent {
                 keep: serializable kl {
                     keep: k [/]
@@ -3278,23 +3278,23 @@ public dstk {
                 }
             }
         }
-        obj2(ser);
+        obj2.deserialize(ser);
         obj2.kl_parent.kl.k;
 }
 
 public dstij {
         str = "{ ij: [ { i: \"I\", j: \"x\" }, { i: \"x\", j: \"J\" } ] }"
 
-        serializable(str) ijobj(str) {
+        serializable ijobj {
             keep: i [/]
             keep: j [/]
         }
 
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: ijobj[] ij = []            
         }
 
-        obj2(str);
+        obj2.deserialize(str);
         
         obj2.ij[0].i;
         obj2.ij[1].j;
@@ -3304,10 +3304,10 @@ public dstij {
 public dstbc {
         str = '{ bc: [ "B", "C" ] }'
              
-        serializable(str) obj2(str) {
+        serializable obj2 {
             keep: bc[] = []
         }
-        obj2(str);
+        obj2.deserialize(str);
         obj2.bc[0];
         obj2.bc[1];
 }
@@ -3326,7 +3326,7 @@ public dstm {
     }
 
     ser = "{ y: { z: { m: \"M\" } } }"
-    serializable(ostr) obj2(ostr) {            
+    serializable obj2 {            
         keep: serializable y {
             keep: serializable z { 
                 keep: m = "x"
@@ -3336,16 +3336,39 @@ public dstm {
     obj1;
     obj1.serialize;
     obj1.y.z.m;
-    obj2(ser);
+    obj2.deserialize(ser);
     obj2.y.z.m;
 }
 
+public dstz {
+    serializable obj1 {            
+        keep: serializable y {
+            keep: z(x) = x
+            z("Z");
+        }
+        y;
+    }
+
+    ser = "{ y: { z: \"Z\" } }"
+    serializable obj2 {            
+        keep: serializable y {
+            keep: z(x) = x
+        }
+    }
+    obj1;
+    obj1.serialize;
+    obj1.y.z;
+    obj2.deserialize(ser);
+    obj2.y.z;
+}
+
+
 public dsta {
     str = "{ a: \"A\" }"
-    serializable(str) obj2(str) {            
+    serializable obj2 {            
         keep: a [/]
     }
-    obj2(str);
+    obj2.deserialize(str);
     obj2.a;
 }    
 
