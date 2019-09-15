@@ -114,8 +114,12 @@ public class NamedDefinition extends AnonymousDefinition {
         setSuper(supertype);
         setName(name);
         setType(createType());
-
-        if (name instanceof NameWithParams  && ((NameWithParams) name).getNumParamLists() > 0) {
+        
+        // external definitions have complex names; the params are on the last part
+        if (name instanceof ComplexName) {
+            name = ((ComplexName) name).getLastPart();
+        }
+        if (name instanceof NameWithParams && ((NameWithParams) name).getNumParamLists() > 0) {
             setParamLists(((NameWithParams) name).getParamLists());
         } else {
             setParamLists(null);
