@@ -2977,8 +2977,16 @@ public class Context {
     
     
     public Definition initDef(Definition def, ArgumentList args, List<Index> indexes) throws Redirection {
+        ExternalDefinition externalDef = null;
+        
         if (def instanceof ExternalDefinition) {
-            def = ((ExternalDefinition) def).getDefForContext(this, args);
+            externalDef = (ExternalDefinition) def;
+        } else if (def instanceof DefinitionFlavor && ((DefinitionFlavor) def).def instanceof ExternalDefinition) {
+            externalDef = (ExternalDefinition) ((DefinitionFlavor) def).def;
+        }
+        
+        if (externalDef != null) {
+            def = externalDef.getDefForContext(this, args);
         }
 
 //        return dereference(def, args, indexes);

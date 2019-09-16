@@ -206,7 +206,7 @@ public class ForStatement extends AbstractConstruction implements ConstructionCo
         }
     }
 
-    private int pushParams(Context context, Object argObj) throws Redirection {
+    private int pushParams(Context context, Object argObj) {
         int n = 0;
         
         if (argObj instanceof ArgumentList) {
@@ -441,6 +441,7 @@ public class ForStatement extends AbstractConstruction implements ConstructionCo
                         } else if (data instanceof Iterator<?>) {
                             it = new ConstructionObjectIterator((Iterator<?>) data);
                         } else if (data instanceof Map<?,?>) {
+                            @SuppressWarnings("unchecked")
                             Collection<Construction> values = ((Map<String, Construction>) data).values();
                             if (values == null) {
                                 it = new EmptyIterator<Construction>();

@@ -345,6 +345,9 @@ core {
             " }\n";
         }
 
+        dynamic deserialize(str),(field_names[], field_values[]) [&]
+
+    /--------------------------------
         dynamic deserialize(str),(field_names[], field_values[]) {
             definition{} this_defs = owner.owner.defs
             definition{} this_keep_defs = owner.owner.keep_defs
@@ -397,6 +400,7 @@ core {
                 log("deserializing " + type + ", but no arguments passed");
             }
         }
+   -----------------------------/        
     }
 
 
