@@ -447,6 +447,8 @@ public interface Definition extends Name {
     public Map<String, Object> instantiate_table(Context context) throws Redirection;
     public Map<String, Object> instantiate_table(canto_context context) throws Redirection;
 
+    public void deserialize(String ser);
+    
     /** Go through all the parameter lists belonging to this definition and
      *  all the passed argument lists and select the best match (if any).
      *

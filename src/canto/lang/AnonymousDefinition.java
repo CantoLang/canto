@@ -1318,4 +1318,9 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
     public DefinitionInstance getDefInstance(ArgumentList args, List<Index> indexes) {
         return new DefinitionInstance(this, args, indexes);
     }
+
+    public void deserialize(String ser) {
+        System.out.println("******* deserialize: " + ser);
+    }
+    
 }

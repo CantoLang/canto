@@ -3356,8 +3356,8 @@ public dstz {
         }
     }
     obj1;
-    obj1.serialize;
-    obj1.y.z;
+    //obj1.serialize;
+    //obj1.y.z;
     obj2.deserialize(ser);
     obj2.y.z;
 }
