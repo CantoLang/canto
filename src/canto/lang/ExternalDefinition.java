@@ -202,7 +202,7 @@ public class ExternalDefinition extends ComplexDefinition {
         setOwner(def.getOwner());
         setObject(def.getObject());
         
-        Class<?> clazz = def.getExternalClass();
+        Class<?> clazz = def.getExternalClass(context);
         //if (CollectionDefinition.class.isAssignableFrom(clazz)) {
         //    Object obj = def.generateInstance(context);
         //    clazz = obj.getClass();
