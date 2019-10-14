@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import canto.lang.Definition;
 import canto.lang.Redirection;
 
 import java.util.*;
@@ -1001,6 +1002,10 @@ public class Utils {
             success = false;
         }
         return success;
+    }
+    
+    public static void deserialize(Context context, Definition def, String str, String[] field_names, String[] field_values) {
+        System.out.println("deserialize");
     }
     
     

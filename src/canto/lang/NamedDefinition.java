@@ -1053,7 +1053,9 @@ public class NamedDefinition extends AnonymousDefinition {
 
         } else if (node.getName().equals(Name.DEF)) {
             if (generate) {
-                return instantiate(args, indexes, context);
+                //return instantiate(args, indexes, context);
+                //return new CantoObjectWrapper(this, args, indexes, context);
+                return this;
             } else {
                 Definition aliasedDef = new AliasedDefinition(this, node);
                 return aliasedDef.getDefInstance(args, indexes);

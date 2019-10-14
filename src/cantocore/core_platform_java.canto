@@ -289,6 +289,9 @@ core {
 
     dynamic boolean rename_file(oldfilename, newfilename) = canto.runtime.Utils.renameFile(oldfilename, newfilename) 
 
+    /----- Deserialization -----/
+    
+    dynamic deser_impl(definition d, str, field_names[], field_values[]) = canto.runtime.Utils.deserialize(d, str, field_names, field_values)
 
     /----- Run a System Command -----/ 
 
