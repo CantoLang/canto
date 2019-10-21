@@ -95,6 +95,8 @@ abstract public class AbstractType extends NameNode implements Type {
                 return true;
             } else if (def.isSuperType(name)) {
                 return true;
+            } else if (def.getType().isTypeOf(name)) {
+                return true;
                 
             } else if (def instanceof ElementReference) {
                 try {

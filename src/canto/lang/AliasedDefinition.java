@@ -29,12 +29,19 @@ public class AliasedDefinition extends ExternalDefinition {
         Definition definitionDef = site.getDefinition("definition");
         if (definitionDef != null) {
            Type definitionType = definitionDef.getType();
-           Type st = def.getSuper();
-           if (st == null) {
-               setSuper(definitionType);
-           } else {
-               setSuper(TypeList.addTypes(st, definitionType));
-           }
+
+           setType(TypeList.addTypes(def.getType(),definitionType));
+           
+           //setSuper(def.getType());
+           //setType(definitionType);
+
+           //Type st = def.getSuper();
+           //
+           //if (st == null) {
+           //    setSuper(definitionType);
+           //} else {
+           //    setSuper(TypeList.addTypes(st, definitionType));
+           //}
         }
     }
 
