@@ -1415,7 +1415,7 @@ public class Context {
      *  equivalent of the specified definition in the current context, or null if there is none.
      */
     
-    public Definition getKeepdDefinition(Definition def, ArgumentList args) {
+    public Definition getKeepDefinition(Definition def, ArgumentList args) {
         String name = def.getName();
         String fullName = def.getFullNameInContext(this);
         Definition defInKeep = getDefinition(name, fullName, args);
@@ -5396,7 +5396,6 @@ if (unpushedEntries == null) {
                     synchronized (containerKeep) {
                         keepKeep = (Map<String, Object>) containerKeep.get(key);
                         if (keepKeep == null) {
-System.out.println(".....adding keepkeep for " + key);                            
                             Map<String, Object> containerKeepKeep = containerEntry.getKeepKeep();
                             keepKeep = (Map<String, Object>) containerKeepKeep.get(key);
                             if (keepKeep == null) {
@@ -5425,7 +5424,6 @@ System.out.println(".....adding keepkeep for " + key);
                     if (containerKeepKeep == null) {
                         keepKeep.put("from", keepMap);
                         if (def.getDurability() != Definition.DYNAMIC) {
-                            System.out.println("  ........adding keepkeep for " + key);                            
                             containerKeep.put(key, keepKeep);
                         }
                     }        

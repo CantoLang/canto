@@ -12,8 +12,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import canto.lang.CollectionDefinition;
 import canto.lang.Definition;
 import canto.lang.Redirection;
+import canto.lang.TableElement;
 
 import java.util.*;
 import java.io.*;
@@ -1004,10 +1006,32 @@ public class Utils {
         return success;
     }
     
-    public static void deserialize(Context context, Definition def, String str, String[] field_names, String[] field_values) {
-        System.out.println("deserialize");
+    public static void deserialize(Context context, Definition def, String str, String[] field_names, String[] field_values) throws Redirection {
+        System.out.println("deserialize " + ((str != null) ? str : Arrays.toString(field_names)));
+        
+        if (str != null) {
+            Map<String, Object> table = Table.parse(context, str);
+            handleTable(context, table);
+        }
     }
     
+    private static void handleTable(Context context, Map<String, Object> table) throws Redirection {
+        Set<String> keys = new TreeSet<String>(table.keySet());
+        for (String key: keys) {
+            Object obj = table.get(key);
+            if (obj instanceof TableElement) {
+                Object contents = ((TableElement) obj).getContents();
+                if (contents instanceof CollectionDefinition) {
+                    CollectionDefinition collectionDef = (CollectionDefinition) contents;
+                    handleTable(context, collectionDef.getTable(context, null, null));
+                } else {
+                    System.out.println("TableElement contents for " + key + " is a " + contents.getClass().getName());
+                }
+            } else {
+                System.out.println("!! Entry is not a TableElement for " + key + ": <" + obj.getClass().getName() + "> " + obj.toString());
+            }
+        }
+    }
     
     /** Get the current time in milliseconds elapsed since 1/1/1970 **/
     public static long current_time() {
