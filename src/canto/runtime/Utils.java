@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import canto.lang.CantoArray;
 import canto.lang.CollectionDefinition;
 import canto.lang.Definition;
 import canto.lang.Redirection;
@@ -1023,7 +1024,11 @@ public class Utils {
                 Object contents = ((TableElement) obj).getContents();
                 if (contents instanceof CollectionDefinition) {
                     CollectionDefinition collectionDef = (CollectionDefinition) contents;
-                    handleTable(context, collectionDef.getTable(context, null, null));
+                    if (collectionDef.isArray()) {
+                        handleArray(context, collectionDef.getArray(context, null, null));
+                    } else {
+                        handleTable(context, collectionDef.getTable(context, null, null));
+                    }
                 } else {
                     System.out.println("TableElement contents for " + key + " is a " + contents.getClass().getName());
                 }
@@ -1033,6 +1038,8 @@ public class Utils {
         }
     }
     
+    private static void handleArray(Context context, CantoArray array) throws Redirection {
+    }    
     /** Get the current time in milliseconds elapsed since 1/1/1970 **/
     public static long current_time() {
         return System.currentTimeMillis();

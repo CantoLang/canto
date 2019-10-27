@@ -759,7 +759,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
-if (((NameNode)reference).getName().startsWith("show_c")) {      // endsWith("deserialize")) {
+if (((NameNode)reference).getName().indexOf("deserialize") >= 0) {      // endsWith("deserialize")) {
   System.out.println("inst 763");
 }
            if (isParam || isParamChild) {

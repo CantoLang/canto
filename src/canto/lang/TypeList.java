@@ -219,12 +219,21 @@ public class TypeList extends ListNode<Type> implements Type {
      *  if this is not a collection type.
      */
     public List<Dim> getDims() {
-        throw new UnsupportedOperationException("TypeList doesn't support getDims()");
+        List<Dim> dims = null;
+        Iterator<Type> it = iterator();
+        while (it.hasNext()) {
+            Type t = it.next();
+            List<Dim> tdims = t.getDims();
+            if (dims == null || dims.size() == 0) {
+                dims = tdims;
+            } else if (tdims != null && tdims.size() > 0) {
+                throw new UnsupportedOperationException("Multiple-collection TypeList doesn't support getDims()");
+            }
+        }
+        return dims;
     }
 
-    /** Returns true only if the list is not empty and every type in the list represents
-     *  a collection.
-     */
+    /** Returns true if the list contains at least one collection type. */
     public boolean isCollection() {
         boolean iscoll = false;
         Iterator<Type> it = iterator();
@@ -232,8 +241,7 @@ public class TypeList extends ListNode<Type> implements Type {
             Type t = it.next();
             if (t.isCollection()) {
                 iscoll = true;
-            } else {
-                return false;
+                break;
             }
         }
         return iscoll;

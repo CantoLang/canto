@@ -3356,7 +3356,7 @@ public dstz {
         }
     }
     obj1;
-    //obj1.serialize;
+    obj1.serialize;
     //obj1.y.z;
     obj2.deserialize(ser);
     obj2.y.z;
@@ -3365,9 +3365,17 @@ public dstz {
 
 public dsta {
     str = "{ a: \"A\" }"
+    
+    serializable obj1 {
+        keep: a = "A"
+    }
+    
     serializable obj2 {            
         keep: a [/]
     }
+    
+    obj1.serialize;
+    
     obj2.deserialize(str);
     obj2.a;
 }    
