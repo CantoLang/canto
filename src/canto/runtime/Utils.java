@@ -1010,27 +1010,39 @@ public class Utils {
     public static void deserialize(Context context, Definition def, String str, String[] field_names, String[] field_values) throws Redirection {
         System.out.println("deserialize " + ((str != null) ? str : Arrays.toString(field_names)));
         
+        Context.Entry entry = def.getEntryInContext(context);
+        while (entry != null && entry.def.equalsOrExtends(def)) {
+            entry = entry.getPrevious();
+        }
+        if (entry == null) {
+        	throw new IllegalArgumentException("deserialize called for definition that isn't in context");
+        }
+        
+        Map<String, Object> cache = entry.getKeep();
+        
         if (str != null) {
             Map<String, Object> table = Table.parse(context, str);
-            handleTable(context, table);
+            handleTable(context, cache, def.getName(), table);
         }
     }
     
-    private static void handleTable(Context context, Map<String, Object> table) throws Redirection {
+    private static void handleTable(Context context, Map<String, Object> cache, String key, Map<String, Object> table) throws Redirection {
         Set<String> keys = new TreeSet<String>(table.keySet());
-        for (String key: keys) {
-            Object obj = table.get(key);
+        Map<String, Object> subcache = Context.newHashMap(Object.class);
+        cache.put(key + ".keep", subcache);
+        for (String itemKey: keys) {
+            Object obj = table.get(itemKey);
             if (obj instanceof TableElement) {
                 Object contents = ((TableElement) obj).getContents();
                 if (contents instanceof CollectionDefinition) {
                     CollectionDefinition collectionDef = (CollectionDefinition) contents;
                     if (collectionDef.isArray()) {
-                        handleArray(context, collectionDef.getArray(context, null, null));
+                        handleArray(context, subcache, itemKey, collectionDef.getArray(context, null, null));
                     } else {
-                        handleTable(context, collectionDef.getTable(context, null, null));
+                        handleTable(context, subcache, itemKey, collectionDef.getTable(context, null, null));
                     }
                 } else {
-                    System.out.println("TableElement contents for " + key + " is a " + contents.getClass().getName());
+                    handleItem(context, subcache, itemKey, contents);
                 }
             } else {
                 System.out.println("!! Entry is not a TableElement for " + key + ": <" + obj.getClass().getName() + "> " + obj.toString());
@@ -1038,8 +1050,14 @@ public class Utils {
         }
     }
     
-    private static void handleArray(Context context, CantoArray array) throws Redirection {
-    }    
+    private static void handleArray(Context context, Map<String, Object> cache, String key, CantoArray array) throws Redirection {
+    }
+    
+    private static void handleItem(Context context, Map<String, Object> cache, String key, Object item) throws Redirection {
+        cache.put(key, item);
+    }
+    
+   
     /** Get the current time in milliseconds elapsed since 1/1/1970 **/
     public static long current_time() {
         return System.currentTimeMillis();
