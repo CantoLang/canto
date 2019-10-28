@@ -291,7 +291,7 @@ core {
 
     /----- Deserialization -----/
     
-    dynamic deser_impl(definition d, str, field_names[], field_values[]) = canto.runtime.Utils.deserialize(d, str, field_names, field_values)
+    dynamic deser_impl(definition d, str, string[] field_names, field_values[]) = canto.runtime.Utils.deserialize(d, str, field_names, field_values)
 
     /----- Run a System Command -----/ 
 

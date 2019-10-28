@@ -16,6 +16,8 @@ import canto.lang.CantoArray;
 import canto.lang.CollectionDefinition;
 import canto.lang.Definition;
 import canto.lang.Redirection;
+import canto.lang.ResolvedArray;
+import canto.lang.ResolvedTable;
 import canto.lang.TableElement;
 
 import java.util.*;
@@ -1007,7 +1009,7 @@ public class Utils {
         return success;
     }
     
-    public static void deserialize(Context context, Definition def, String str, String[] field_names, String[] field_values) throws Redirection {
+    public static void deserialize(Context context, Definition def, String str, Object[] field_names, Object[] field_values) throws Redirection {
         System.out.println("deserialize " + ((str != null) ? str : Arrays.toString(field_names)));
         
         Context.Entry entry = def.getEntryInContext(context);
@@ -1041,6 +1043,10 @@ public class Utils {
                     } else {
                         handleTable(context, subcache, itemKey, collectionDef.getTable(context, null, null));
                     }
+                } else if (obj instanceof ResolvedArray) {
+                    handleArray(context, subcache, itemKey, ((ResolvedArray) obj).getArray());
+                } else if (obj instanceof ResolvedTable) {
+                    handleTable(context, subcache, itemKey, ((ResolvedTable) obj).getTable());
                 } else {
                     handleItem(context, subcache, itemKey, contents);
                 }
@@ -1051,6 +1057,15 @@ public class Utils {
     }
     
     private static void handleArray(Context context, Map<String, Object> cache, String key, CantoArray array) throws Redirection {
+        int size = array.getSize();
+        Object[] objArray = new Object[size];
+        Iterator<Object> it = array.iterator();
+        for (int i = 0; i < size && it.hasNext(); i++) {
+            Object item = it.next();
+            objArray[i] = item;
+            System.out.println(" array element " + i + " is a " + item.getClass().getName());
+        }
+        cache.put(key, objArray);
     }
     
     private static void handleItem(Context context, Map<String, Object> cache, String key, Object item) throws Redirection {

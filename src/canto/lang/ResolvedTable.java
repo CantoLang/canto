@@ -15,7 +15,7 @@ import java.util.Map;
 
 import canto.runtime.Context;
 
-class ResolvedTable extends ResolvedCollection {
+public class ResolvedTable extends ResolvedCollection {
 
     protected Map<String, Object> table = null;
     private CollectionDefinition collectionDef = null;
