@@ -1024,14 +1024,62 @@ public class Utils {
         
         if (str != null) {
             Map<String, Object> table = Table.parse(context, str);
-            handleTable(context, cache, def.getName(), table);
+            if (def.is_table()) {
+                handleTable(context, cache, def.getName(), table);
+            } else {
+                handleObject(context, cache, def, table);
+            }
+        }
+    }
+    
+    private static void handleObject(Context context, Map<String, Object> cache, Definition def, Map<String, Object> table) throws Redirection {
+        String key = def.getName();
+        Set<String> keys = new TreeSet<String>(table.keySet());
+        Map<String, Object> subcache = Context.newHashMap(Object.class);
+        cache.put(key + ".keep", subcache);
+        for (String itemKey: keys) {
+            Object obj = table.get(itemKey);
+            if (obj instanceof TableElement) {
+                Object contents = ((TableElement) obj).getContents();
+                if (contents instanceof CollectionDefinition) {
+                    CollectionDefinition collectionDef = (CollectionDefinition) contents;
+                    if (collectionDef.isArray()) {
+                        handleArray(context, subcache, itemKey, collectionDef.getArray(context, null, null));
+                    } else {
+                        Definition childDef = context.getDefinition(itemKey, null, null);
+                        if (childDef != null && !childDef.is_table()) {
+                            context.push(childDef, null, null);
+                            try {
+                                handleObject(context, subcache, childDef, collectionDef.getTable(context, null, null));
+                            } finally {
+                                context.pop();
+                            }
+                        } else {
+                            handleTable(context, subcache, itemKey, collectionDef.getTable(context, null, null));
+                        }
+                    }
+                } else if (contents instanceof ResolvedArray) {
+                    handleArray(context, subcache, itemKey, ((ResolvedArray) contents).getArray());
+                } else if (obj instanceof ResolvedTable) {
+                    Definition childDef = context.getDefinition(itemKey, null, null);
+                    if (childDef != null && !childDef.is_table()) {
+                        handleObject(context, subcache, childDef, ((ResolvedTable) obj).getTable());
+                    } else {
+                        handleTable(context, subcache, itemKey, ((ResolvedTable) obj).getTable());
+                    }
+                } else {
+                    handleItem(context, subcache, itemKey, contents);
+                }
+            } else {
+                System.out.println("!! Entry is not a TableElement for " + key + ": <" + obj.getClass().getName() + "> " + obj.toString());
+            }
         }
     }
     
     private static void handleTable(Context context, Map<String, Object> cache, String key, Map<String, Object> table) throws Redirection {
         Set<String> keys = new TreeSet<String>(table.keySet());
         Map<String, Object> subcache = Context.newHashMap(Object.class);
-        cache.put(key + ".keep", subcache);
+        cache.put(key, subcache);
         for (String itemKey: keys) {
             Object obj = table.get(itemKey);
             if (obj instanceof TableElement) {
