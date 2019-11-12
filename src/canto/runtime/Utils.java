@@ -1105,12 +1105,24 @@ public class Utils {
     }
     
     private static void handleArray(Context context, Map<String, Object> cache, String key, CantoArray array) throws Redirection {
+        Definition def = context.getDefinition(key, null, null);
+        if (!(def instanceof CollectionDefinition)) {
+            throw new IllegalArgumentException("Expected CollectionDefinition, got " + def.getClass().getName());
+        }
+
+        Definition itemDef = ((CollectionDefinition) def).getElementType().getDefinition();
         int size = array.getSize();
         Object[] objArray = new Object[size];
         Iterator<Object> it = array.iterator();
         for (int i = 0; i < size && it.hasNext(); i++) {
             Object item = it.next();
-            objArray[i] = item;
+            if (item instanceof ResolvedTable && itemDef != null && !itemDef.is_table()) {
+                Map<String, Object> subcache = Context.newHashMap(Object.class);
+                handleObject(context, subcache, itemDef, ((ResolvedTable) item).getTable());
+                objArray[i] = subcache;
+            } else {
+                objArray[i] = item;
+            }
             System.out.println(" array element " + i + " is a " + item.getClass().getName());
         }
         cache.put(key, objArray);

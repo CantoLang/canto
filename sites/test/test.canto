@@ -3306,7 +3306,9 @@ public dstij {
 
         obj1.serialize;
         obj2.deserialize(str);
-        
+
+        "<hr/>";
+                
         obj2.ij[0].i;
         obj2.ij[1].j;
 
