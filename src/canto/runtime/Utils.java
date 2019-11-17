@@ -1033,10 +1033,14 @@ public class Utils {
     }
     
     private static void handleObject(Context context, Map<String, Object> cache, Definition def, Map<String, Object> table) throws Redirection {
-        String key = def.getName();
+        String key = def.getName() + ".keep";
         Set<String> keys = new TreeSet<String>(table.keySet());
-        Map<String, Object> subcache = Context.newHashMap(Object.class);
-        cache.put(key + ".keep", subcache);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> subcache = (Map<String, Object>) cache.get(key);
+        if (subcache == null) {
+            subcache = Context.newHashMap(Object.class);
+            cache.put(key, subcache);
+        }
         for (String itemKey: keys) {
             Object obj = table.get(itemKey);
             if (obj instanceof TableElement) {
@@ -1071,7 +1075,7 @@ public class Utils {
                     handleItem(context, subcache, itemKey, contents);
                 }
             } else {
-                System.out.println("!! Entry is not a TableElement for " + key + ": <" + obj.getClass().getName() + "> " + obj.toString());
+                System.out.println("!! Entry is not a TableElement for " + itemKey + ": <" + obj.getClass().getName() + "> " + obj.toString());
             }
         }
     }
