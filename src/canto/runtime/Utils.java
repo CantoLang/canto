@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import canto.lang.CantoArray;
 import canto.lang.CollectionDefinition;
 import canto.lang.Definition;
+import canto.lang.NameNode;
 import canto.lang.Redirection;
 import canto.lang.ResolvedArray;
 import canto.lang.ResolvedTable;
@@ -1042,6 +1043,7 @@ public class Utils {
             cache.put(key, subcache);
         }
         for (String itemKey: keys) {
+        	//Definition itemDef = def.getChildDefinition(new NameNode(itemKey), context);
             Object obj = table.get(itemKey);
             if (obj instanceof TableElement) {
                 Object contents = ((TableElement) obj).getContents();
@@ -1123,10 +1125,9 @@ public class Utils {
             if (item instanceof ResolvedTable && itemDef != null && !itemDef.is_table()) {
                 Map<String, Object> subcache = Context.newHashMap(Object.class);
                 handleObject(context, subcache, itemDef, ((ResolvedTable) item).getTable());
-                objArray[i] = subcache;
-            } else {
-                objArray[i] = item;
+                item = subcache;
             }
+            objArray[i] = item;
             System.out.println(" array element " + i + " is a " + item.getClass().getName());
         }
         cache.put(key, objArray);

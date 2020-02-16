@@ -3290,25 +3290,36 @@ public dstij {
             keep: j [/]
         }
 
-        serializable obj1 {
-            ijobj iobj {
-                keep: i = "I"
+        keep: serializable obj1 {
+            keep: ijobj iobj {
+                keep: i(x) = x
+                
+                i("I");
             }
-            ijobj jobj {
-                keep: j = "J"
+            keep: ijobj jobj {
+                keep: j(x) = x
+                
+                j("J");
             }
             keep: ijobj[] ij = [ iobj, jobj ]
+            
+            jobj;
+            iobj;
         }
              
         serializable obj2 {
             keep: ijobj[] ij = []            
         }
 
+        obj1;
         obj1.serialize;
         obj2.deserialize(str);
 
         "<hr/>";
                 
+        obj1.ij[0].i;
+        obj1.ij[0].i;
+        
         obj2.ij[0].i;
         obj2.ij[1].j;
 
