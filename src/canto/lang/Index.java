@@ -99,7 +99,7 @@ public class Index extends AbstractNode {
     }
     
     public String getModifierString(Context context) {
-        String str = toString();
+        String str = getKey(context);
         
         // find loop parameters
         AbstractNode node = (AbstractNode) getChild(0);

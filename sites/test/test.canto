@@ -2212,6 +2212,12 @@ public lpt {
         }
     }
 
+public dat {
+        pq[] = [ "x", "P", "x", "Q" ]
+        nested_array_with_expression_index[] = [ for i from 0 to 2 { pq[(2 * i + 1)] } ]
+        for pp in nested_array_with_expression_index {= pp; =}
+}
+
     public test_case dynamic_array_element_child_test {
         int category = collections
         name = "Dynamic Array Element Child Test"
@@ -2589,6 +2595,11 @@ public dtcet {
         table_sub_sub["p"];
         table_sub_sub["o"];
     }
+
+public tt {
+        fixed_table{} = { "": "D", "item_a": "A", "item_b": item_b, "item_c": "C" }
+        fixed_table[""];
+}
 
     public test_case table_parameter_test {
         int category = collections
@@ -3297,7 +3308,7 @@ public dstij {
                 i("I");
             }
             keep: ijobj jobj {
-                keep: j(x) = x
+                keep: j(z) = z
                 
                 j("J");
             }
@@ -3311,15 +3322,24 @@ public dstij {
             keep: ijobj[] ij = []            
         }
 
-        obj1;
+        //obj1;
+        
+        dash;
+        
+        obj1.ij;
+
+        dash;        
+        
+        obj1.ij[0].i;
+        obj1.ij[1].j;
+
+        hr;
+        
         obj1.serialize;
         obj2.deserialize(str);
 
-        "<hr/>";
+        hr;
                 
-        obj1.ij[0].i;
-        obj1.ij[0].i;
-        
         obj2.ij[0].i;
         obj2.ij[1].j;
 
@@ -4185,20 +4205,6 @@ public ct {
 
 
 
-    string[] abc = [ "A", "B", "C" ]
-    string[] defg = [ "D", "E", "F", "G" ]
-    string[] empty_array = []
-    string[] test_array(x) = x
-    array_parent {
-        keep: string[] child_array(z) = z
-        
-        eval(child_array(: defg :));
-    }
-    
-    array_parent array_parent_sub [/]
-
-    array_parent cached_array_parent(array_parent ap) = ap
-
     public test_case cached_array_test {
         int category = caching
         name = "Cached Array Test"
@@ -4206,6 +4212,20 @@ public ct {
     
         expected = "ABCDEF"
     
+        string[] abc = [ "A", "B", "C" ]
+        string[] defg = [ "D", "E", "F", "G" ]
+        string[] empty_array = []
+        string[] test_array(x) = x
+        array_parent {
+            keep: string[] child_array(z) = z
+            
+            eval(child_array(: defg :));
+        }
+        
+        array_parent array_parent_sub [/]
+    
+        array_parent cached_array_parent(array_parent ap) = ap
+
         eval(test_array(: empty_array :));
         for x in test_array {
             x;
@@ -4232,6 +4252,20 @@ public ct {
     }
 
 cat {=
+        string[] abc = [ "A", "B", "C" ]
+        string[] defg = [ "D", "E", "F", "G" ]
+        string[] empty_array = []
+        string[] test_array(x) = x
+        array_parent {
+            keep: string[] child_array(z) = z
+            
+            eval(child_array(: defg :));
+        }
+        
+        array_parent array_parent_sub [/]
+    
+        array_parent cached_array_parent(array_parent ap) = ap
+
         eval(array_parent);
         array_parent.child_array[0];
         
@@ -5489,6 +5523,23 @@ public hot {=
         cached_obj_array[3].msg;
         cached_obj_array[4].msg;
     } 
+
+public coac {
+       ao(z) {
+           keep: msg = z
+           this;
+        }
+        
+        ao[] aos = [ ao(: "D" :), ao(: "E" :) ]
+        
+        ao[] cached_obj_array(ao[] y) = y
+        
+        eval(cached_obj_array(aos));
+        
+        cached_obj_array[0].msg;
+        cached_obj_array[1].msg;
+
+}
 
 
     public test_case aliased_sub_child_test {

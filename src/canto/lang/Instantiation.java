@@ -614,7 +614,8 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 
             // We don't cache collection element references, just the collection objects.
             // This could be changed to look at the cacheability of the indexes.
-            if (nameNode.hasIndexes()) {
+            if (nameNode.hasIndexes() && !nameNode.getLastPart().hasIndexes()) {
+                System.out.println("getting cacheability of " + nameNode);
                 return NOT_CACHEABLE_INFO;
 
             // We also don't cache count references
@@ -759,7 +760,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
-if (((NameNode)reference).getName().indexOf("deserialize") >= 0) {      // endsWith("deserialize")) {
+if (((NameNode)reference).getName().indexOf("obj1") >= 0) {      // endsWith("deserialize")) {
   System.out.println("inst 763");
 }
            if (isParam || isParamChild) {
