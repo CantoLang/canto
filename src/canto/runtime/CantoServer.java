@@ -592,10 +592,11 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
                 CantoSite s = load(nm, cp, r, false);
                 sites.put(nm, s);
             }
-            
-            // have to relink to catch intersite references
-            SiteBuilder.log("--- SUPERLINK PASS ---");
-            link(mainSite.getParseResults());
+        }    
+        // have to relink to catch intersite references and unresolved types
+        SiteBuilder.log("--- SUPERLINK PASS ---");
+        link(mainSite.getParseResults());
+        if (sites.size() > 0) {
             Iterator<CantoSite> it = sites.values().iterator();
             while (it.hasNext()) {
                 link(it.next().getParseResults());
