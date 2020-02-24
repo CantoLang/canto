@@ -20,7 +20,7 @@ import canto.runtime.Context;
  * @version $Revision: 1.10 $
  */
 
-public class IndexedInstanceReference extends NamedDefinition {
+public class IndexedInstanceReference extends CollectionDefinition {
     private List<Index> indexes;
     private ResolvedInstance instance;
     private CollectionInstance collection;

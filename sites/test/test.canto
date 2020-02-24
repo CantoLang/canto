@@ -1388,6 +1388,41 @@ site test {
         k3[2];
     }
 
+public iat {
+        ia_target {
+            child [| B |]
+            [| A |]  
+        }
+
+        ia_array[] = [ ia_target, ia_table, ia_table_2, "X" ]
+        ia_array_2[] = [ "X", "D" ]
+        
+        ia_table{} = { "c": "C", "d": ia_array_2 }
+        ia_table_2{} = { "E": "x", "F": "x", "G": "x" }
+
+        ia_array_type[] = []
+        ia_array_type complex_def_returning_array {
+            if (1) {
+                ia_array;
+            }
+        }
+        ia_3_to_table_2{} = complex_def_returning_array[2]
+
+        untyped_complex_def_returning_array {
+            if (1) {
+                ia_array;
+            }
+        }
+        ia_4_to_table_2{} = untyped_complex_def_returning_array[2]
+        
+        k3[] = ia_3_to_table_2.keys
+        k3[2];
+
+        k4[] = ia_4_to_table_2.keys
+        k4[1];
+
+}
+ 
     
     public test_case aliased_array_test {
         int category = instantiations
@@ -2599,6 +2634,7 @@ public dtcet {
 public tt {
         fixed_table{} = { "": "D", "item_a": "A", "item_b": item_b, "item_c": "C" }
         fixed_table[""];
+        fixed_table["item_a"];
 }
 
     public test_case table_parameter_test {
@@ -7287,8 +7323,8 @@ ft {=
         dynamic boolean server_is_running = (server_started && this_server.get_server("test_server").is_running);
         
         dynamic get_a = this_server.get_server("test_server").get("a")
-        dynamic deserializable(this_server.get_server("test_server").get("bc")) get_bc [/]
-        dynamic deserializable(this_server.get_server("test_server").get("de")) get_de [/]
+        dynamic serializable get_bc = deserialize(this_server.get_server("test_server").get("bc"))
+        dynamic serializable get_de = deserialize(this_server.get_server("test_server").get("de"))
 
         bc[] = get_bc
         de{} = get_de
