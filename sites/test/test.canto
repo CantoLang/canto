@@ -1416,10 +1416,10 @@ public iat {
         ia_4_to_table_2{} = untyped_complex_def_returning_array[2]
         
         k3[] = ia_3_to_table_2.keys
-        k3[2];
+        k3[1];
 
         k4[] = ia_4_to_table_2.keys
-        k4[1];
+        k4[2];
 
 }
  
