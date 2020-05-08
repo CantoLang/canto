@@ -51,6 +51,10 @@ public class IndexedInstanceReference extends NamedDefinition {
         return true;
     }
 
+    public boolean isCollection() {
+        return false;
+    }
+
     public NameNode getNameNode() {
         return new NameWithIndexes(instance.getName(), indexes);
     }
