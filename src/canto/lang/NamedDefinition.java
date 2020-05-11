@@ -1780,7 +1780,14 @@ public class NamedDefinition extends AnonymousDefinition {
             if (def == null) {
                 return UNDEFINED;
             } else {
-                return def.instantiate(args, indexes, context);
+                Object data = null;
+                if (def.getDurability() != Definition.DYNAMIC) {
+                    data = context.getData(def, def.getName(), args, indexes);
+                }
+                if (data == null) {
+                    data = def.instantiate(args, indexes, context); 
+                }
+                return data;
             }
 
         } else {

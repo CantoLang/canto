@@ -3339,14 +3339,16 @@ public dstij {
 
         keep: serializable obj1 {
             keep: ijobj iobj {
-                keep: i(x) = x
-                
-                i("I");
+                i(x) = x
+
+                eval(i("I"));
+                this;
             }
             keep: ijobj jobj {
-                keep: j(z) = z
-                
-                j("J");
+                j(z) = z
+
+                eval(j("J"));
+                this;
             }
             keep: ijobj[] ij = [ iobj, jobj ]
             
@@ -5539,7 +5541,7 @@ public hot {=
         expected = "ABCDE"
     
         ao(z) {
-           keep: msg = z
+           msg = z
            this;
         }
         
@@ -5562,19 +5564,22 @@ public hot {=
 
 public coac {
        ao(z) {
-           keep: msg = z
+           msg = z
            this;
         }
         
-        ao[] aos = [ ao(: "D" :), ao(: "E" :) ]
+        ao[] aos = [ ao(: "A" :), ao(: "B" :), ao(: "C" :), ao(: "D" :), ao(: "E" :) ]
         
         ao[] cached_obj_array(ao[] y) = y
         
+        ao rr = cached_obj_array[2]
+        
         eval(cached_obj_array(aos));
         
-        cached_obj_array[0].msg;
-        cached_obj_array[1].msg;
+        rr.msg;
 
+        cached_obj_array[3].msg;
+        cached_obj_array[4].msg;
 }
 
 
