@@ -650,7 +650,24 @@ site test {
         
         mosub("A");
     }
+
+public sis {
+    mo(x) {
+        x;
+        sub;
+    }
     
+    mo(y) momo(y) {
+        "C";
+    }
+    
+    mo(z) mosub(z) {
+        momo("B");
+        mo("D");
+    }
+    
+    mosub("A");
+}    
     
     public test_case special_names_test {
         int category = syntax
@@ -3339,13 +3356,13 @@ public dstij {
 
         keep: serializable obj1 {
             keep: ijobj iobj {
-                i(x) = x
+                keep: i(y) = y
 
                 eval(i("I"));
                 this;
             }
             keep: ijobj jobj {
-                j(z) = z
+                keep: j(z) = z
 
                 eval(j("J"));
                 this;

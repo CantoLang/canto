@@ -93,6 +93,11 @@ public interface Definition extends Name {
     /** Returns the access modifier. */
     public int getAccess();
 
+    /** Convenience method; returns true if this is a local definition
+     *  (i.e., access is LOCAL_ACCESS).
+     */
+    public boolean isLocal();
+
     /** Returns the durability modifier. */
     public int getDurability();
 
@@ -257,7 +262,7 @@ public interface Definition extends Name {
 
     /** Returns true if this definition has a child definition by the specified name.
      */
-    public boolean hasChildDefinition(String name);
+    public boolean hasChildDefinition(String name, boolean localAllowed);
 
     /** Returns the keep statement in this definition for the specified key.
      */

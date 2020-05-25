@@ -1217,7 +1217,7 @@ public class Context {
                             }
                             Definition keepDef = keyOwner.getChildDefinition(kh.keepName, clonedContext);
                             Object keyObj = null;
-                            if (keepDef != null && keepDef.hasChildDefinition(kh.byName.getName())) {
+                            if (keepDef != null && keepDef.hasChildDefinition(kh.byName.getName(), true)) {
                                 // temporarily restore the stack in case the definition has to access
                                 // parameters that have been unpushed; however, keep track with numUnpushes
                                 // so as to not throw off the finally clause should there be an
@@ -1316,6 +1316,9 @@ public class Context {
         if (name == null || name.length() == 0) {
             return null;
         }
+if (name.equals("i") || name.endsWith(".i") || name.equals("j") || name.endsWith(".j")) {
+ System.out.println("** " + name + " at Context 1320");   
+}
         String fullName = (def == null ? name : def.getFullNameInContext(this));
 
         Object data = null;
@@ -4846,7 +4849,7 @@ if (unpushedEntries == null) {
                 if (this.def == null) {
                     return null;
                 }
-                if (!local && link != null && !this.def.hasChildDefinition(key) && !NameNode.isSpecialName(key)) {
+                if (!local && link != null && !this.def.hasChildDefinition(key, true) && !NameNode.isSpecialName(key)) {
                     return link.get(key, globalKey, args, getDefHolder, false);
                 } else {
                     return null;
@@ -5018,7 +5021,7 @@ if (unpushedEntries == null) {
             }
 
             // continue up the context chain
-            if (data == null && (def == null || !getDefHolder) && !local && link != null && !this.def.hasChildDefinition(key) && !NameNode.isSpecialName(key)) {
+            if (data == null && (def == null || !getDefHolder) && !local && link != null && !this.def.hasChildDefinition(key, true) && !NameNode.isSpecialName(key)) {
                 return link.get(key, globalKey, args, getDefHolder, false);
             }
 
@@ -5133,7 +5136,7 @@ if (unpushedEntries == null) {
                 // keep directives intercept cache updates
                 if (maxLevels > 0) maxLevels--;
                 if (!kept && maxLevels != 0) {
-                    if (this.def.hasChildDefinition(key)) {
+                    if (this.def.hasChildDefinition(key, true)) {
                         KeepStatement keep = this.def.getKeep(key);
                         if (keep == null || !(keep.isInContainer() || keep.getTableInstance() != null /* || this.def.equals(link.def) */ )) {
                             return;
@@ -5306,7 +5309,7 @@ if (unpushedEntries == null) {
             if ((cache != null && cache.get(key) != null) ||
                     (keepMap != null && keepMap.get(key) != null) ||
                     hasSiteKeep(def) ||
-                    this.def.hasChildDefinition(key)) {
+                    this.def.hasChildDefinition(key, true)) {
 
                 put(key, holder, context, maxLevels);
             } else {

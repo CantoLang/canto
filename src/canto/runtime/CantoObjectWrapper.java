@@ -171,7 +171,7 @@ public class CantoObjectWrapper {
     }
         
     public boolean isChildDefined(String name) {
-        return def.hasChildDefinition(name);
+        return def.hasChildDefinition(name, true);
     }
     
     public String toString() {

@@ -226,7 +226,7 @@ public class KeepStatement extends CantoStatement {
             instances[names.length].setOwner(owner);
             defs[names.length] = instances[names.length].getDefinition(context);
             if (defs[names.length] == null) {
-                if (defs[0].hasChildDefinition(as.getName())) {
+                if (defs[0].hasChildDefinition(as.getName(), true)) {
                     defs[names.length] = defs[0].getChildDefinition(as, context);
                 //} else {    
                 //    throw new Redirection(Redirection.STANDARD_ERROR, "Undefined name in keep statement: " + as.getName());

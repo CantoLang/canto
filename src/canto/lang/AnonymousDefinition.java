@@ -360,6 +360,13 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
         return access;
     }
 
+    /** Convenience method; returns true if this is a local definition
+     *  (i.e., access is LOCAL_ACCESS).
+     */
+    public boolean isLocal() {
+        return (access == LOCAL_ACCESS);
+    }
+
     protected void setDurability(int dur) {
         this.dur = dur;
     }
@@ -795,7 +802,7 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
     /** Unnamed definitions are opaque, and the definitions they contain
      *  cannot be retrieved, so the base class returns false.
      */
-    public boolean hasChildDefinition(String name) {
+    public boolean hasChildDefinition(String name, boolean localAllowed) {
         return false;
     }
 

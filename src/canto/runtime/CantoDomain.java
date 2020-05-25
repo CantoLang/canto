@@ -587,10 +587,10 @@ public class CantoDomain implements canto_domain {
     public boolean isDefined(String name) {
         boolean defined = false;
         if (defaultSite != null) {
-            defined = defaultSite.hasChildDefinition(name);
+            defined = defaultSite.hasChildDefinition(name, false);
         }
         if (!defined && site != null) {
-            defined = site.hasChildDefinition(name);
+            defined = site.hasChildDefinition(name, false);
         }
         return defined;
     }

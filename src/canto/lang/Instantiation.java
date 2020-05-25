@@ -760,7 +760,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
-if (((NameNode)reference).getName().indexOf("msg") >= 0) {
+if (((NameNode)reference).getName().indexOf("serialize") >= 0) {
   System.out.println(((NameNode)reference).getName() + " at inst 763");
 }
            if (isParam || isParamChild) {

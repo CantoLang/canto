@@ -127,8 +127,8 @@ public class BoundDefinition extends NamedDefinition {
         return def.getChildDefinition(name, boundContext);
     }
 
-    public boolean hasChildDefinition(String name) {
-        return def.hasChildDefinition(name);
+    public boolean hasChildDefinition(String name, boolean localAllowed) {
+        return def.hasChildDefinition(name, localAllowed);
     }
 
     public KeepStatement getKeep(String key)   { return def.getKeep(key); }

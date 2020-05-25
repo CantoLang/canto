@@ -168,7 +168,7 @@ public class NamedDefinition extends AnonymousDefinition {
             } else if (checkIdentity(aliasName)) {
                 notAlias = true;
                 
-            } else if (hasChildDefinition(aliasName)) {
+            } else if (hasChildDefinition(aliasName, true)) {
                 notAlias = true;
             }
 
@@ -804,7 +804,7 @@ public class NamedDefinition extends AnonymousDefinition {
         return identity;
     }
 
-    public boolean hasChildDefinition(String name) {
+    public boolean hasChildDefinition(String name, boolean localAllowed) {
         if (name == OWNER || name == TYPE || name == COUNT || name == SUB || name == SUPER || name == NEXT || name == NEXT) {
             return true;
         }
@@ -817,13 +817,19 @@ public class NamedDefinition extends AnonymousDefinition {
             for (NamedDefinition nd = getSuperDefinition(); nd != null && !nd.isPrimitive(); nd = nd.getSuperDefinition()) {
                 def = nd.getDefinitionTable().getInternalDefinition(nd.getFullName(), name);
                 if (def != null) {
-                   return true;
+if (def.isLocal()) {
+  System.out.println("hasChildDef finds local def " + def.getFullName() + " in supertype");
+}
+                   return (localAllowed || !def.isLocal());
                 }
             }
             return false;
 
         } else {
-            return true;
+if (!localAllowed && def.isLocal()) {
+ System.out.println("hasChildDef finds local def " + def.getFullName());
+}
+            return (localAllowed || !def.isLocal());
         }
     }
 
@@ -1467,7 +1473,7 @@ public class NamedDefinition extends AnonymousDefinition {
                     Instantiation instance = (Instantiation) construction;
                     NameNode name = instance.getReferenceName();
                     // avoid regression
-                    if (name != null && !node.equals(name) && !hasChildDefinition(name.getName()) && (resolver == null || !resolver.getNameNode().equals(name))) {
+                    if (name != null && !node.equals(name) && !hasChildDefinition(name.getName(), true) && (resolver == null || !resolver.getNameNode().equals(name))) {
                         Definition contentDef = instance.getDefinition(context, this, false);
                         if (contentDef == null || contentDef == this) {
                             Type contentType = instance.getType(context, generate);
@@ -1606,7 +1612,7 @@ public class NamedDefinition extends AnonymousDefinition {
                         Definition precedingDef = context.peek().def;
                         if (precedingDef.isAlias() && getName().equals(precedingDef.getAlias().getName())) {
                             nd = precedingDef.getSuperDefinition();
-                            if (!nd.equals(this) && nd.hasChildDefinition(node.getName())) {
+                            if (!nd.equals(this) && nd.hasChildDefinition(node.getName(), false)) {
                                 Type superSt = precedingDef.getSuper();
                                 ArgumentList superSuperArgs = superSt.getArguments(context);
                                 ParameterList superSuperParams = nd.getParamsForArgs(superSuperArgs, context);
@@ -2071,7 +2077,7 @@ public class NamedDefinition extends AnonymousDefinition {
                     Definition precedingDef = context.peek().def;
                     if (precedingDef.isAlias() && getName().equals(precedingDef.getAlias().getName())) {
                         nd = precedingDef.getSuperDefinition();
-                        if (!nd.equals(this) && nd.hasChildDefinition(node.getName())) {
+                        if (!nd.equals(this) && nd.hasChildDefinition(node.getName(), false)) {
                             Type st = precedingDef.getSuper();
                             ArgumentList superArgs = st.getArguments(context);
                             ParameterList superParams = nd.getParamsForArgs(superArgs, context);

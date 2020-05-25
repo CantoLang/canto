@@ -87,7 +87,7 @@ public class TableBuilder extends CollectionBuilder {
                 sb.append(": ");
                 Definition def = (collectionDef == null ? null : ResolvedCollection.getElementDefinitionForCollection(element, collectionDef, context));
                 Construction construction = AbstractConstruction.getConstructionForElement(element, context);
-                if (def != null && def.hasChildDefinition("decorate_element")) {
+                if (def != null && def.hasChildDefinition("decorate_element", true)) {
                     List<Construction> list = new SingleItemList<Construction>(construction);
                     ArgumentList args = new ArgumentList(list);
                     Object data = def.getChild(new NameNode("decorate_element"), args, null, null, context, true, true, null, null);
