@@ -3369,36 +3369,83 @@ public dstij {
             }
             keep: ijobj[] ij = [ iobj, jobj ]
             
-            jobj;
-            iobj;
+            ij;
         }
              
+        keep: serializable obj11 {
+            keep: ijobj iiobj {
+                keep: i(y) = y
+
+                eval(i("I"));
+                this;
+            }
+            keep: ijobj jjobj {
+                keep: j(z) = z
+
+                eval(j("J"));
+                this;
+            }
+            keep: ijobj[] ji = [ iiobj, jjobj ]
+            
+            eval(ji);
+        }
+
         serializable obj2 {
             keep: ijobj[] ij = []            
         }
 
-        //obj1;
+        obj1;
         
         dash;
         
-        obj1.ij;
+        obj11;
 
-        dash;        
+        //dash;        
         
-        obj1.ij[0].i;
-        obj1.ij[1].j;
+        //obj1.ij[0].i;
+        //obj1.ij[1].j;
 
         hr;
-        
         obj1.serialize;
-        obj2.deserialize(str);
-
         hr;
-                
+        obj11.serialize;
+        hr;
+
+        obj2.deserialize(obj1.serialize);
+        dash;
         obj2.ij[0].i;
         obj2.ij[1].j;
 
 }  
+
+public evala {
+    
+    keep: ab_ev {
+        a = "A"
+        b = "B"
+    
+        keep: ab[] = [ a, b ]
+        
+        eval(ab);
+    }
+    
+    keep: cd_noev {
+        c = "C"
+        d = "D"
+        
+        keep: cd[] = [ c, d ]
+        
+        cd;
+    }
+    
+    ab_ev;
+    dash;
+    ab_ev.ab;
+    hr;
+    cd_noev;
+    dash;
+    cd_noev.cd;
+}
 
 public dstbc {
         str = '{ bc: [ "B", "C" ] }'

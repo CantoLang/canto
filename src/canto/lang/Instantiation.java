@@ -909,6 +909,10 @@ if (((NameNode)reference).getName().indexOf("serialize") >= 0) {
 //                }
 //            }
 
+if (nm.indexOf("jobj") >= 0) {
+    System.out.println(nm + " at inst 913");
+ }
+
             if (def == null) {
             	int n = name.numParts();
                 
