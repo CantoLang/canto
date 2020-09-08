@@ -3418,6 +3418,64 @@ public dstij {
 
 }  
 
+public ij1 {
+        serializable ijobj {
+            keep: i [/]
+            keep: j [/]
+        }
+
+        keep: serializable obj1 {
+            keep: ijobj iobj {
+                keep: i(y) = y
+
+                eval(i("I"));
+                this;
+            }
+            keep: ijobj jobj {
+                keep: j(z) = z
+
+                eval(j("J"));
+                this;
+            }
+            keep: ijobj[] ij = [ iobj, jobj ]
+            
+            ij;
+        }
+
+        obj1;
+        hr;
+        obj1.serialize;
+}  
+
+public ij2 {
+        serializable ijobj {
+            keep: i [/]
+            keep: j [/]
+        }
+
+        keep: serializable obj11 {
+            keep: ijobj iiobj {
+                keep: i(y) = y
+
+                eval(i("I"));
+                this;
+            }
+            keep: ijobj jjobj {
+                keep: j(z) = z
+
+                eval(j("J"));
+                this;
+            }
+            keep: ijobj[] ji = [ iiobj, jjobj ]
+            
+            eval(ji);
+        }
+
+        obj11;
+        hr;
+        obj11.serialize;
+}  
+
 public evala {
     
     keep: ab_ev {
@@ -6005,7 +6063,7 @@ show_this_context {=
                 <p><b><font color="#EE0000">No session parameter in content!</font></b></p>
             |]
                
-            [| <p>This web application is designed to test an implementation of the Fun
+            [| <p>This web application is designed to test an implementation of the Canto
                language. It provides access to two kinds of tests, standard and advanced.
                Standard tests are non-interactive and report the test results in a simple,
                standardized format, making it possible to automate their execution and the
