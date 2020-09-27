@@ -176,7 +176,7 @@ site test {
         name = "Arithmetic Test"
         key = "arithmetic"
 
-        expected = "ABC"
+        expected = "ABCDE"
 
         int n = 2
         float f = 1.999999999999999
@@ -190,6 +190,12 @@ site test {
 
         int expr3 = (int) f
         if (expr3 == 1) [| C |]
+        
+        int d = pow(2, 3)
+        if (d == 8) [| D |]
+        
+        float e = pow(6.25, 0.5)
+        if (e == 2.5) [| E |] else { e; }
     }
 
 
@@ -5699,6 +5705,7 @@ public coac {
         eval(cached_obj_array(aos));
         
         rr.msg;
+        
 
         cached_obj_array[3].msg;
         cached_obj_array[4].msg;

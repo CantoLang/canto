@@ -1142,6 +1142,10 @@ public class Utils {
     public static long current_time() {
         return System.currentTimeMillis();
     }
+
+    public double pow(double a, double b) {
+        return Math.pow(a, b);
+    }  
 }
 
 class TokenIterator implements Iterator<String> {

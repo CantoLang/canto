@@ -76,6 +76,7 @@ core {
 
     /------ Math ------/
     
+    dynamic number pow(number i, number j) = canto.runtime.Utils.pow(i, j)
 
     /------ Useful types ------/
 
