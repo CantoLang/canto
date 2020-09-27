@@ -267,6 +267,9 @@ abstract public class CantoVisitor implements CantoParserVisitor {
     public Object visit(ParsedModOperator node, Object data) {
         return handleNode(node, data);
     }
+    public Object visit(ParsedPowerOperator node, Object data) {
+        return handleNode(node, data);
+    }
     public Object visit(ParsedNegateOperator node, Object data) {
         return handleNode(node, data);
     }

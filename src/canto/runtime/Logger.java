@@ -479,6 +479,10 @@ public class Logger implements CantoParserVisitor {
         logIfVerbose("ModOperator:");
         return handleNode(node, data);
     }
+    public Object visit(ParsedPowerOperator node, Object data) {
+        logIfVerbose("PowerOperator:");
+        return handleNode(node, data);
+    }
     public Object visit(ParsedNegateOperator node, Object data) {
         logIfVerbose("NegateOperator:");
         return handleNode(node, data);

@@ -191,11 +191,11 @@ site test {
         int expr3 = (int) f
         if (expr3 == 1) [| C |]
         
-        int d = pow(2, 3)
+        int d = 2**3
         if (d == 8) [| D |]
         
-        float e = pow(6.25, 0.5)
-        if (e == 2.5) [| E |] else { e; }
+        float e = 6.25**0.5
+        if (e == 2.5) [| E |]
     }
 
 

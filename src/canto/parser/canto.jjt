@@ -2428,7 +2428,7 @@ void SubtractOperator() :
 void MultiplicativeExpression() #BinaryExpression(>1):
 {}
 {
-    OrExpression() ( (MultiplyOperator() | DivideByOperator() | ModOperator()) OrExpression() )*
+    PowerExpression() ( (MultiplyOperator() | DivideByOperator() | ModOperator()) PowerExpression() )*
 }
 
 void MultiplyOperator() :
@@ -2447,6 +2447,18 @@ void ModOperator() :
 {}
 {
     "%"
+}
+
+void PowerExpression() #BinaryExpression(>1):
+{}
+{
+    OrExpression() ( PowerOperator() OrExpression() )*
+}
+
+void PowerOperator() :
+{}
+{
+    "**"
 }
 
 void OrExpression() #BinaryExpression(>1):
