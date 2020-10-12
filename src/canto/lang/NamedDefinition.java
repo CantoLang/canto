@@ -814,16 +814,12 @@ public class NamedDefinition extends AnonymousDefinition {
 
         // if not found, try supertypes
         if (def == null) {
-            for (NamedDefinition nd = getSuperDefinition(); nd != null && !nd.isPrimitive(); nd = nd.getSuperDefinition()) {
-                def = nd.getDefinitionTable().getInternalDefinition(nd.getFullName(), name);
-                if (def != null) {
-if (def.isLocal()) {
-  System.out.println("hasChildDef finds local def " + def.getFullName() + " in supertype");
-}
-                   return (localAllowed || !def.isLocal());
-                }
+            NamedDefinition nd = getSuperDefinition();
+            if (nd != null && !nd.isPrimitive()) {
+                return nd.hasChildDefinition(name, localAllowed);
+            } else {
+                return false;
             }
-            return false;
 
         } else {
 if (!localAllowed && def.isLocal()) {

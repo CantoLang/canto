@@ -6883,7 +6883,7 @@ x67 {=
     }
 
 
-    dynamic mutation_example {
+    public dynamic mutation_example {
         modable_object {
             keep as this in container: _get = init
             keep as this in container: dynamic _set(x) = x

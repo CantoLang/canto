@@ -897,4 +897,15 @@ class MultiDefinition extends NamedDefinition {
         }
         return failed;
     }
+
+    public boolean hasChildDefinition(String name, boolean localAllowed) {
+        Iterator<Definition> it = definitions.iterator();
+        while (it.hasNext()) {
+            Definition def = it.next();
+            if (def.hasChildDefinition(name, localAllowed)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
