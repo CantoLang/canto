@@ -4266,6 +4266,9 @@ if (unpushedEntries == null) {
             this.containerKey = containerKey;
             this.cache = cache;
             this.persist = persist;
+if (key.toString().endsWith("_get")) {
+  System.out.println("pointer to " + key + " at ctx 4270");  
+}
         }
 
         public String getKey() {
@@ -4727,9 +4730,16 @@ if (unpushedEntries == null) {
                         for (int i = 0; i < numInstances; i++) {
                             if (resolvedInstances[i] != null) {
                                 Pointer p = new Pointer(resolvedInstances[i], riAs, keyObj, containerKey, table, persist);
-                                String keepKey = (inContainer ? key : resolvedInstances[i].getName());
+                                String keepKey = resolvedInstances[i].getName();
                                 keepMap.put(keepKey, p);
-                        
+                                keepMap.put(key, p);
+
+                                if (inContainer) {
+                                    p = new Pointer(resolvedInstances[i], containerKey + keepKey, containerKey, containerTable, persist);
+                                    keepMap.put("+" + keepKey, p);
+                                    keepMap.put("+" + key, p);
+                                }
+                                
                                 String contextKey = def.getFullName() + '.' + keepKey;
                                 contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
                                 Pointer contextp = new Pointer(resolvedInstances[i], riAs, contextKey, containerKey, contextKeep, persist);
@@ -4768,7 +4778,7 @@ if (unpushedEntries == null) {
                                 p = new Pointer(resolvedInstances[i], containerKey + name, containerKey, containerTable, persist);
                                 keepMap.put("+" + name, p);
                             }
-
+    
                             String contextKey = def.getFullName() + '.' + name;
                             contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
                             Pointer contextp = new Pointer(resolvedInstances[i], contextKey, containerKey, contextKeep, persist);

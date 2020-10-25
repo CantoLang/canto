@@ -4604,21 +4604,27 @@ cat {=
         test_cache["n"];
     }
 
-kt {=
-        keep: parent_cache{} = {}
-        keep in parent_cache: child_cache{} = {}
-        child_cache get_child_cache = parent_cache["child_cache"]
-
-        keep_H {
-            keep in child_cache:
-            h = "H"
-
-            eval(h);
+public kt {=
+        test_cache{} = {}
+        j {
+            keep as this in test_cache:
+            jj = "J"
+           
+            eval(jj);
         }
-        
-        keep_H;
-
-        get_child_cache["h"];
+        k {
+            keep as this in container:
+            kk = "K"
+           
+            eval(kk);
+        }
+        k;
+        hr;
+        k;
+        hr;
+        j;
+        hr;
+        test_cache["j"];
 =}
 
     keep_not_test {
@@ -6885,8 +6891,8 @@ x67 {=
 
     public dynamic mutation_example {
         modable_object {
-            keep as this in container: _get = init
-            keep as this in container: dynamic _set(x) = x
+            keep in container: _get = init
+            keep as _get in container: dynamic _set(x) = x
             dynamic set(x) = eval(_set(x))
             dynamic get = _get
             init [?]
@@ -6929,6 +6935,23 @@ x67 {=
         [| </b> |]
         
     }
+
+public mut {       
+        int modable_integer {
+            keep as this in container: dynamic int _set(int n) = n
+            keep as this in container: int _get = 0
+            dynamic int _add(a, b) = a + b
+            dynamic set(int val) = eval(_set(val))
+            dynamic add(int val) = eval(_set(_add(_get, val)))
+        }
+
+        modable_integer z = 0
+        z; 
+        z.set(1);
+        z;
+        z.set(2);
+        z;
+}
 
 
     foo {
