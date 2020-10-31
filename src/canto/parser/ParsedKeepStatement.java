@@ -22,7 +22,7 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
     private boolean hasAsThis = false;
     private boolean hasDynamicAs = false;
     private boolean hasBy = false;
-    private boolean isPrefix = false;
+    private boolean isPrefix = true;
 
     public ParsedKeepStatement(int id) {
         super();
@@ -47,10 +47,6 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
 
     public void setHasBy(boolean hasBy) {
         this.hasBy = hasBy;
-    }
-
-    public void setIsPrefix(boolean isPrefix) {
-        this.isPrefix = isPrefix;
     }
 
     public void init() {

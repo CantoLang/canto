@@ -26,7 +26,6 @@ public class KeepStatement extends CantoStatement {
     private NameNode byName = null;
     private boolean asIncluded = false;
     private Instantiation tableInstance;
-    private boolean persist = false;
     private boolean inContainer = false;
 
     public KeepStatement() {
@@ -250,14 +249,6 @@ public class KeepStatement extends CantoStatement {
 
     public Instantiation getTableInstance() {
         return tableInstance;
-    }
-
-    public void setPersist(boolean persist) {
-        this.persist = persist;
-    }
-
-    public boolean isPersist() {
-        return persist;
     }
 
     public String toString(String prefix) {

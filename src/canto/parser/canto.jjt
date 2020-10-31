@@ -671,9 +671,8 @@ KeepStatement KeepPrefix() #KeepStatement:
         "by" TypeName() { jjtThis.setHasBy(true); }
     ]
     [ "in" InstanceExpression() ]
-    ":" { jjtThis.setIsPrefix(true); }     
+    ":"     
     {
-        jjtThis.setPersist(true);
         return jjtThis;
     }
 }
