@@ -380,6 +380,7 @@ public class Context {
 
     @SuppressWarnings("unchecked")
     private void keep(KeepStatement k) throws Redirection {
+        
         Map<String, Object> table = null;
         Instantiation instance = k.getTableInstance();
 
@@ -447,25 +448,23 @@ public class Context {
             }
         }
         if (table != null) {
-            ResolvedInstance[] resolvedInstances = k.getResolvedInstances(this);
-            ResolvedInstance ri = resolvedInstances[0];
-            ResolvedInstance riAs = null;
-            Name asName = k.getAsName(this);
+            ResolvedInstance ri = k.getResolvedDefInstance(this);
+            ResolvedInstance riAs = k.getResolvedAsInstance(this);
+            Name asName = k.getAsName();
             Name byName = k.getByName();
             String key = null;
             boolean asthis = false;
             if (asName != null) {
                 key = asName.getName();
                 if (key == Name.THIS) {
-                    key = topEntry.def.getName();
+                    key = definingDef.getName();
                     asthis = true;
                 }
-                riAs = resolvedInstances[1];
 
             } else if (byName != null) {
                 NameNode keepName = k.getDefName();
                 Definition owner = getDefiningDef();
-                KeepHolder keepHolder = new KeepHolder(keepName, owner, resolvedInstances, (NameNode) byName, table, inContainer, asthis);
+                KeepHolder keepHolder = new KeepHolder(keepName, owner, ri, riAs, (NameNode) byName, table, inContainer, asthis);
                 topEntry.addDynamicKeep(keepHolder);
                 return;
             }
@@ -1260,8 +1259,8 @@ public class Context {
                             Entry containerEntry = null;
                             Map<String, Object> containerTable = null;
                             String containerKey = null;
-                            ResolvedInstance ri = kh.resolvedInstances[0];
-                            ResolvedInstance riAs = (kh.resolvedInstances.length > 1 ? kh.resolvedInstances[1] : null);
+                            ResolvedInstance ri = kh.resolvedDefInstance;
+                            ResolvedInstance riAs = kh.resolvedAsInstance;
                             if (kh.inContainer) {
                                 // back up to the new frame entry
                                 for (Entry e = topEntry; e.getPrevious() != null; e = e.getPrevious()) {
@@ -4223,29 +4222,22 @@ if (unpushedEntries == null) {
     static class KeepHolder {
         public NameNode keepName;
         public Definition owner;
-        public ResolvedInstance[] resolvedInstances;
+        public ResolvedInstance resolvedDefInstance;
+        public ResolvedInstance resolvedAsInstance;
         public NameNode byName;
         public Map<String, Object> table;
         public boolean inContainer;
         public boolean asThis;
 
-        KeepHolder(NameNode keepName, Definition owner, ResolvedInstance[] resolvedInstances, NameNode byName, Map<String, Object> table, boolean inContainer, boolean asThis) {
+        KeepHolder(NameNode keepName, Definition owner, ResolvedInstance ri, ResolvedInstance riAs, NameNode byName, Map<String, Object> table, boolean inContainer, boolean asThis) {
             this.keepName = keepName;
             this.owner = owner;
-            this.resolvedInstances = resolvedInstances;
+            this.resolvedDefInstance = ri;
+            this.resolvedAsInstance = riAs;
             this.byName = byName;
             this.table = table;
             this.inContainer = inContainer;
             this.asThis = asThis;
-        }
-
-        Definition[] getDefinitions() {
-            int numDefs = resolvedInstances.length;
-            Definition[] defs = new Definition[numDefs];
-            for (int i = 0; i < numDefs; i++) {
-                defs[i] = resolvedInstances[i].getDefinition();
-            }
-            return defs;
         }
     }
     
@@ -4261,12 +4253,12 @@ if (unpushedEntries == null) {
         }
         public Pointer(ResolvedInstance ri, ResolvedInstance riAs, Object key, Object containerKey, Map<String, Object> cache) {
             this.ri = ri;
-            this.riAs = riAs;
+            this.riAs = (riAs == null ? ri : riAs);
             this.key = key;
             this.containerKey = containerKey;
             this.cache = cache;
 //if (key.toString().endsWith("_get")) {
-  System.out.println("pointer to " + key + " at ctx 4270");  
+//  System.out.println("pointer to " + key + " at ctx 4270");  
 //}
         }
 

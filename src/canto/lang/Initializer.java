@@ -2,7 +2,7 @@
  * 
  * Initializer.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -88,7 +88,8 @@ public class Initializer extends CantoVisitor {
                 site.addAdopt((AdoptStatement) node);
 
             } else if (node instanceof KeepStatement) {
-                def.addKeep((KeepStatement) node);
+                KeepStatement keep = (KeepStatement) node;
+                def.addKeep(keep);
 
             } else if (node instanceof AbstractConstruction) {
                 if (((AbstractConstruction) node).hasSub()) {

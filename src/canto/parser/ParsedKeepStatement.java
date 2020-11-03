@@ -20,7 +20,6 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
 
     private boolean hasAs = false;
     private boolean hasAsThis = false;
-    private boolean hasDynamicAs = false;
     private boolean hasBy = false;
 
     public ParsedKeepStatement(int id) {
@@ -40,10 +39,6 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
         this.hasAsThis = hasAsThis;
     }
 
-    public void setHasDynamicAs(boolean hasDynamicAs) {
-        this.hasDynamicAs = hasDynamicAs;
-    }
-
     public void setHasBy(boolean hasBy) {
         this.hasBy = hasBy;
     }
@@ -55,14 +50,12 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
         	
             if (hasAs) {
                 setAsName((NameNode) children[0]);
-                numNames++;
+                numNames = 1;
             } else if (hasAsThis) {
                 setAsName(new NameNode(Name.THIS));
-            } else if (hasDynamicAs) {
-                setAsNameGenerator(children[0]);
-                numNames++;
             } else if (hasBy) {
                 setByName((NameNode) children[0]);
+                numNames = 1;
             }
             if (numNames < len) {
                 Instantiation instance = (Instantiation) getChild(len - 1);

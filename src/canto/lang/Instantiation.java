@@ -2,7 +2,7 @@
  * 
  * Instantiation.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -870,7 +870,12 @@ if (((NameNode)reference).getName().indexOf("serialize") >= 0) {
         ArgumentList args = getArguments();
         List<Index> prefixIndexes = null;
         ArgumentList prefixArgs = null;
- 
+
+if (getOwner() == null) {
+  System.out.println("instance " + getName() + " has no owner");
+  return null;
+}
+        
         NamedDefinition owner = (NamedDefinition) getOwner().getSubdefInContext(context);
 
         int numPushes = 0;

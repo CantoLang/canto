@@ -2,7 +2,7 @@
  * 
  * Resolver.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -32,6 +32,9 @@ public class Resolver extends CantoVisitor {
                 super.handleNode(node, new ParameterList(newList));
             }
             return data;
+        } else if (node instanceof KeepStatement) {
+            KeepStatement keep = (KeepStatement) node;
+            keep.createInstances();
         } else if (node instanceof Instantiation) {
             ((Instantiation) node).resolve(data);
         } else if (node instanceof Type) {
