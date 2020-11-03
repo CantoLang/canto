@@ -2,7 +2,7 @@
  * 
  * ParsedKeepStatement.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -22,7 +22,6 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
     private boolean hasAsThis = false;
     private boolean hasDynamicAs = false;
     private boolean hasBy = false;
-    private boolean isPrefix = true;
 
     public ParsedKeepStatement(int id) {
         super();
@@ -52,41 +51,21 @@ public class ParsedKeepStatement extends KeepStatement implements Initializable 
     public void init() {
     	if (children != null && children.length > 0) {
             int len = children.length;
-    		CantoNode lastChild = getChild(len - 1);
-            int i = 0;
-            int numNames;
-        	if (isPrefix) {
-        		numNames = 0;
-        	} else {
-        		numNames = len;
-            	if (len > 1 && lastChild instanceof Instantiation) {
-                	numNames--;
-            	}
-            	if (hasAs || hasDynamicAs || hasBy) {
-                	numNames--;
-            	}
-                NameNode[] names = new NameNode[numNames];
-
-                while (i < numNames) {
-                    names[i] = (NameNode) children[i];
-                    i++;
-                }
-                setNames(names);
-        	}
+            int numNames = 0;
         	
             if (hasAs) {
-                setAsName((NameNode) children[i]);
+                setAsName((NameNode) children[0]);
                 numNames++;
             } else if (hasAsThis) {
                 setAsName(new NameNode(Name.THIS));
             } else if (hasDynamicAs) {
-                setAsNameGenerator(children[i]);
+                setAsNameGenerator(children[0]);
                 numNames++;
             } else if (hasBy) {
-                setByName((NameNode) children[i]);
+                setByName((NameNode) children[0]);
             }
             if (numNames < len) {
-                Instantiation instance = (Instantiation) lastChild;
+                Instantiation instance = (Instantiation) getChild(len - 1);
                 if (instance.getName() == Name.CONTAINER) {
                     setInContainer(true);
                 } else {

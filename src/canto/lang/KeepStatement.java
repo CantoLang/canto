@@ -2,14 +2,13 @@
  * 
  * KeepStatement.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
 package canto.lang;
 
 import canto.runtime.Context;
-import canto.runtime.Context.Entry;
 
 /**
  * KeepStatement represents a statement with a cache prefix, which provides caching 
@@ -20,7 +19,7 @@ import canto.runtime.Context.Entry;
 public class KeepStatement extends CantoStatement {
 
     transient private Instantiation[] instances;
-    private NameNode[] names;
+    private NameNode defName;
     private NameNode asName = null;
     private Chunk asNameGenerator = null;
     private NameNode byName = null;
@@ -48,29 +47,11 @@ public class KeepStatement extends CantoStatement {
         if (inContainer) {
             return true;
         }
-//        Entry containerEntry = null;
-//        // back up to the new frame entry
-//        for (Entry entry = context.peek(); entry.getPrevious() != null; entry = entry.getPrevious()) {
-//            if (entry.superdef == null) {
-//                containerEntry = entry.getPrevious();
-//                break;
-//            }
-//        }
-//        if (containerEntry != null && containerEntry.keepMap != null) {
-//            String key = context.peek().def.getName();
-//            return containerEntry.keepMap.containsKey(key);
-//        }        
         return false;
     }
 
     public void setDefName(NameNode name) {
-        names = new NameNode[1];
-        names[0] = name;
-        checkIfAsIncluded();
-    }
-
-    protected void setNames(NameNode[] names) {
-        this.names = (names == null ? new NameNode[0] : names);
+        defName = name;
         checkIfAsIncluded();
     }
 
@@ -81,11 +62,9 @@ public class KeepStatement extends CantoStatement {
 
     private void checkIfAsIncluded() {
         asIncluded = false;
-        if (asName != null && names != null) {
-            for (int i = 0; i < names.length; i++) {
-                if (asName.equals(names[i])) {
-                    asIncluded = true;
-                }
+        if (asName != null && defName != null) {
+            if (asName.equals(defName)) {
+                asIncluded = true;
             }
         }
     }
@@ -98,12 +77,8 @@ public class KeepStatement extends CantoStatement {
         byName = name;
     }
     
-    public Name[] getNames() {
-        return names;
-    }
-    
     public NameNode getDefName() {
-        return names[0];
+        return defName;
     }
     
     public NameNode getAsName(Context context) {
@@ -122,11 +97,9 @@ public class KeepStatement extends CantoStatement {
         if (asNameGenerator != null) {
             try {
                 Name as = new NameNode(asNameGenerator.getText(context));
-                if (as != null && names != null) {
-                    for (int i = 0; i < names.length; i++) {
-                        if (as.equals(names[i])) {
-                            return true;
-                        }
+                if (as != null && defName != null) {
+                    if (as.equals(defName)) {
+                        return true;
                     }
                 }
             } catch (Redirection r) {
@@ -143,18 +116,14 @@ public class KeepStatement extends CantoStatement {
     }
 
     public boolean contains(String name) {
-        if (names != null) {
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].getName().equals(name)) {
-                    return true;
-                }
-            }
+        if (defName != null && defName.equals(name)) {
+            return true;
         }
         return false;
     }
 
     synchronized public ResolvedInstance[] getResolvedInstances(Context context) throws Redirection {
-        int len = names.length;
+        int len = (defName != null ? 1 : 0);
         NameNode as = getAsName(context);
         boolean included = getAsIncluded(context);
         boolean addAs = (as != null && !included);
@@ -172,25 +141,29 @@ public class KeepStatement extends CantoStatement {
         if (instances == null) {
             Definition owner = getOwner();
             instances = new Instantiation[len];
-            for (int i = 0; i < names.length; i++) {
-                instances[i] = new Instantiation(names[i]);
+            if (defName != null) {
+                instances[0] = new Instantiation(defName);
+                instances[0].setOwner(owner);
+                instances[0].resolve(null);
+            }
+            if (addAs && as.getName() != Name.THIS) {
+                int i = len - 1;
+                instances[i] = new Instantiation(as);
                 instances[i].setOwner(owner);
-                instances[i].resolve(null);
             }
         }
-        for (int i = 0; i < names.length; i++) {
-            resolvedInstances[i] = new ResolvedInstance(instances[i], context, false, true);
+        if (defName != null) {
+            resolvedInstances[0] = new ResolvedInstance(instances[0], context, false, true);
         }
         if (addAs && as.getName() != Name.THIS) {
-            instances[names.length] = new Instantiation(as);
-            instances[names.length].setOwner(owner);
-            resolvedInstances[names.length] = new ResolvedInstance(instances[names.length], context, false);
+            int i = len - 1;
+            resolvedInstances[i] = new ResolvedInstance(instances[i], context, false);
         }
         return resolvedInstances;
     }
 
     public Definition[] getDefs(Context context) throws Redirection {
-        int len = names.length;
+        int len = (defName != null ? 1 : 0);
         NameNode as = getAsName(context);
         boolean included = getAsIncluded(context);
         boolean addAs = (as != null && !included);
@@ -208,25 +181,29 @@ public class KeepStatement extends CantoStatement {
         if (instances == null) {
             Definition owner = getOwner();
             instances = new Instantiation[len];
-            for (int i = 0; i < names.length; i++) {
-                instances[i] = new Instantiation(names[i]);
+            if (defName != null) {
+                instances[0] = new Instantiation(defName);
+                instances[0].setOwner(owner);
+                instances[0].resolve(null);
+            }
+            if (addAs && as.getName() != Name.THIS) {
+                int i = len - 1;
+                instances[i] = new Instantiation(as);
                 instances[i].setOwner(owner);
-                instances[i].resolve(null);
             }
         }
-        for (int i = 0; i < names.length; i++) {
-            defs[i] = instances[i].getDefinition(context, null, true);
-            if (defs[i] == null) {
-                throw new Redirection(Redirection.STANDARD_ERROR, "Undefined name in keep statement: " + instances[i].getName());
+        if (defName != null) {
+            defs[0] = instances[0].getDefinition(context, null, true);
+            if (defs[0] == null) {
+                throw new Redirection(Redirection.STANDARD_ERROR, "Undefined name in keep statement: " + instances[0].getName());
             }
         }
         if (addAs && as.getName() != Name.THIS) {
-            instances[names.length] = new Instantiation(as);
-            instances[names.length].setOwner(owner);
-            defs[names.length] = instances[names.length].getDefinition(context);
-            if (defs[names.length] == null) {
+            int i = len - 1;
+            defs[i] = instances[i].getDefinition(context);
+            if (defs[i] == null) {
                 if (defs[0].hasChildDefinition(as.getName(), true)) {
-                    defs[names.length] = defs[0].getChildDefinition(as, context);
+                    defs[i] = defs[0].getChildDefinition(as, context);
                 //} else {    
                 //    throw new Redirection(Redirection.STANDARD_ERROR, "Undefined name in keep statement: " + as.getName());
                 }
@@ -255,11 +232,8 @@ public class KeepStatement extends CantoStatement {
         StringBuffer sb = new StringBuffer();
         sb.append(prefix);
         sb.append("keep ");
-        for (int i = 0; i < names.length; i++) {
-            sb.append(names[i].getName());
-            if (i < names.length - 1) {
-                sb.append(", ");
-            }
+        if (defName != null) {
+            sb.append(defName.getName());
         }
         if (asNameGenerator != null) {
             sb.append(" as ");

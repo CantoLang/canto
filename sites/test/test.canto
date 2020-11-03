@@ -4752,6 +4752,19 @@ public kt {=
         test_cache["d"];
     }
 
+public dkt {
+        test_cache{} = {}
+        
+        keep_A {
+            keep by akey in test_cache: z = "A"
+            akey = "a"
+
+            eval(z);
+        }
+        keep_A; 
+        test_cache["a"];
+}
+
 
     public test_case nested_keep_test {
         int category = caching

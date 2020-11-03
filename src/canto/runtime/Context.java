@@ -2,7 +2,7 @@
  * 
  * Context.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -448,6 +448,8 @@ public class Context {
         }
         if (table != null) {
             ResolvedInstance[] resolvedInstances = k.getResolvedInstances(this);
+            ResolvedInstance ri = resolvedInstances[0];
+            ResolvedInstance riAs = null;
             Name asName = k.getAsName(this);
             Name byName = k.getByName();
             String key = null;
@@ -458,6 +460,8 @@ public class Context {
                     key = topEntry.def.getName();
                     asthis = true;
                 }
+                riAs = resolvedInstances[1];
+
             } else if (byName != null) {
                 NameNode keepName = k.getDefName();
                 Definition owner = getDefiningDef();
@@ -467,7 +471,7 @@ public class Context {
             }
 
             containerKey = (asthis ? key : topEntry.def.getName() + (key == null ? "." : "." + key));
-            topEntry.addKeep(resolvedInstances, key, table, containerKey, containerTable, keepMap, cache);
+            topEntry.addKeep(ri, riAs, key, table, containerKey, containerTable, keepMap, cache);
         }
     }
 
@@ -1256,6 +1260,8 @@ public class Context {
                             Entry containerEntry = null;
                             Map<String, Object> containerTable = null;
                             String containerKey = null;
+                            ResolvedInstance ri = kh.resolvedInstances[0];
+                            ResolvedInstance riAs = (kh.resolvedInstances.length > 1 ? kh.resolvedInstances[1] : null);
                             if (kh.inContainer) {
                                 // back up to the new frame entry
                                 for (Entry e = topEntry; e.getPrevious() != null; e = e.getPrevious()) {
@@ -1267,10 +1273,10 @@ public class Context {
                                 }
                                 if (containerEntry != null) {
                                     containerKey = (kh.asThis ? key : topEntry.def.getName() + (key == null ? "." : "." + key));
-                                    containerEntry.addKeep(kh.resolvedInstances, containerKey, containerTable, null, null, keepMap, cache);
+                                    containerEntry.addKeep(ri, riAs, containerKey, containerTable, null, null, keepMap, cache);
                                 }
                             } else {
-                                topEntry.addKeep(kh.resolvedInstances, keyObj, kh.table, containerKey, containerTable, keepMap, cache);
+                                topEntry.addKeep(ri, riAs, keyObj, kh.table, containerKey, containerTable, keepMap, cache);
                             }
                         }
                     }
@@ -4702,7 +4708,7 @@ if (unpushedEntries == null) {
             }
         }
    
-        public void addKeep(ResolvedInstance[] resolvedInstances, Object keyObj, Map<String, Object> table, String containerKey, Map<String, Object> containerTable, Map<String, Pointer> contextKeepMap, Map<String, Object> contextKeep) {
+        public void addKeep(ResolvedInstance ri, ResolvedInstance riAs, Object keyObj, Map<String, Object> table, String containerKey, Map<String, Object> containerTable, Map<String, Pointer> contextKeepMap, Map<String, Object> contextKeep) {
             boolean inContainer = (containerTable != null);
     
             if (def.isGlobal()) {
@@ -4714,69 +4720,60 @@ if (unpushedEntries == null) {
             }
     
             synchronized (keepMap) {
-                int numInstances = resolvedInstances.length;
                 String key = (keyObj == null ? null : (keyObj instanceof Value ? ((Value) keyObj).getString() : keyObj.toString())); 
                 if (key != null) {
                     if (!key.endsWith(".")) {
-                
-                        ResolvedInstance riAs = resolvedInstances[numInstances - 1];
-                        for (int i = 0; i < numInstances; i++) {
-                            if (resolvedInstances[i] != null) {
-                                Pointer p = new Pointer(resolvedInstances[i], riAs, keyObj, containerKey, table);
-                                String keepKey = resolvedInstances[i].getName();
-                                keepMap.put(keepKey, p);
-                                keepMap.put(key, p);
+                        if (ri != null) {
+                            Pointer p = new Pointer(ri, riAs, keyObj, containerKey, table);
+                            String keepKey = ri.getName();
+                            keepMap.put(keepKey, p);
+                            keepMap.put(key, p);
 
-                                if (inContainer) {
-                                    p = new Pointer(resolvedInstances[i], containerKey + "." + keepKey, containerKey, containerTable);
-                                    keepMap.put("+" + keepKey, p);
-                                    keepMap.put("+" + key, p);
-                                }
-                                
-                                String contextKey = def.getFullName() + '.' + keepKey;
-                                contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
-                                Pointer contextp = new Pointer(resolvedInstances[i], riAs, contextKey, containerKey, contextKeep);
-                                contextKeepMap.put(contextKey, contextp);
+                            if (inContainer) {
+                                p = new Pointer(ri, containerKey + "." + keepKey, containerKey, containerTable);
+                                keepMap.put("+" + keepKey, p);
+                                keepMap.put("+" + key, p);
                             }
+                            
+                            String contextKey = def.getFullName() + '.' + keepKey;
+                            contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
+                            Pointer contextp = new Pointer(ri, riAs, contextKey, containerKey, contextKeep);
+                            contextKeepMap.put(contextKey, contextp);
                         }
                     } else {
-                        for (int i = 0; i < numInstances; i++) {
-                            if (resolvedInstances[i] != null) {
-                                String name = resolvedInstances[i].getName();
-                                String keepKey = key + name;
-                                Pointer p = new Pointer(resolvedInstances[i], keepKey, containerKey, table);
-                                keepMap.put(keepKey, p);
+                        if (ri != null) {
+                            String name = ri.getName();
+                            String keepKey = key + name;
+                            Pointer p = new Pointer(ri, keepKey, containerKey, table);
+                            keepMap.put(keepKey, p);
 
-                                if (inContainer) {
-                                    p = new Pointer(resolvedInstances[i], keepKey, containerKey, containerTable);
-                                    keepMap.put(containerKey + name, p);
-                                }
-                        
-                                String contextKey = def.getFullName() + '.' + keepKey;
-                                contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
-                                Pointer contextp = new Pointer(resolvedInstances[i], contextKey, containerKey, contextKeep);
-                                contextKeepMap.put(contextKey, contextp);
+                            if (inContainer) {
+                                p = new Pointer(ri, keepKey, containerKey, containerTable);
+                                keepMap.put(containerKey + name, p);
                             }
+                    
+                            String contextKey = def.getFullName() + '.' + keepKey;
+                            contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
+                            Pointer contextp = new Pointer(ri, contextKey, containerKey, contextKeep);
+                            contextKeepMap.put(contextKey, contextp);
                         }
                     }
 
                 } else {
-                    for (int i = 0; i < numInstances; i++) {
-                        if (resolvedInstances[i] != null) {
-                            String name = resolvedInstances[i].getName();
-                            Pointer p = new Pointer(resolvedInstances[i], name, containerKey, table);
-                            keepMap.put(name, p);
-                    
-                            if (inContainer) {
-                                p = new Pointer(resolvedInstances[i], containerKey + name, containerKey, containerTable);
-                                keepMap.put("+" + name, p);
-                            }
-    
-                            String contextKey = def.getFullName() + '.' + name;
-                            contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
-                            Pointer contextp = new Pointer(resolvedInstances[i], contextKey, containerKey, contextKeep);
-                            contextKeepMap.put(contextKey, contextp);
+                    if (ri != null) {
+                        String name = ri.getName();
+                        Pointer p = new Pointer(ri, name, containerKey, table);
+                        keepMap.put(name, p);
+                
+                        if (inContainer) {
+                            p = new Pointer(ri, containerKey + name, containerKey, containerTable);
+                            keepMap.put("+" + name, p);
                         }
+
+                        String contextKey = def.getFullName() + '.' + name;
+                        contextKey = contextKey.substring(contextKey.indexOf('.') + 1);
+                        Pointer contextp = new Pointer(ri, contextKey, containerKey, contextKeep);
+                        contextKeepMap.put(contextKey, contextp);
                     }
                 }
             }
@@ -5175,7 +5172,6 @@ if (unpushedEntries == null) {
 
         private boolean localPut(Map<String, Object> cache, Map<String, Pointer> keepMap, String key, Holder holder, boolean updateContainerChild) {
             boolean kept = false;
-            boolean persist = false;
             Pointer p = null;
             Object oldData = cache.get(key);
 
