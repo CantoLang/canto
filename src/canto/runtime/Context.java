@@ -4257,9 +4257,6 @@ if (unpushedEntries == null) {
             this.key = key;
             this.containerKey = containerKey;
             this.cache = cache;
-//if (key.toString().endsWith("_get")) {
-//  System.out.println("pointer to " + key + " at ctx 4270");  
-//}
         }
 
         public String getKey() {
@@ -4267,6 +4264,14 @@ if (unpushedEntries == null) {
                 return ((Value) key).getString();
             } else {
                 return key.toString();
+            }
+        }
+
+        public String getContainerKey() {
+            if (containerKey instanceof Value) {
+                return ((Value) containerKey).getString();
+            } else {
+                return containerKey.toString();
             }
         }
 
@@ -4722,7 +4727,7 @@ if (unpushedEntries == null) {
                             keepMap.put(key, p);
 
                             if (inContainer) {
-                                p = new Pointer(ri, containerKey + "." + keepKey, containerKey, containerTable);
+                                p = new Pointer(ri, keyObj, containerKey, containerTable);
                                 keepMap.put("+" + keepKey, p);
                                 keepMap.put("+" + key, p);
                             }
@@ -5180,7 +5185,7 @@ if (unpushedEntries == null) {
                         Pointer pContainer = keepMap.get("+" + key);
                         if (pContainer != null) {
                             Map<String, Object> containerTable = pContainer.cache;
-                            containerTable.put(pContainer.getKey(), newData);
+                            containerTable.put(pContainer.getContainerKey(), newData);
                         }
                         Map<String, Object> keepTable = p.cache;
                         if (keepTable != cache || !key.equals(p.getKey())) {
@@ -5250,7 +5255,7 @@ if (unpushedEntries == null) {
                 p = (Pointer) cache.get("+" + nextKey);
                 if (p != null) {
                     nextKeep = p.cache;
-                    nextKey = p.getKey();
+                    nextKey = p.getContainerKey();
                     synchronized (nextKeep) {
                         nextKeep.put(nextKey, holder);
                     }

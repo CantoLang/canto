@@ -49,7 +49,7 @@ site test {
                               external_argument_test, 
                               external_array_parameter_test, external_map_array_test,
                               external_test, higher_order_def_test, indexed_alias_test, 
-                              keep_test, keep_prefix_test, keep_scope_test,
+                              keep_in_container_test, keep_test, keep_scope_test,
                               lateral_inheritance_test, logic_test, loop_parameter_test, 
                               mapped_array_table_test,
                               multidimensional_array_test, multidimensional_table_test,
@@ -4646,42 +4646,46 @@ public kt {=
     }
 
 
-    public test_case keep_prefix_test {
+    public test_case keep_in_container_test {
         int category = caching
-        name = "Keep Prefix Test"
-        key = "keep_prefix"
+        name = "Keep In Container Test"
+        key = "keep_in_container"
 
         expected = "ABCD"
-
-        test_cache{} = {}
-        
+       
         keep_A {
-            keep in test_cache:
-            x = "A"
-
-            eval(x);
+            //keep: // in container:
+            a(x) = x
+            
+            eval(a("A"));
         }
 
         keep_B {
-            keep as y in test_cache:
+            b [/]
+        
+            keep as b: // in container:
             w = "B"
 
             eval(w);
         }
 
         keep_C {
-            keep by zkey in test_cache:
+            c [/]
+
+            ckey = "c"
+
+            keep by ckey: // in container:
             zz {
-                zkey = "z"
                 "C";
             }
 
             eval(zz);
         }
         
-        keep: keep_D {
+        keep_D {
         
-           keep: d(x) = x
+           //keep in container:
+           d(x) = x
            
            d("D");
         }
@@ -4689,12 +4693,11 @@ public kt {=
         keep_A; 
         keep_B;
         keep_C;
-        
-        test_cache["x"];
-        test_cache["y"];
-        test_cache["z"];
-
         eval(keep_D);
+        
+        keep_A.a;
+        keep_B.b;
+        keep_C.c;
         keep_D.d;
     }
 
