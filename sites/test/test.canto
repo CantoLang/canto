@@ -3361,25 +3361,25 @@ public dstij {
         }
 
         keep: serializable obj1 {
-            keep: ijobj iobj {
+            ijobj iobj {
                 keep: i(y) = y
 
                 eval(i("I"));
                 this;
             }
-            keep: ijobj jobj {
+            ijobj jobj {
                 keep: j(z) = z
 
                 eval(j("J"));
                 this;
             }
-            keep: ijobj[] ij = [ iobj, jobj ]
+            ijobj[] ij = [ iobj, jobj ]
             
             ij;
         }
              
-        keep: serializable obj11 {
-            keep: ijobj iiobj {
+        serializable obj11 {
+            ijobj iiobj {
                 keep: i(y) = y
 
                 eval(i("I"));
@@ -3391,13 +3391,13 @@ public dstij {
                 eval(j("J"));
                 this;
             }
-            keep: ijobj[] ji = [ iiobj, jjobj ]
+            ijobj[] ji = [ iiobj, jjobj ]
             
             eval(ji);
         }
 
         serializable obj2 {
-            keep: ijobj[] ij = []            
+            ijobj[] ij = []            
         }
 
         obj1;
@@ -3406,10 +3406,10 @@ public dstij {
         
         obj11;
 
-        //dash;        
+        dash;        
         
-        //obj1.ij[0].i;
-        //obj1.ij[1].j;
+        obj1.ij[0].i;
+        obj1.ij[1].j;
 
         hr;
         obj1.serialize;
@@ -3417,10 +3417,10 @@ public dstij {
         obj11.serialize;
         hr;
 
-        obj2.deserialize(obj1.serialize);
-        dash;
-        obj2.ij[0].i;
-        obj2.ij[1].j;
+        //obj2.deserialize(obj1.serialize);
+        //dash;
+        //obj2.ij[0].i;
+        //obj2.ij[1].j;
 
 }  
 

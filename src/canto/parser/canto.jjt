@@ -1269,6 +1269,9 @@ void TableInitExpression() #Arguments(>0):
         "{}"       // empty table
       |
         LOOKAHEAD(2)
+        "{" "}"    // empty table 
+      | 
+        LOOKAHEAD(2)
         "{" ( Ellipsis() [","] TableElementExpression() ( LOOKAHEAD(2) "," TableElementExpression() )* [ "," ] "}" )
       |
         "{" ( TableElementExpression() ( LOOKAHEAD(2) "," TableElementExpression() )* [ "," ] "}" )

@@ -2,7 +2,7 @@
  * 
  * Table.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -98,7 +98,7 @@ public class Table {
 
     public static Map<String, Object> parse(Context context, String str) throws Redirection {
         try {
-            CantoParser parser = new CantoParser(new StringReader("parse[]=" + str));
+            CantoParser parser = new CantoParser(new StringReader("parse{}=" + str));
             Definition owner = context.getDefiningDef();
             
             ParsedCollectionDefinition collectionDef = (ParsedCollectionDefinition) parser.CollectionDefinition();
