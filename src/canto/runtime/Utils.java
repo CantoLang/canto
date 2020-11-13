@@ -2,7 +2,7 @@
  * 
  * Utils.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import canto.lang.CantoArray;
 import canto.lang.CollectionDefinition;
 import canto.lang.Definition;
+import canto.lang.Instantiation;
 import canto.lang.NameNode;
 import canto.lang.Redirection;
 import canto.lang.ResolvedArray;
@@ -1026,7 +1027,7 @@ public class Utils {
         if (str != null) {
             Map<String, Object> table = Table.parse(context, str);
             if (def.is_table()) {
-                handleTable(context, cache, def.getName(), table);
+                handleTable(context, cache, def, def.getName(), table);
             } else {
                 handleObject(context, cache, def, table);
             }
@@ -1050,7 +1051,7 @@ public class Utils {
                 if (contents instanceof CollectionDefinition) {
                     CollectionDefinition collectionDef = (CollectionDefinition) contents;
                     if (collectionDef.isArray()) {
-                        handleArray(context, subcache, itemKey, collectionDef.getArray(context, null, null));
+                        handleArray(context, subcache, def, itemKey, collectionDef.getArray(context, null, null));
                     } else {
                         Definition childDef = context.getDefinition(itemKey, null, null);
                         if (childDef != null && !childDef.is_table()) {
@@ -1061,20 +1062,20 @@ public class Utils {
                                 context.pop();
                             }
                         } else {
-                            handleTable(context, subcache, itemKey, collectionDef.getTable(context, null, null));
+                            handleTable(context, subcache, def, itemKey, collectionDef.getTable(context, null, null));
                         }
                     }
                 } else if (contents instanceof ResolvedArray) {
-                    handleArray(context, subcache, itemKey, ((ResolvedArray) contents).getArray());
+                    handleArray(context, subcache, def, itemKey, ((ResolvedArray) contents).getArray());
                 } else if (obj instanceof ResolvedTable) {
                     Definition childDef = context.getDefinition(itemKey, null, null);
                     if (childDef != null && !childDef.is_table()) {
                         handleObject(context, subcache, childDef, ((ResolvedTable) obj).getTable());
                     } else {
-                        handleTable(context, subcache, itemKey, ((ResolvedTable) obj).getTable());
+                        handleTable(context, subcache, def, itemKey, ((ResolvedTable) obj).getTable());
                     }
                 } else {
-                    handleItem(context, subcache, itemKey, contents);
+                    handleItem(context, subcache, def, itemKey, contents);
                 }
             } else {
                 System.out.println("!! Entry is not a TableElement for " + itemKey + ": <" + obj.getClass().getName() + "> " + obj.toString());
@@ -1082,7 +1083,7 @@ public class Utils {
         }
     }
     
-    private static void handleTable(Context context, Map<String, Object> cache, String key, Map<String, Object> table) throws Redirection {
+    private static void handleTable(Context context, Map<String, Object> cache, Definition ownerDef, String key, Map<String, Object> table) throws Redirection {
         Set<String> keys = new TreeSet<String>(table.keySet());
         Map<String, Object> subcache = Context.newHashMap(Object.class);
         cache.put(key, subcache);
@@ -1093,16 +1094,16 @@ public class Utils {
                 if (contents instanceof CollectionDefinition) {
                     CollectionDefinition collectionDef = (CollectionDefinition) contents;
                     if (collectionDef.isArray()) {
-                        handleArray(context, subcache, itemKey, collectionDef.getArray(context, null, null));
+                        handleArray(context, subcache, ownerDef, itemKey, collectionDef.getArray(context, null, null));
                     } else {
-                        handleTable(context, subcache, itemKey, collectionDef.getTable(context, null, null));
+                        handleTable(context, subcache, ownerDef, itemKey, collectionDef.getTable(context, null, null));
                     }
                 } else if (obj instanceof ResolvedArray) {
-                    handleArray(context, subcache, itemKey, ((ResolvedArray) obj).getArray());
+                    handleArray(context, subcache, ownerDef, itemKey, ((ResolvedArray) obj).getArray());
                 } else if (obj instanceof ResolvedTable) {
-                    handleTable(context, subcache, itemKey, ((ResolvedTable) obj).getTable());
+                    handleTable(context, subcache, ownerDef, itemKey, ((ResolvedTable) obj).getTable());
                 } else {
-                    handleItem(context, subcache, itemKey, contents);
+                    handleItem(context, subcache, ownerDef, itemKey, contents);
                 }
             } else {
                 System.out.println("!! Entry is not a TableElement for " + key + ": <" + obj.getClass().getName() + "> " + obj.toString());
@@ -1110,10 +1111,15 @@ public class Utils {
         }
     }
     
-    private static void handleArray(Context context, Map<String, Object> cache, String key, CantoArray array) throws Redirection {
+    private static void handleArray(Context context, Map<String, Object> cache, Definition ownerDef, String key, CantoArray array) throws Redirection {
         Definition def = context.getDefinition(key, null, null);
+        if (def == null) {
+            Instantiation instance = new Instantiation(new NameNode(key));
+            instance.setOwner(ownerDef);
+            def = instance.getDefinition(context);
+        }
         if (!(def instanceof CollectionDefinition)) {
-            throw new IllegalArgumentException("Expected CollectionDefinition, got " + def.getClass().getName());
+            throw new IllegalArgumentException("Expected CollectionDefinition, got " + (def == null ? "null" : def.getClass().getName()));
         }
 
         Definition itemDef = ((CollectionDefinition) def).getElementType().getDefinition();
@@ -1133,7 +1139,7 @@ public class Utils {
         cache.put(key, objArray);
     }
     
-    private static void handleItem(Context context, Map<String, Object> cache, String key, Object item) throws Redirection {
+    private static void handleItem(Context context, Map<String, Object> cache, Definition ownerDef, String key, Object item) throws Redirection {
         cache.put(key, item);
     }
     
