@@ -44,12 +44,12 @@ site test {
                               compass_layout_test, complex_array_test, conditional_inheritance_test,
                               count_test, corresponding_super_test, dynamic_argument_list_test, 
                               dynamic_array_test, dynamic_array_element_child_test,
-                              dynamic_code_block_test, dynamic_keep_test, dynamic_table_test, 
+                              dynamic_code_block_test, dynamic_table_test, 
                               expression_arg_type_test, expression_comprehension_test, 
                               external_argument_test, 
                               external_array_parameter_test, external_map_array_test,
                               external_test, higher_order_def_test, indexed_alias_test, 
-                              keep_in_container_test, keep_test, keep_scope_test,
+                              keep_by_test, keep_in_test, keep_scope_test, keep_test,
                               lateral_inheritance_test, logic_test, loop_parameter_test, 
                               mapped_array_table_test,
                               multidimensional_array_test, multidimensional_table_test,
@@ -4448,10 +4448,10 @@ cat {=
 
 
     
-    public test_case keep_test {
+    public test_case keep_in_test {
         int category = caching
-        name = "Keep Test"
-        key = "keep"
+        name = "Keep In Test"
+        key = "keep_in"
 
         expected = "ABCDEFGHIJKLMN"
 
@@ -4631,22 +4631,50 @@ public kt {=
         test_cache["j"];
 =}
 
-    keep_not_test {
-        obj_no {
-            a(x) = x
-            a("z");    
-        }
+    public test_case keep_test {
+        int category = caching
+        name = "Keep Test"
+        key = "keep"
 
-        obj_yes {
-            keep: b(x) = x
-            eval(b("B"));    
+        expected = "ABCD"
+
+        obj {
+            keep: a(x) = x
+            b(y) = y
+            keep: c(z) = z
+            d(w) = w
+            
+            init [/]
+            
+            init;
+            sub;        
         }
         
-        obj_no;
-        obj_yes;
-       
-        obj_no.a;
-        obj_yes.b;
+        obj obj_yes {
+            init {
+                c("C");
+            }
+
+            a("A");
+        }
+
+        obj obj_no {
+            init {
+                d("x");
+            }
+
+            b("x");
+        }
+
+        eval(obj_yes);
+        eval(obj_no);
+        
+        obj_yes.a;
+        if (!obj_no.b) [| B |]
+        else           { obj_no.b; }
+        obj_yes.c;
+        if (!obj_no.d) [| D |]
+        else           { obj_no.d; }
     }
 
 
@@ -4706,10 +4734,10 @@ public kt {=
     }
 
 
-    public test_case dynamic_keep_test {
+    public test_case keep_by_test {
         int category = caching
-        name = "Dynamic Keep Test"
-        key = "dynamic_keep"
+        name = "Keep By Test"
+        key = "keep_by"
 
         expected = "ABCD"
 
@@ -4836,13 +4864,13 @@ public nkt {
         abcd_container(cparam, dparam) {
             keep: a(x) = x
             b(x) = x
-            c = cparam
-            d(x) = x
+            keep: c = cparam
+            d = dparam
     
             a("A");
-            b("B");
-            c;
-            d(: dparam :);
+            b("x");
+            c(: :);
+            d(: :);
         }
         
         keep in test_cache: ijk_container(kparam) {
@@ -4857,25 +4885,16 @@ public nkt {
         eval(abcd_container("C", "D"));    
 
         abcd_container.a;
-        abcd_container.b;
+        if (!abcd_container.b) [| B |] else { abdc_container.b; }
         abcd_container.c;
         abcd_container.d;
 
-        eval(abcd_container.b(: "E" :));
-        eval(abcd_container.a(: "F" :));
+        eval(abcd_container.a(: "E" :));
+        eval(abcd_container.b(: "F" :));
+        abcd_container.a; 
         abcd_container.b;
 
         eval(abcd_container(: "G", "H" :));
-
-        /-- b gets reset by the preceding eval, even though the b construction is not dynamic,
-         -- while a does not, because a is decorated with "keep".  When a "keep" definition
-         -- is instantiated, the value persists in the cache even when the scope is re-entered,
-         -- whereas an implicitly cached value does not -- hence the reentry precipitated by 
-         -- the forced evaluation directly above allows b to be re-evaluated, and hence be "B" 
-         -- once more.
-         --/ 
-        abcd_container.a; 
-        if (abcd_container.b != "B") [| x |]
 
         abcd_container.c;
         abcd_container.d;
@@ -5650,15 +5669,15 @@ public hot {=
         expected = "ABCDEFGHIJ"
 
         obj(xx) {
-            x = xx
-            x;
+            keep: x = xx
+            x(: :);
         }
         
         obj(*) sub_obj(zz) [/]
         
         deeper_obj(n) {
-            q(yy) {
-                y = yy
+            keep: q(yy) {
+                keep: y = yy
             }
             
             eval(obj(: "H" :));
@@ -5686,6 +5705,18 @@ public hot {=
         deeper_obj.q.y;
     }
 
+public cot {
+        obj(xx) {
+            keep: x(y) = y
+            x(: xx :);
+        }
+        eval(obj("A"));
+        obj.x;
+        eval(obj(: "B" :));
+        obj.x;
+        eval(obj(: "C" :));
+        obj.x;
+}
 
     public test_case cached_obj_array_child_test {
         int category = collections

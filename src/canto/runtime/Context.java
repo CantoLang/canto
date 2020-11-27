@@ -1555,6 +1555,9 @@ if (name.equals("i") || name.endsWith(".i") || name.equals("j") || name.endsWith
     }
         
     synchronized public void putData(String name, Holder holder, List<Index> indexes) throws Redirection {
+if (name.startsWith("obj")) {
+  System.out.println(name + " at ctx 1559");
+}
         if (holder.data != null || holder.resolvedInstance != null) {
             Logger.vlog(" - - - storing " + name + " in cache - - - ");
         }
@@ -5083,8 +5086,9 @@ if (unpushedEntries == null) {
     
             int access = (nominalDef != null ? nominalDef.getAccess() : Definition.LOCAL_ACCESS);
             if (link != null && access != Definition.LOCAL_ACCESS) {
+                KeepStatement keep = this.def.getKeep(key);
                 String ownerName = this.def.getName();
-                if (ownerName != null && nominalDef != null && !nominalDef.isFormalParam()) { 
+                if (keep != null && ownerName != null && nominalDef != null && !nominalDef.isFormalParam()) { 
                     // should this be def or nominalDef?
                     Definition defOwner = nominalDef.getOwner();
                     for (Entry nextEntry = link; nextEntry != null; nextEntry = nextEntry.link) {
@@ -5131,7 +5135,6 @@ if (unpushedEntries == null) {
                 if (maxLevels > 0) maxLevels--;
                 if (!kept && maxLevels != 0) {
                     if (this.def.hasChildDefinition(key, true)) {
-                        KeepStatement keep = this.def.getKeep(key);
                         if (keep == null || !(keep.isInContainer() || keep.getTableInstance() != null /* || this.def.equals(link.def) */ )) {
                             return;
                         }
