@@ -1555,7 +1555,7 @@ if (name.equals("i") || name.endsWith(".i") || name.equals("j") || name.endsWith
     }
         
     synchronized public void putData(String name, Holder holder, List<Index> indexes) throws Redirection {
-if (name.startsWith("obj")) {
+if (name.equals("c")) {
   System.out.println(name + " at ctx 1559");
 }
         if (holder.data != null || holder.resolvedInstance != null) {
@@ -5088,7 +5088,7 @@ if (unpushedEntries == null) {
             if (link != null && access != Definition.LOCAL_ACCESS) {
                 KeepStatement keep = this.def.getKeep(key);
                 String ownerName = this.def.getName();
-                if (keep != null && ownerName != null && nominalDef != null && !nominalDef.isFormalParam()) { 
+                if (ownerName != null && nominalDef != null && !nominalDef.isFormalParam()) { 
                     // should this be def or nominalDef?
                     Definition defOwner = nominalDef.getOwner();
                     for (Entry nextEntry = link; nextEntry != null; nextEntry = nextEntry.link) {
@@ -5123,9 +5123,12 @@ if (unpushedEntries == null) {
                             }
                             entry = entry.link;
                         }
-                        if (entry != null) {
-                            synchronized (ownerKeep) {
-                                entry.localPut(ownerKeep, null, ownerName + "." + key, holder, false);
+                        if (entry != null && ownerKeep != null) {
+                            String ownerKey = ownerName + "." + key;
+                            if (keep != null || ownerKeep.containsKey(ownerKey)) {
+                                synchronized (ownerKeep) {
+                                    entry.localPut(ownerKeep, null, ownerName + "." + key, holder, false);
+                                }
                             }
                         }
                     }
@@ -5285,7 +5288,7 @@ if (unpushedEntries == null) {
                         if (parentKeepKeep != null) {
                             @SuppressWarnings("unchecked")
     						Map<String, Pointer> parentKeepMap = (Map<String, Pointer>) parentKeepKeep.get("from");
-                            if (parentKeepMap != null) {
+                            if (parentKeepMap != null && parentKeepMap.containsKey(childKey)) {
                                 localPut(parentKeepKeep, parentKeepMap, childKey, holder, false);
                             }
                         }

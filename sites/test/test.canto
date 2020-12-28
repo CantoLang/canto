@@ -4873,13 +4873,15 @@ public nkt {
             d(: :);
         }
         
-        keep in test_cache: ijk_container(kparam) {
+        ijk_container(kparam, unkparam) {
            i = "I"
            j(x) = x
-           k(x) = x
+           keep: k(x) = x
+           unk(x) = x
            
            i;
            k(kparam);
+           unk(unkparam);
         }
 
         eval(abcd_container("C", "D"));    
@@ -4900,12 +4902,30 @@ public nkt {
         abcd_container.d;
         
         eval(ijk_container.j("J"));
-        eval(ijk_container("K"));
+        eval(ijk_container("K", "x"));
         
         ijk_container.i;
         ijk_container.j;
         ijk_container.k;
+        ijk_container.unk;
     }
+
+public ckt {
+        abcd_container(cparam, dparam) {
+            keep: c = cparam
+            d = dparam
+    
+            c(: :);
+            d(: :);
+        }
+        abcd_container("C", "D");    
+        abcd_container.c;
+        abcd_container.d;
+        br;
+        abcd_container(: "G", "H" :);
+        abcd_container.c;
+        abcd_container.d;
+}
 
     public test_case cached_identity_test {
         int category = caching

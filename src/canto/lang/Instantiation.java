@@ -760,8 +760,8 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
-if (((NameNode)reference).getName().indexOf("serialize") >= 0) {
-  System.out.println(((NameNode)reference).getName() + " at inst 763");
+if (((NameNode)reference).getName().startsWith("abcd_")) {
+  System.out.println(((NameNode)reference).getName() + " at inst 764");
 }
            if (isParam || isParamChild) {
                return context.getParameterDefinition((NameNode) reference, isContainerParameter(context));
@@ -914,7 +914,7 @@ if (getOwner() == null) {
 //                }
 //            }
 
-if (nm.equals("_get")) {
+if (nm.equals("obj.x")) {
     System.out.println(nm + " at inst 913");
  }
 
