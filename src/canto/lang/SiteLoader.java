@@ -2,7 +2,7 @@
  * 
  * SiteLoader.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -610,9 +610,6 @@ public class SiteLoader {
             } else if (node instanceof Type) {
                 Type type = (Type) node;
                 if (type.getDefinition() == null && !type.isPrimitive() && !type.isSpecial()) {
-if ("scene".equals(type.getName())) {
- System.out.println("SiteLoader 607");	
-}
                 	type.resolve();
                     if (errorOnUnresolvedType && type.getDefinition() == null && !type.isExternal()) {
                         throw new LinkException("Unable to resolve type " + type.getName());

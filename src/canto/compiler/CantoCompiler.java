@@ -2,7 +2,7 @@
  * 
  * CantoCompiler.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -189,8 +189,7 @@ public class CantoCompiler {
         boolean multiThreaded = false;
         boolean autoLoadCore = true;
 
-        System.out.println( "\ncantoc compiler for Canto\nCopyright (c) 2018-2019 by cantolang.org\n" );
-        //System.out.println( "Definition caching " + ( Instantiation.cachingEnabled ? "enabled" : "disabled" ) );
+        System.out.println( "\ncantoc compiler for Canto\nCopyright (c) 2018-2020 by cantolang.org\n" );
         for ( int i = 0; i < args.length; i++ ) {
             if ( args[ i ].charAt( 0 ) == '-' && args[ i ].length() > 1 ) {
                 switch ( args[ i ].charAt( 1 ) ) {

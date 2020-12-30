@@ -984,9 +984,7 @@ public class Utils {
         String[] strs = new String[0];
         Path path = Paths.get(pathName);
         File f = new File(".");
-        System.out.println("current dir: " + f.getAbsolutePath());
         f = new File(pathName);
-        System.out.println("target dir: " + f.getAbsolutePath() + "--" + (f.exists() ? "exists" : "does not exist"));
         if (Files.exists(path)) {
             Stream<Path> tree = Files.walk(path);
             List<String> fileList = tree.map(p->p.toString()).collect(Collectors.toList());
@@ -1012,8 +1010,6 @@ public class Utils {
     }
     
     public static void deserialize(Context context, Definition def, String str, Object[] field_names, Object[] field_values) throws Redirection {
-        System.out.println("deserialize " + ((str != null) ? str : Arrays.toString(field_names)));
-        
         Context.Entry entry = def.getEntryInContext(context);
         while (entry != null && entry.def.equalsOrExtends(def)) {
             entry = entry.getPrevious();
@@ -1134,7 +1130,6 @@ public class Utils {
                 item = subcache;
             }
             objArray[i] = item;
-            System.out.println(" array element " + i + " is a " + item.getClass().getName());
         }
         cache.put(key, objArray);
     }

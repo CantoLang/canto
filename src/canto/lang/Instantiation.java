@@ -615,7 +615,6 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
             // We don't cache collection element references, just the collection objects.
             // This could be changed to look at the cacheability of the indexes.
             if (nameNode.hasIndexes() && !nameNode.getLastPart().hasIndexes()) {
-                System.out.println("getting cacheability of " + nameNode);
                 return NOT_CACHEABLE_INFO;
 
             // We also don't cache count references
@@ -760,9 +759,6 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
            return localDef;
 
        } else try {
-if (((NameNode)reference).getName().startsWith("abcd_")) {
-  System.out.println(((NameNode)reference).getName() + " at inst 764");
-}
            if (isParam || isParamChild) {
                return context.getParameterDefinition((NameNode) reference, isContainerParameter(context));
        
@@ -871,10 +867,10 @@ if (((NameNode)reference).getName().startsWith("abcd_")) {
         List<Index> prefixIndexes = null;
         ArgumentList prefixArgs = null;
 
-if (getOwner() == null) {
-  System.out.println("instance " + getName() + " has no owner");
-  return null;
-}
+//if (getOwner() == null) {
+//  System.out.println("instance " + getName() + " has no owner");
+//  return null;
+//}
         
         NamedDefinition owner = (NamedDefinition) getOwner().getSubdefInContext(context);
 
@@ -913,10 +909,6 @@ if (getOwner() == null) {
 //                    args = holder.nominalArgs;
 //                }
 //            }
-
-if (nm.equals("obj.x")) {
-    System.out.println(nm + " at inst 913");
- }
 
             if (def == null) {
             	int n = name.numParts();

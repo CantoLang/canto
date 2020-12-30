@@ -3797,9 +3797,6 @@ if (!isCorrectSize()) {
     }
 
     private Entry _pop() {
-if (!isCorrectSize()) {
-  System.out.println("Ctx 3754 context size incorrect");
-}
         if (size > 0) {
             if (topEntry == popLimit) {
                 vlog("popping context beyond popLimit");
@@ -3807,9 +3804,6 @@ if (!isCorrectSize()) {
             }
             Entry entry = topEntry;
             setTop(entry.getPrevious());
-if (!isCorrectSize()) {
-  System.out.println("Ctx 3764 context size incorrect");
-}
             return entry;
         } else {
             return null;

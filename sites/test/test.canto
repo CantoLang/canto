@@ -6,7 +6,7 @@ site test {
     extern java java.**
 
     copyright [|
-        Copyright &copy; 2018, 2019 by <a href="http://cantolang.org">cantolang.org</a><br>
+        Copyright &copy; 2018-2020 by <a href="http://cantolang.org">cantolang.org</a><br>
     |]
 
     /------------------------------------------------------------------/
@@ -2931,14 +2931,6 @@ public tpt {
         test_array[2];
     }
 
-cu {=
-    test_array[] = [ "A", "X" ]
-    array.get(test_array, 0);
-    array.set(test_array, 1, "B");
-    test_array[1];
-    if (array.size(test_array) == 2) [| C |]
-    else [| X |]
-=}
 
     public test_case object_child_test {
         int category = instantiations
@@ -3572,52 +3564,6 @@ public dsta {
     obj2.a;
 }    
 
-public flatst {
-    tbl{} = { a: "A", b: { ba: "B", bb: { c: "C" } } }
-  
-    obj {
-        a [/]
-    }
-
-    obj obj1 {
-        a = "A";
-    }
-
-    obj{} ot = { z: obj1 }  
-    
-    showt(t{}) {
-        showc(t["a"]);
-    }
-    
-    showc(x) {
-        x.count;
-    }
-    
-    showtbl(t) {
-        if (t.def.is_table) {
-            "{";
-            for k in t.keys {
-                k;
-                ": ";
-                showtbl(t[k]);
-                ",";
-            }
-            "}";
-        } else {
-            t;
-            ",";
-        }
-    }
-    show(obj x) {
-        x.a;
-    }
-    
-    //tbl.count;
-    //show(ot["z"]);
-    showt(tbl);
-    //showtbl(tbl);
-}
-
 
     public test_case sort_test {
         int category = utilities
@@ -3646,13 +3592,7 @@ public flatst {
         }
         
     }
-srt {=
-        unsorted_table{} = { "c": "F", "b": "E", "a": "D" }
-        sorted_unsorted_table{} = sorted_table(unsorted_table)
-            for x in sorted_unsorted_table {
-                x;
-            }
-=}
+
 
     public test_case external_test {
         int category = external_objects
@@ -3720,36 +3660,6 @@ srt {=
         external_sub.rr;
     }
 
-qtst {=
-    q = "Q"
-    canto_context my_context = this_domain.context
-    my_context.construct("q");
-=}
-
-itst {=
-    external_interface {
-        i [?]
-        show(x) [?]
-    }
-    external_interface parameterized_builder(x) = org.cantolang.test.ExternalTest(x)
-    parameterized_builder("I").i;
-=}
-
-rtst {
-    external_interface {
-        r [| x |]
-        show(x) [?]
-    }
-
-    external_interface external_alias(a) = org.cantolang.test.ExternalTest(a);
-
-    
-    external_alias("R") external_sub {
-        rr = r
-    }
-    
-    external_sub.rr;
-}
     
     public test_case cached_external_object_test {
         int category = external_objects
@@ -3795,21 +3705,6 @@ rtst {
         aliased_obj.other.methodZ;
     }        
         
-ceot {=
-        external_obj {
-            other [&]
-        }
-        external_obj aliased_obj(v) = org.cantolang.test.ExternalTest(v)            
-        identity_obj(o) = o
-
-        eval(identity_obj(aliased_obj(: "E" :)));
-        identity_obj.e;
-        aliased_obj(: "F" :);
-        aliased_obj(: :).other(: "J" :);
-        " - ";
-        aliased_obj(: :).other.methodZ;
-=}        
-        
         
     public test_case external_argument_test {
         int category = external_objects
@@ -3838,19 +3733,7 @@ ceot {=
         show_child(org.cantolang.test.ExternalTest("E"));
     }
 
-extparent {=
-    string[] extList = []
-    string{} extMap = {}
-=}
 
-extparent ep = org.cantolang.test.ExternalTest
- 
-etst {=
-    ep.extList[0];
-    ep.extMap["1"];
-    ep.extMap[1];
-=}      
-        
     string{} string_map = {}
     string_map[] map_array = [] 
     map_array external_map_array {
@@ -4068,14 +3951,6 @@ etst {=
         
     }
 
-a_def [| A |]
-
-def_of {
-    definition a_def_def = definition_of("a_def")
-    
-    a_def_def.instantiate;
-    
-}
 
     public test_case text_utilities_test {
         int category = utilities
@@ -4177,17 +4052,6 @@ def_of {
         sru_array[1];
     }        
 
-srut {
- string[] sru_array(w[]) = w
- u[] = [ "U" ]
- sru_array(: ["F"] :);
- eval(sru_array(: sru_array + sru_array(: ["G"] :) :));
- sru_array[1];
- sru_array[0];
- sru_array(: u :);
- sru_array(: sru_array + sru_array(: ["G"] :) :);
-
-}
 
     public test_case border_layout_test {
         int category = layouts
@@ -4226,10 +4090,6 @@ srut {
                       null);
     }
 
-blt {
-   comp_array[5] = [ "JKL", "M", "N", "O", "PQR" ]
-   border_layout(comp_array);
-}
 
     public test_case compass_layout_test {
         int category = layouts
@@ -4342,16 +4202,6 @@ blt {
         if (rand_6("p") == rand_6("q")) [| P |] else [| x |]
     }
 
-public ct {
-    dynamic double rand = java.lang.Math.random
-    double cached_rand = rand
-    double rand_1 {
-        cached_rand;
-    }
-    if (cached_rand == rand_1(::)) [| N |] else [| x |]
-}
-
-
 
     public test_case cached_array_test {
         int category = caching
@@ -4398,32 +4248,6 @@ public ct {
         eval(cached_array_parent(: array_parent_sub :));
         cached_array_parent.child_array[2];
     }
-
-cat {=
-        string[] abc = [ "A", "B", "C" ]
-        string[] defg = [ "D", "E", "F", "G" ]
-        string[] empty_array = []
-        string[] test_array(x) = x
-        array_parent {
-            keep: string[] child_array(z) = z
-            
-            eval(child_array(: defg :));
-        }
-        
-        array_parent array_parent_sub [/]
-    
-        array_parent cached_array_parent(array_parent ap) = ap
-
-        eval(array_parent);
-        array_parent.child_array[0];
-        
-        eval(array_parent_sub);
-        array_parent_sub.child_array[1];
-        
-        eval(cached_array_parent(: array_parent_sub :));
-        cached_array_parent.child_array[2];
-=}
-
 
     
     public test_case keep_in_test {
@@ -4961,56 +4785,6 @@ public ckt {
         identity_sub.p2; 
     }
 
-cit {=
-        sup {
-            b [| X |]
-            c [?]
- 
-            keep: d(z) = z
-            keep: child_sup child_sub(child_sup w) = w
-            
-            p1 [| X |]  
-            p2 [| X |]  
-
-            [| X |]
-        }
-
-        sup cached_sub {
-            b [| B |]
-            c [| C |]
-            
-          /---  d("D"); ---/
-            child_sub(child_sup_sub);
-
-            [| A |]
-        }
-        
-        child_sup {
-            keep: e(x) = x
-        }
-
-        child_sup child_sup_sub {  
-            e("E");
-        }
-
-        sup parameterized_sub(x, y) {
-            p1 = x
-            p2 = y
-        }
-
-        sup identity_sub(sup s) = s        
-
-        cached_sub;
-   /--     identity_sub;
-        identity_sub.b;
-        identity_sub.c;
-        identity_sub.d;
-        identity_sub.child_sub.e;
-
-        eval(identity_sub(: parameterized_sub("F", "G") :));
-        identity_sub.p1;
-        identity_sub.p2;  ---/ 
-=}
 
     public test_case nested_cached_identity_test {
         int category = caching
@@ -5263,48 +5037,7 @@ cit {=
         accessor_obj.b_o.c;
     }         
 
-capt {
-        base_obj {
-            a = "x"
-            b = "x"
-            c = "x"
-            a;
-            b;
-            c;
-        }
-
-        base_obj a_obj {
-            a = "A"
-        }
-
-        base_obj b_obj {
-            b = "B"
-        }
-
-        base_obj c_obj {
-            c = "C"
-        }
-
-        container_obj(base_obj obj) {
-            keep:
-            base_obj bo = obj
-
-            bo;
-        }
-        
-        accessor_obj(container_obj bb, container_obj cc) {
-            container_obj c_o = bb
-            base_obj b_o = cc.bo
-            
-            c_o;
-            b_o;
-        }
-
-        eval(accessor_obj(container_obj(b_obj), container_obj(c_obj)));
-        accessor_obj.c_o.bo.b;
-    }         
  
-         
     public test_case passed_cache_test {
         int category = caching
         name = "Passed Cache Test"
@@ -5330,17 +5063,6 @@ capt {
         populate.c;
     }
 
-pct {=
-      test_cache{} = {}
-      pop(passed_cache{}) {
-         table.set(passed_cache, "a", "A");
-         passed_cache["a"];
-      }
-      
-      test_cache["x"];
-      pop(test_cache);
-      test_cache["a"];
-=}
 
     public test_case keep_scope_test {
         int category = caching
@@ -5394,24 +5116,6 @@ pct {=
         
     }
 
-kst {=
-        
-    dwk mdwk(dwk dd) = dd
-
-    dwk {
-        keep: f(z) = z
-        
-        dynamic set_f {
-            f(: "F" :);
-        }
-    }
-
-
-    mdwk(dwk);
-    mdwk.f;
-    mdwk.set_f;
-    mdwk.f;
-=}
 
     public test_case dynamic_argument_list_test {
         int category = parameters
@@ -7241,12 +6945,6 @@ public refl {
             [| </ul> |]
         }
     }
-
-ft {=
-  for file f in file(".").files {=
-    f.canonical_path;
-  =} 
- =}
 
 
     int ajc(int x) = x
