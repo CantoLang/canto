@@ -669,7 +669,7 @@ public sis {
     
     mo(z) mosub(z) {
         momo("B");
-        mo("D");
+        ".";
     }
     
     mosub("A");
@@ -2720,44 +2720,19 @@ public tt {
 
 public tpt {
         x{} = { "a":"A", "b":"B" }
-        z{}{} = { "t1":{ "e":"E", "f":"F"}, "t2":{ "g":"G", "h":"H" } }
+        foo(x) {
+           i [| I |]
+           j = x
+        } 
 
-        dynamic show(aa) {
-            for k in aa.keys {
-                if (aa[k].count > 1) {
-                    show_x(aa[k]);
-                } else if (aa[k].count == 1) {
-                    aa[k];
-                } else{
-                    "x";
-                }
-            }
+        foo foos{} = { "foo_i": foo, "foo_j":foo("J") }        
+        show_foo_ij(f{}) {
+           f["foo_i"].i;
+           f["foo_j"].j;
         }
         
-        dynamic show_x(bb) {
-            for j in bb.keys {
-                if (bb[j].count > 1) {
-                    show_x(bb[j]);
-                } else if (bb[j].count == 1) {
-                    bb[j];
-                } else{
-                    "x";
-                }
-            }
-        }
-        
-        show_k(t{}) {
-           show_kk(t["a"]);
-        }
-        show_kk(kk) {
-            if (kk.count == 1) {
-                "K";
-            } else {
-                "x";
-            }
-        }
-        show(z);
-        show_k(x);
+        x["a"];
+        show_foo_ij(foos);
 }
    
     public test_case multidimensional_table_test {
@@ -3338,18 +3313,21 @@ public stkl {
 
 public dstk {
 
-        ser = "{ kl_parent.keep: { kl.keep: { l: \"L\", k: \"K\" } }"
+        ser = "{ kl_parent.keep: { kl.keep: { l: \"L\", k: \"K\", m: \"M\" } } }"
         
         serializable obj2 {
             keep: serializable kl_parent {
                 keep: serializable kl {
                     keep: k [/]
                     keep: l [/]
+                    m [/]
                 }
             }
         }
         obj2.deserialize(ser);
         obj2.kl_parent.kl.k;
+        obj2.kl_parent.kl.l;
+        obj2.kl_parent.kl.m;
 }
 
 public dstij {
@@ -3434,7 +3412,7 @@ public ij1 {
             keep: j [/]
         }
 
-        keep: serializable obj1 {
+        serializable obj1 {
             keep: ijobj iobj {
                 keep: i(y) = y
 
@@ -3463,7 +3441,7 @@ public ij2 {
             keep: j [/]
         }
 
-        keep: serializable obj11 {
+        serializable obj11 {
             keep: ijobj iiobj {
                 keep: i(y) = y
 
@@ -6128,7 +6106,13 @@ show_this_context {=
         border_layout(topbar, leftmenu, content(r, s), rightbar, footer);
     }
 
-   
+public tlocal {
+    label = "Yo"
+    label;
+    for test_case t in all_tests {
+       checkbox(t.key, t.name, false);
+    }
+}   
 
     public basepage(r, s) index(request r, session s) {
         label = "Home"

@@ -1321,7 +1321,7 @@ public class Context {
         if (name == null || name.length() == 0) {
             return null;
         }
-if (name.equals("i") || name.endsWith(".i") || name.equals("j") || name.endsWith(".j")) {
+if (name.equals("i")) {
  System.out.println("** " + name + " at Context 1320");   
 }
         String fullName = (def == null ? name : def.getFullNameInContext(this));
@@ -4822,11 +4822,11 @@ if (unpushedEntries == null) {
 
 
         public Object get(String key, String globalKey, ArgumentList args, boolean local) {
-            return get(key, globalKey, args, false, local);
+            return get(key, globalKey, args, false, local, true);
         }
 
         public Definition getDefinition(String key, String globalKey, ArgumentList args) {
-            Holder holder = (Holder) get(key, globalKey, args, true, false);
+            Holder holder = (Holder) get(key, globalKey, args, true, false, true);
             if (holder != null) {
                 return holder.def;
             } else {
@@ -4835,10 +4835,10 @@ if (unpushedEntries == null) {
         }
 
         public Holder getDefHolder(String key, String globalKey, ArgumentList args, boolean local) {
-            return (Holder) get(key, globalKey, args, true, local);
+            return (Holder) get(key, globalKey, args, true, local, true);
         }
 
-        private Object get(String key, String globalKey, ArgumentList args, boolean getDefHolder, boolean local) {
+        private Object get(String key, String globalKey, ArgumentList args, boolean getDefHolder, boolean local, boolean localAllowed) {
             Holder holder = null;
             Map<String, Object> c = (cache != null ? cache : readOnlyKeep);
 
@@ -4849,8 +4849,8 @@ if (unpushedEntries == null) {
                 if (this.def == null) {
                     return null;
                 }
-                if (!local && link != null && !this.def.hasChildDefinition(key, true) && !NameNode.isSpecialName(key)) {
-                    return link.get(key, globalKey, args, getDefHolder, false);
+                if (!local && link != null && !this.def.hasChildDefinition(key, localAllowed) && !NameNode.isSpecialName(key)) {
+                    return link.get(key, globalKey, args, getDefHolder, false, (localAllowed && link.def.equalsOrExtends(this.def.getOwner())));
                 } else {
                     return null;
                 }
@@ -5018,8 +5018,8 @@ if (unpushedEntries == null) {
             }
 
             // continue up the context chain
-            if (data == null && (def == null || !getDefHolder) && !local && link != null && !this.def.hasChildDefinition(key, true) && !NameNode.isSpecialName(key)) {
-                return link.get(key, globalKey, args, getDefHolder, false);
+            if (data == null && (def == null || !getDefHolder) && !local && link != null && !this.def.hasChildDefinition(key, localAllowed) && !NameNode.isSpecialName(key)) {
+                return link.get(key, globalKey, args, getDefHolder, false, (localAllowed && link.def.getOwner().equals(this.def)));
             }
 
             // return either the definition or the data, depending on the passed flag

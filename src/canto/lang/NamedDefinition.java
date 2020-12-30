@@ -822,8 +822,8 @@ public class NamedDefinition extends AnonymousDefinition {
             }
 
         } else {
-if (!localAllowed && def.isLocal()) {
- System.out.println("hasChildDef finds local def " + def.getFullName());
+if (def.isLocal()) {
+ System.out.println("hasChildDef finds local def " + def.getFullName() + " (localAllowed = " + localAllowed + ")");
 }
             return (localAllowed || !def.isLocal());
         }
