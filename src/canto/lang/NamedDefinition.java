@@ -126,20 +126,8 @@ public class NamedDefinition extends AnonymousDefinition {
         }
 
         // if the contents are a single named instantiation, make this an alias
-        Instantiation instance = null;
         if (contents instanceof Instantiation) {
-            instance = (Instantiation) contents;
-
-        } else if (contents instanceof Block) {
-            CantoNode node = contents;
-            while (node instanceof Block && node.getNumChildren() == 1) {
-                node = node.getChild(0);
-            }
-            if (node instanceof Instantiation) {
-                instance = (Instantiation) node; 
-            }
-        }
-        if (instance != null) {
+            Instantiation instance = (Instantiation) contents;
             CantoNode reference = instance.getReference();
             if (reference instanceof NameNode) {
                 setAlias((NameNode) reference);
