@@ -345,7 +345,7 @@ public class Context {
     }
     
     public Map<String, Object> getKeep() {
-        return cache;
+        return topEntry.getKeep();
     }
     
     public Map<String, Pointer> getKeepMap() {

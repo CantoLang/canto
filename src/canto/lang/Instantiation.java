@@ -624,6 +624,7 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 
             String name = nameNode.getName();
             if (name != null && name.length() > 0) {
+              
                 if (def == null) { // && !(isParam || isParamChild)) {
                     def = getDefinition(context);
                 }
@@ -632,6 +633,12 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
                 if (def == null) {
                     return NOT_CACHEABLE_INFO;
 
+                } else if (name.equals("here.cache") || name.endsWith(".here.cache")) {
+                    return NOT_CACHEABLE_INFO;
+                
+                } else if (name.equals("cache") && def.getOwner().getName().equals("here")) {
+                    return NOT_CACHEABLE_INFO;
+                
                 } else if (def.getDurability() == Definition.DYNAMIC) {
                     cacheability = CACHE_STORABLE;
 

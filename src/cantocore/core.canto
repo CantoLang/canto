@@ -172,6 +172,8 @@ core {
 
         /** Modifies the cached value (if any) associated with the given name in this context. **/
         put(name, data) [&]
+        
+        string{} cache [&]
 
         /** Constructs the object with the given name in this context. **/
         construct(name),(name, arg[] args) [&]

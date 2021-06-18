@@ -9,6 +9,7 @@
 package canto.lang;
 
 import java.util.List;
+import java.util.Map;
 
 import canto.runtime.Context;
 
@@ -27,6 +28,8 @@ public interface canto_context {
 
     /** Sets the cached value, if any, for a particular name in this context. **/
     public void put(String name, Object data) throws Redirection;
+    
+    public Map<String, Object> cache();
 
     /** Constructs a Canto object of a particular name.  **/
     public Object construct(String name) throws Redirection;

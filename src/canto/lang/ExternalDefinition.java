@@ -2,7 +2,7 @@
  * 
  * ExternalDefinition.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -1192,6 +1192,8 @@ class ExternalConstruction extends AbstractConstruction implements ValueGenerato
             def = getExternalDefinition();
         }
         if (def == null) {
+            return NOT_CACHEABLE_INFO;
+        } else if (def.getName().equals("cache") && def.getOwner().getName().equals("here")) {
             return NOT_CACHEABLE_INFO;
         } else if (def.getDurability() == Definition.DYNAMIC) {
             cacheability = CACHE_STORABLE;

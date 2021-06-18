@@ -2,7 +2,7 @@
  * 
  * CantoContext.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2020 by cantolang.org
  * All rights reserved.
  */
 
@@ -95,6 +95,15 @@ public class CantoContext implements canto_context {
         
         context.putData(def, null, null, name, data);
     }
+    
+    public Map<String, Object> cache() {
+        if (!initialized) {
+            init();
+        }
+        
+        return context.getKeep();
+    }
+    
 
     /** Constructs a Canto object of a particular name.  **/
     public Object construct(String name) throws Redirection {
