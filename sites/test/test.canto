@@ -5450,7 +5450,7 @@ public cot {
     } 
 
 public coac {
-       ao(z) {
+        ao(z) {
            msg = z
            this;
         }
@@ -5464,7 +5464,6 @@ public coac {
         eval(cached_obj_array(aos));
         
         rr.msg;
-        
 
         cached_obj_array[3].msg;
         cached_obj_array[4].msg;
