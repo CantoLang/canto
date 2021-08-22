@@ -2,7 +2,7 @@
  * 
  * CollectionDefinition.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -377,7 +377,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
     protected Object instantiateCollectionObject(Context context, Object collection) throws Redirection {
         //Type st = getSuper();
         // this seems to be unnecessary
-        boolean resolveOnly = false; //true; //!(st == null || st.isPrimitive() || st.isExternal());
+        boolean resolveOnly = true; //!(st == null || st.isPrimitive() || st.isExternal());
 
         if (collection == null) {
             return null;
