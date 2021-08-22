@@ -2,7 +2,7 @@
  * 
  * Context.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -907,7 +907,10 @@ public class Context {
             push(definition, params, args, true);
             pushedContext = true;
         }
-
+if ("serialize".equals(definition.getName())) {
+  System.out.println(definition.getName() + " at ctx 911");
+}
+        
         try {
             List<Construction> constructions = definition.getConstructions(this);
             boolean constructed = false;
@@ -1322,7 +1325,7 @@ public class Context {
             return null;
         }
 if (name.equals("i")) {
- System.out.println("** " + name + " at Context 1320");   
+ System.out.println("** " + name + " at Context 1325");   
 }
         String fullName = (def == null ? name : def.getFullNameInContext(this));
 
@@ -4874,10 +4877,14 @@ if (unpushedEntries == null) {
                         data = p.cache.get(p.getKey());
                         if (data instanceof Holder) {
                             holder = (Holder) data;
-                            data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                            def = holder.def;
-                            args = holder.args;
-                            ri = holder.resolvedInstance;
+                            if (isCompatibleHolder(holder, localAllowed)) {
+                                data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                                def = holder.def;
+                                args = holder.args;
+                                ri = holder.resolvedInstance;
+                            } else {
+                                data = null;
+                            }
                         }
                         i++;
                         if (i >= MAX_POINTER_CHAIN_LENGTH) {
@@ -4886,10 +4893,14 @@ if (unpushedEntries == null) {
                     } while (data instanceof Pointer);
                 } else if (data instanceof Holder) {
                     holder = (Holder) data;
-                    data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                    def = p.riAs.getDefinition();
-                    args = holder.args;
-                    ri = holder.resolvedInstance;
+                    if (isCompatibleHolder(holder, localAllowed)) {
+                        data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                        def = p.riAs.getDefinition();
+                        args = holder.args;
+                        ri = holder.resolvedInstance;
+                    } else {
+                        data = null;
+                    }
                 } else if (data instanceof ElementDefinition) {
                     def = (Definition) data;
                     data = ((ElementDefinition) data).getElement();
@@ -4912,10 +4923,14 @@ if (unpushedEntries == null) {
                 
                     if (data instanceof Holder) {
                         holder = (Holder) data;
-                        data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                        def = holder.def;
-                        args = holder.args;
-                        ri = holder.resolvedInstance;
+                        if (isCompatibleHolder(holder, localAllowed)) {
+                            data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                            def = holder.def;
+                            args = holder.args;
+                            ri = holder.resolvedInstance;
+                        } else {
+                            data = null;
+                        }
                     } else if (data instanceof Pointer) {
                         def = ((Pointer) data).riAs.getDefinition();
     
@@ -4933,10 +4948,14 @@ if (unpushedEntries == null) {
                                 data = p.cache.get(p.getKey());
                                 if (data instanceof Holder) {
                                     holder = (Holder) data;
-                                    data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                                    def = holder.def;
-                                    args = holder.args;
-                                    ri = holder.resolvedInstance;
+                                    if (isCompatibleHolder(holder, localAllowed)) {
+                                        data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                                        def = holder.def;
+                                        args = holder.args;
+                                        ri = holder.resolvedInstance;
+                                    } else {
+                                        data = null;
+                                    }
                                 }
                                 i++;
                                 if (i >= MAX_POINTER_CHAIN_LENGTH) {
@@ -4945,10 +4964,14 @@ if (unpushedEntries == null) {
                             } while (data instanceof Pointer);
                         } else if (data instanceof Holder) {
                             holder = (Holder) data;
-                            data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                            def = holder.def;
-                            args = holder.args;
-                            ri = holder.resolvedInstance;
+                            if (isCompatibleHolder(holder, localAllowed)) {
+                                data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                                def = holder.def;
+                                args = holder.args;
+                                ri = holder.resolvedInstance;
+                            } else {
+                                data = null;
+                            }
                         }
                     } 
                 }
@@ -4964,10 +4987,14 @@ if (unpushedEntries == null) {
                         data = ((ElementDefinition) def).getElement();
                     } else if (data instanceof Holder) {
                         holder = (Holder) data;
-                        data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                        def = holder.def;
-                        args = holder.args;
-                        ri = holder.resolvedInstance;
+                        if (isCompatibleHolder(holder, localAllowed)) {
+                            data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                            def = holder.def;
+                            args = holder.args;
+                            ri = holder.resolvedInstance;
+                        } else {
+                            data = null;
+                        }
                     } else if (data instanceof Pointer) {
                         def = ((Pointer) data).riAs.getDefinition();
                         ckey = baseKey(((Pointer) data).getKey());
@@ -4991,10 +5018,15 @@ if (unpushedEntries == null) {
                             data = p.cache.get(p.getKey());
                             if (data instanceof Holder) {
                                 holder = (Holder) data;
-                                data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                                def = holder.def;
-                                args = holder.args;
-                                ri = holder.resolvedInstance;
+                                if (isCompatibleHolder(holder, localAllowed)) {
+                                    holder = (Holder) data;
+                                    data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                                    def = holder.def;
+                                    args = holder.args;
+                                    ri = holder.resolvedInstance;
+                                } else {
+                                    data = null;
+                                }
                             }
                             i++;
                             if (i >= MAX_POINTER_CHAIN_LENGTH) {
@@ -5003,10 +5035,15 @@ if (unpushedEntries == null) {
                         } while (data instanceof Pointer);
                     } else if (data instanceof Holder) {
                         holder = (Holder) data;
-                        data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
-                        def = holder.def;
-                        args = holder.args;
-                        ri = holder.resolvedInstance;
+                        if (isCompatibleHolder(holder, localAllowed)) {
+                            holder = (Holder) data;
+                            data = (holder.data == AbstractNode.UNINSTANTIATED ? null : holder.data);
+                            def = holder.def;
+                            args = holder.args;
+                            ri = holder.resolvedInstance;
+                        } else {
+                            data = null;
+                        }
                     }
                 }
             }
@@ -5044,6 +5081,9 @@ if (unpushedEntries == null) {
             }
         }
 
+        private boolean isCompatibleHolder(Holder holder, boolean localAllowed) {
+            return (localAllowed || !holder.def.isLocal());
+        }
 
         /** If the current cache contains a Pointer under the specified key, stores the
          *  data in the cache pointed to by the Pointer; otherwise stores the data in the
