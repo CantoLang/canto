@@ -2,7 +2,7 @@
  * 
  * AnonymousDefinition.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import canto.parser.ParsedStringLiteral;
 import canto.runtime.Context;
-import canto.runtime.Logger;
+import canto.runtime.CantoLogger;
 /**
  * AnonymousDefinition is a definition without a name or type.  It is also the
  * base class of more complex definition types.
@@ -740,7 +740,7 @@ public class AnonymousDefinition extends CantoStatement implements Definition {
             throw new Redirection(Redirection.STANDARD_ERROR, getFullName() + " is abstract; cannot instantiate");
         }
 
-        Logger.logInstantiation(context, this);
+        CantoLogger.logInstantiation(context, this);
 
         if (dur == GLOBAL || dur == STATIC) {
             vlog("Constructing " + (dur == GLOBAL ? "global" : "static") + " data for " + getFullName());

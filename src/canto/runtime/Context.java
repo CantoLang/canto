@@ -63,7 +63,7 @@ public class Context {
     private final static int DEFAULT_MAX_CONTEXT_SIZE = 180;
 
     private final static void vlog(String str) {
-        SiteBuilder.vlog(str);
+        CantoLogger.vlog(str);
     }
 
     /** Anything bigger than this will be treated as runaway recursion.  The default value
@@ -1311,11 +1311,11 @@ if ("serialize".equals(definition.getName())) {
      */
     public Object getData(Definition def, String name, ArgumentList args, List<Index> indexes) throws Redirection {
         Object data = getData(def, name, args, indexes, false);
-        Logger.vlog(" - - - getting " + name + " from cache: - - - ");
+        CantoLogger.vlog(" - - - getting " + name + " from cache: - - - ");
         if (data == null) {
-            Logger.vlog(" - - - (no data)");
+            CantoLogger.vlog(" - - - (no data)");
         } else {
-            Logger.vlog(" - - - " + data.toString());
+            CantoLogger.vlog(" - - - " + data.toString());
         }
         return data;
     }    
@@ -1562,7 +1562,7 @@ if (name.equals("c")) {
   System.out.println(name + " at ctx 1559");
 }
         if (holder.data != null || holder.resolvedInstance != null) {
-            Logger.vlog(" - - - storing " + name + " in cache - - - ");
+            CantoLogger.vlog(" - - - storing " + name + " in cache - - - ");
         }
         if (name.endsWith(".keep")) {
             System.out.println(" ----- direct put of " + name + "," + " value is " + (holder.data == null ? "null" : (" a " + holder.data.getClass().getName())));
@@ -3159,7 +3159,7 @@ if (name.equals("c")) {
             definition = (Definition) ((DynamicObject) definition).initForContext(this, args, indexes);
         }
 
-        Logger.logInstantiation(this, definition);
+        CantoLogger.logInstantiation(this, definition);
 
         if (definition instanceof CollectionDefinition) {
             CollectionInstance collection = ((CollectionDefinition) definition).getCollectionInstance(this, args, indexes);
@@ -5639,7 +5639,7 @@ class ContextMarker {
         if (object instanceof ContextMarker) {
             ContextMarker marker = (ContextMarker) object;
             if (loopIndex >= 0) {
-                SiteBuilder.vlog("comparing context marker loop indices: " + loopIndex + " to " + marker.loopIndex);
+                CantoLogger.vlog("comparing context marker loop indices: " + loopIndex + " to " + marker.loopIndex);
             }
             return (marker.rootContext == rootContext && marker.stateCount == stateCount && marker.loopIndex == loopIndex);
         } else {

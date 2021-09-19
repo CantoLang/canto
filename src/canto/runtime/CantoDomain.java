@@ -2,7 +2,7 @@
  * 
  * CantoDomain.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -28,7 +28,7 @@ import canto.parser.Node;
 public class CantoDomain implements canto_domain {
 
     private static void log(String string) {
-        SiteBuilder.log(string);
+        CantoLogger.log(string);
     }
 
     
@@ -314,10 +314,10 @@ public class CantoDomain implements canto_domain {
 
         int v = getIntProperty("verbosity", -1);
         if (v >= 0) {
-            SiteBuilder.verbosity = v;
-            log("    site verbosity level is " + SiteBuilder.verbosity);
+            CantoLogger.verbosity = v;
+            log("    site verbosity level is " + CantoLogger.verbosity);
         } else {
-            log("    no value provided for verbosity level; using externally defined value (" + SiteBuilder.verbosity + ")");
+            log("    no value provided for verbosity level; using externally defined value (" + CantoLogger.verbosity + ")");
         }
 
         if (!loadError) {

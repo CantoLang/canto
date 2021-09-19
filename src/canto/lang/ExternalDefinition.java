@@ -2,7 +2,7 @@
  * 
  * ExternalDefinition.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -79,7 +79,7 @@ public class ExternalDefinition extends ComplexDefinition {
 
         // can't create a definition with nothing to point to
         if (externalClass == null) {
-            SiteBuilder.vlog("No external definition for " + name);
+            CantoLogger.vlog("No external definition for " + name);
             return null;
         }
 
@@ -117,14 +117,14 @@ public class ExternalDefinition extends ComplexDefinition {
                     def = def.getChildDefinition(namePart, namePart.getArguments(), namePart.getIndexes(), null, context, null);
                 }
                 if (def == null) {
-                    SiteBuilder.log("No " + namePart.getName() + " belonging to external definition " + nameNode.getName());
+                    CantoLogger.log("No " + namePart.getName() + " belonging to external definition " + nameNode.getName());
                     return null;
                 }
                 n++;
             }
             return def;
         } catch (Throwable t) {
-            SiteBuilder.log("Problem initing external definition " + externalDef.getFullName() + ": " + t.toString());
+            CantoLogger.log("Problem initing external definition " + externalDef.getFullName() + ": " + t.toString());
             return null;
         }
     }

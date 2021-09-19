@@ -2,7 +2,7 @@
  * 
  * CantoRunner.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -277,14 +277,14 @@ public class CantoRunner implements canto_processor {
         
         param = initParams.get("verbose");
         if ("true".equalsIgnoreCase(param)) {
-            SiteBuilder.verbosity = SiteBuilder.VERBOSE;
+            CantoLogger.verbosity = CantoLogger.VERBOSE;
         }
         
         logFileName = initParams.get("log");
         String appendLog = initParams.get("log.append");
         appendToLog = isTrue(appendLog);
         if (logFileName != null) {
-            SiteBuilder.setLogFile(logFileName, appendToLog);
+            CantoLogger.setLogFile(logFileName, appendToLog);
         }
 
         cantoPath = initParams.get("cantopath");
@@ -427,9 +427,9 @@ public class CantoRunner implements canto_processor {
     
     /** Writes to log file and system out. **/
     static void slog(String msg) {
-        SiteBuilder.log(msg);
+        CantoLogger.log(msg);
         // avoid redundant echo
-        if (!SiteBuilder.echoSystemOut) {
+        if (!CantoLogger.echoSystemOut) {
             System.out.println(msg);
         }
     }

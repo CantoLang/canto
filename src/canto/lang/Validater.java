@@ -2,7 +2,7 @@
  * 
  * Validater.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -20,7 +20,7 @@ public class Validater extends CantoVisitor {
     public final static int MAX_TYPE_LEVELS = 10;
 
     public static void vlog(String str) {
-        SiteBuilder.vlog(str);
+        CantoLogger.vlog(str);
     }
 
     public Validater() {}

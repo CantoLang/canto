@@ -2,7 +2,7 @@
  * 
  * CantoSite.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -23,18 +23,18 @@ import canto.runtime.debugger.SimpleDebugger;
 public class CantoSite extends CantoDomain {
 
     private static void log(String string) {
-        SiteBuilder.log(string);
+        CantoLogger.log(string);
     }
 
     private static void vlog(String string) {
-        SiteBuilder.vlog(string);
+        CantoLogger.vlog(string);
     }
 
     private static boolean LOG_MEMORY = false;
     private static String currentSiteName = "(unknown)";
     private static PrintStream mps = null;
     private static void mlog(String string) {
-        SiteBuilder.mlog(string);
+        CantoLogger.mlog(string);
         if (LOG_MEMORY) {
         if (mps == null) {
             try {

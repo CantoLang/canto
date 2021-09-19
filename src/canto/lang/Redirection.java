@@ -2,7 +2,7 @@
  * 
  * Redirection.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -10,6 +10,7 @@ package canto.lang;
 
 import canto.runtime.Context;
 import canto.runtime.CantoObjectWrapper;
+import canto.runtime.CantoLogger;
 
 /**
  *  A Redirection is thrown by a Canto <code>redirect</code> statement.  This
@@ -42,7 +43,7 @@ public class Redirection extends Throwable {
             message = null;
         }
         location = null;
-        canto.runtime.SiteBuilder.vlog("Creating redirection to instance: " + instance.getName());
+        CantoLogger.vlog("Creating redirection to instance: " + instance.getName());
     }
     
     public Redirection(String location) {
@@ -50,14 +51,14 @@ public class Redirection extends Throwable {
         this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         message = null;
         instance = null;
-        canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location);
+        CantoLogger.vlog("Creating redirection to location: " + location);
     }
 
     public Redirection(String location, String message) {
         super(message);
         this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         this.message = message;
-        canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location + " with message: " + message);
+        CantoLogger.vlog("Creating redirection to location: " + location + " with message: " + message);
     }
 
     public Redirection(int status, String location, String message) {
@@ -65,7 +66,7 @@ public class Redirection extends Throwable {
         this.status = status;
         this.location = (STANDARD_ERROR.equals(location) ? STANDARD_ERROR_PAGE : location);
         this.message = message;
-        canto.runtime.SiteBuilder.vlog("Creating redirection to location: " + location + " with message: " + message + " and status: " + status);
+        CantoLogger.vlog("Creating redirection to location: " + location + " with message: " + message + " and status: " + status);
     }
 
     public int getStatus() {

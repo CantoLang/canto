@@ -531,12 +531,12 @@ TOKEN :
 
 Node parse(String filename) #Root:
 {
-    canto.runtime.SiteBuilder.log("Parsing " + filename + "...");
+    canto.runtime.CantoLogger.log("Parsing " + filename + "...");
 }
 {
     ( SiteStatement() | CoreStatement() | LOOKAHEAD( Name() ) DomainStatement() | DefaultStatement() )+ <EOF>
     {
-        canto.runtime.SiteBuilder.log("Parsing completed.");
+        canto.runtime.CantoLogger.log("Parsing completed.");
         return jjtThis;
     }
 }

@@ -2,7 +2,7 @@
  * 
  * SiteLoader.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -21,6 +21,7 @@ import canto.runtime.Context;
 import canto.runtime.CantoObjectWrapper;
 import canto.runtime.CantoServer;
 import canto.runtime.CantoVisitor;
+import canto.runtime.CantoLogger;
 import canto.runtime.SiteBuilder;
 import cantocore.CoreSource;
 
@@ -51,7 +52,7 @@ public class SiteLoader {
     private static final int actions = 0; //SiteBuilder.LOG | SiteBuilder.DUMP_SOURCE | SiteBuilder.DUMP_PAGES;
 
     protected static void log(String str) {
-        SiteBuilder.log(str);
+        CantoLogger.log(str);
     }
 
     private HashMap<String, String> loadedFiles = new HashMap<String, String>();
@@ -801,22 +802,22 @@ public class SiteLoader {
                 this.parseResult = parseResult;
 
             } catch (ParseException pe) {
-                SiteBuilder.log("...syntax error in " + getSourceName() + ": " + pe.getMessage());
+                CantoLogger.log("...syntax error in " + getSourceName() + ": " + pe.getMessage());
                 exception = pe;
 
             } catch (DuplicateDefinitionException dde) {
-                SiteBuilder.log("...duplicate definition in " + getSourceName() + ": " + dde.getMessage());
+                CantoLogger.log("...duplicate definition in " + getSourceName() + ": " + dde.getMessage());
                 exception = dde;
 
             } catch (Exception e) {
                 exception = e;
-                SiteBuilder.log("...exception loading " + getSourceName() + ": " + e);
+                CantoLogger.log("...exception loading " + getSourceName() + ": " + e);
                 System.out.flush();
                 e.printStackTrace();
 
             } catch (canto.parser.TokenMgrError error) {
                 exception = new ParseException(error.toString());
-                SiteBuilder.log("...error loading " + getSourceName() + ": " + error);
+                CantoLogger.log("...error loading " + getSourceName() + ": " + error);
                 System.out.flush();
                 error.printStackTrace();
 

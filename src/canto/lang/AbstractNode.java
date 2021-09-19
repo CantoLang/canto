@@ -20,7 +20,7 @@ import canto.parser.Initializable;
 import canto.parser.Node;
 import canto.parser.Token;
 import canto.runtime.Context;
-import canto.runtime.SiteBuilder;
+import canto.runtime.CantoLogger;
 
 /**
  * AbstractNode is the base class for canto nodes.  Nodes are either primitive
@@ -391,11 +391,11 @@ abstract public class AbstractNode extends CantoCompilerVisitDestination impleme
     }
 
     protected void log(String str) {
-        SiteBuilder.log(str);
+        CantoLogger.log(str);
     }
 
     protected void vlog(String str) {
-        SiteBuilder.vlog(str);
+        CantoLogger.vlog(str);
     }
 
     public Token getFirstToken() {

@@ -2,17 +2,41 @@
  * 
  * Logger.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
 package canto.runtime;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import canto.lang.*;
 import canto.parser.*;
 
-public class Logger implements CantoParserVisitor {
+public class CantoLogger implements CantoParserVisitor {
 
+    public static boolean echoSystemOut = true;
+
+    /** Verbosity setting to minimize the information displayed on the console. **/
+    public final static int TERSE = 0;
+
+    /** Middle setting for verbosity; some but not all information is displayed on the console. **/
+    public final static int MODERATE = 1;
+
+    /** Verbosity setting to output all available information to the console. **/
+    public final static int VERBOSE = 2;
+
+    public static int verbosity = TERSE;
+    private static PrintStream ps = null;
+    private static String logFile = "(none)";
+    
+    
+    
     // global Instantiation logging
     public static void logInstantiation(Definition definition) {
         logInstantiation(null, definition);
@@ -71,24 +95,63 @@ public class Logger implements CantoParserVisitor {
         } else {
             return;
         }
-        SiteBuilder.vlog(logbuf.toString());
+        vlog(logbuf.toString());
         //log("          *** Contents: " + definition.getContents().getClass().getName());
     }
 
 
     private String indent = "";
 
-    public Logger() {}
+    public CantoLogger() {}
 
-    public static void vlog(String string) {
-        SiteBuilder.vlog(string);
+    public static void log(String str) {
+        log(str, false);
+    }
+    
+    public static void log(String str, boolean urgent) {
+        if (echoSystemOut || urgent) {
+            System.out.println(str);
+        }
+        if (ps != null) {
+            ps.println(str);
+        }
     }
 
-    private void log(String string) {
-        SiteBuilder.log(indent + string);
+    public static void err(String str) {
+        System.err.println(str);
+        if (ps != null) {
+            ps.println("ERROR: " + str);
+        }
     }
-    private void logIfVerbose(String string) {
-        SiteBuilder.vlog(indent + string);
+
+    public static void setLogFile(String logFileName, boolean append) throws FileNotFoundException {
+        logFile = logFileName;
+        ps = new PrintStream(new FileOutputStream(logFileName, append));
+        Date now = new Date();
+        log("\n=========== begin logging " + now.toString() + " ============");
+    }
+
+    public static String getLogFile() {
+        return logFile;
+    }
+
+    public static void setPrintStream(PrintStream printStream) {
+        ps = printStream;
+        if (ps.equals(System.out)) {
+            echoSystemOut = false;
+        }
+    }
+
+    public static void vlog(String str) {
+        if (verbosity >= VERBOSE) {
+            log(str);
+        }
+    }
+
+    public static void mlog(String str) {
+        if (verbosity >= MODERATE) {
+            log(str);
+        }
     }
 
     public static String getDescription(AbstractNode node) {
@@ -160,7 +223,7 @@ public class Logger implements CantoParserVisitor {
     private void logNodeInfo(CantoNode cantoNode) {
     	AbstractNode node = (AbstractNode) cantoNode;
         log(getDescription(node));
-        if (SiteBuilder.verbosity >= SiteBuilder.VERBOSE) {
+        if (verbosity >= VERBOSE) {
             int n = node.jjtGetNumChildren();
             log("    " + n + " children");
             for (int i = 0; i < n; i++) {
@@ -179,364 +242,364 @@ public class Logger implements CantoParserVisitor {
         return data;
     }
     public Object visit(SimpleNode node, Object data) {
-        logIfVerbose("SimpleNode!!!");
+        vlog("SimpleNode!!!");
         data = node.childrenAccept(this, data);
         return data;
     }
     public Object visit(CantoNode node, Object data) {
-        logIfVerbose("CantoNode!!!");
+        vlog("CantoNode!!!");
         return data;
     }
     public Object visit(ParsedRoot node, Object data) {
-        logIfVerbose("parse root:");
+        vlog("parse root:");
         return handleNode(node, data);
     }
     public Object visit(ParsedStaticText node, Object data) {
-        logIfVerbose("StaticText:");
+        vlog("StaticText:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLiteralText node, Object data) {
-        logIfVerbose("LiteralText:");
+        vlog("LiteralText:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNameWithArguments node, Object data) {
-        logIfVerbose("NameWithArgs:");
+        vlog("NameWithArgs:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNameWithIndexes node, Object data) {
-        logIfVerbose("NameWithIndexes:");
+        vlog("NameWithIndexes:");
         return handleNode(node, data);
     }
     public Object visit(ParsedName node, Object data) {
-        logIfVerbose("Name:");
+        vlog("Name:");
         return handleNode(node, data);
     }
     public Object visit(ParsedSpecialName node, Object data) {
-        logIfVerbose("SpecialName:");
+        vlog("SpecialName:");
         return handleNode(node, data);
     }
     public Object visit(ParsedSiteStatement node, Object data) {
-        logIfVerbose("SiteStatement:");
+        vlog("SiteStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedCoreStatement node, Object data) {
-        logIfVerbose("CoreStatement:");
+        vlog("CoreStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDefaultStatement node, Object data) {
-        logIfVerbose("DefaultStatement:");
+        vlog("DefaultStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedStaticBlock node, Object data) {
-        logIfVerbose("StaticBlock:");
+        vlog("StaticBlock:");
         return handleNode(node, data);
     }
     public Object visit(ParsedCantoBlock node, Object data) {
-        logIfVerbose("CantoBlock:");
+        vlog("CantoBlock:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDynamicElementBlock node, Object data) {
-        logIfVerbose("DynamicElementBlock:");
+        vlog("DynamicElementBlock:");
         return handleNode(node, data);
     }
     public Object visit(ParsedConcurrentCantoBlock node, Object data) {
-        logIfVerbose("ConcurrentCantoBlock:");
+        vlog("ConcurrentCantoBlock:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAdoptStatement node, Object data) {
-        logIfVerbose("AdoptStatement:");
+        vlog("AdoptStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedExternStatement node, Object data) {
-        logIfVerbose("ExternStatement:");
+        vlog("ExternStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedKeepStatement node, Object data) {
-        logIfVerbose("KeepStatement:");
+        vlog("KeepStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedRedirectStatement node, Object data) {
-        logIfVerbose("RedirectStatement:");
+        vlog("RedirectStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedContinueStatement node, Object data) {
-        logIfVerbose("ContinueStatement:");
+        vlog("ContinueStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedConditionalExpression node, Object data) {
-        logIfVerbose("ConditionalExpression:");
+        vlog("ConditionalExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedWithPredicate node, Object data) {
-        logIfVerbose("WithPredicate:");
+        vlog("WithPredicate:");
         return handleNode(node, data);
     }
     public Object visit(ParsedWithoutPredicate node, Object data) {
-        logIfVerbose("WithoutPredicate:");
+        vlog("WithoutPredicate:");
         return handleNode(node, data);
     }
     public Object visit(ParsedForExpression node, Object data) {
-        logIfVerbose("ForExpression:");
+        vlog("ForExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedIteratorValues node, Object data) {
-        logIfVerbose("IteratorValues:");
+        vlog("IteratorValues:");
         return handleNode(node, data);
     }
     public Object visit(ParsedBreakStatement node, Object data) {
-        logIfVerbose("BreakStatement:");
+        vlog("BreakStatement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNextConstruction node, Object data) {
-        logIfVerbose("NextConstruction:");
+        vlog("NextConstruction:");
         return handleNode(node, data);
     }
     public Object visit(ParsedSubConstruction node, Object data) {
-        logIfVerbose("SubConstruction:");
+        vlog("SubConstruction:");
         return handleNode(node, data);
     }
     public Object visit(ParsedSuperConstruction node, Object data) {
-        logIfVerbose("SuperConstruction:");
+        vlog("SuperConstruction:");
         return handleNode(node, data);
     }
     public Object visit(ParsedConstruction node, Object data) {
-        logIfVerbose("Construction:");
+        vlog("Construction:");
         return handleNode(node, data);
     }
     public Object visit(ParsedComplexName node, Object data) {
-        logIfVerbose("ComplexName:");
+        vlog("ComplexName:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAnonymousDefinition node, Object data) {
-        logIfVerbose("AnonymousDefinition:");
+        vlog("AnonymousDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedCollectionDefinition node, Object data) {
-        logIfVerbose("CollectionDefinition:");
+        vlog("CollectionDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedComplexDefinition node, Object data) {
-        logIfVerbose("ComplexDefinition:");
+        vlog("ComplexDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedElementDefinition node, Object data) {
-        logIfVerbose("ElementDefinition:");
+        vlog("ElementDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedExternalDefinition node, Object data) {
-        logIfVerbose("ExternalDefinition:");
+        vlog("ExternalDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedExternalCollectionDefinition node, Object data) {
-        logIfVerbose("ExternalCollectionDefinition:");
+        vlog("ExternalCollectionDefinition:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAnonymousArray node, Object data) {
-        logIfVerbose("AnonymousArray:");
+        vlog("AnonymousArray:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAnonymousTable node, Object data) {
-        logIfVerbose("AnonymousTable:");
+        vlog("AnonymousTable:");
         return handleNode(node, data);
     }
     public Object visit(ParsedType node, Object data) {
-        logIfVerbose("Type:");
+        vlog("Type:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDefTypeName node, Object data) {
-        logIfVerbose("DefTypeName:");
+        vlog("DefTypeName:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDefElementName node, Object data) {
-        logIfVerbose("DefElementName:");
+        vlog("DefElementName:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDefCollectionName node, Object data) {
-        logIfVerbose("DefCollectionName:");
+        vlog("DefCollectionName:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDefParameter node, Object data) {
-        logIfVerbose("DefParameter:");
+        vlog("DefParameter:");
         return handleNode(node, data);
     }
     public Object visit(ParsedParameterList node, Object data) {
-        logIfVerbose("ParameterList:");
+        vlog("ParameterList:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAny node, Object data) {
-        logIfVerbose("Any:");
+        vlog("Any:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAnyAny node, Object data) {
-        logIfVerbose("AnyAny:");
+        vlog("AnyAny:");
         return handleNode(node, data);
     }
     public Object visit(ParsedPrimitiveType node, Object data) {
-        logIfVerbose("PrimitiveType:");
+        vlog("PrimitiveType:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDim node, Object data) {
-        logIfVerbose("Dim:");
+        vlog("Dim:");
         return handleNode(node, data);
     }
     public Object visit(ParsedValueExpression node, Object data) {
-        logIfVerbose("ValueExpression:");
+        vlog("ValueExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedUnaryExpression node, Object data) {
-        logIfVerbose("UnaryExpression:");
+        vlog("UnaryExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedBinaryExpression node, Object data) {
-        logIfVerbose("BinaryExpression:");
+        vlog("BinaryExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedChoiceExpression node, Object data) {
-        logIfVerbose("ChoiceExpression:");
+        vlog("ChoiceExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLogicalOrOperator node, Object data) {
-        logIfVerbose("LogicalOrOperator:");
+        vlog("LogicalOrOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLogicalAndOperator node, Object data) {
-        logIfVerbose("LogicalAndOperator:");
+        vlog("LogicalAndOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedOrOperator node, Object data) {
-        logIfVerbose("BitwiseOrOperator:");
+        vlog("BitwiseOrOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedXorOperator node, Object data) {
-        logIfVerbose("XorOperator:");
+        vlog("XorOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAndOperator node, Object data) {
-        logIfVerbose("BitwiseAndOperator:");
+        vlog("BitwiseAndOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedEqualsOperator node, Object data) {
-        logIfVerbose("EqualsOperator:");
+        vlog("EqualsOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNotEqualsOperator node, Object data) {
-        logIfVerbose("NotEqualsOperator:");
+        vlog("NotEqualsOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedIsaExpression node, Object data) {
-        logIfVerbose("IsaExpression:");
+        vlog("IsaExpression:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLessThanOperator node, Object data) {
-        logIfVerbose("LessThanOperator:");
+        vlog("LessThanOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedGreaterThanOperator node, Object data) {
-        logIfVerbose("GreaterThanOperator:");
+        vlog("GreaterThanOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLessThanOrEqualOperator node, Object data) {
-        logIfVerbose("LessThanOrEqualOperator:");
+        vlog("LessThanOrEqualOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedGreaterThanOrEqualOperator node, Object data) {
-        logIfVerbose("GreaterThanOrEqualOperator:");
+        vlog("GreaterThanOrEqualOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedInOperator node, Object data) {
-        logIfVerbose("ParsedInOperator:");
+        vlog("ParsedInOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLeftShiftOperator node, Object data) {
-        logIfVerbose("LeftShiftOperator:");
+        vlog("LeftShiftOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedRightShiftOperator node, Object data) {
-        logIfVerbose("RightShiftOperator:");
+        vlog("RightShiftOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedRightUnsignedShiftOperator node, Object data) {
-        logIfVerbose("RightUnsignedShiftOperator:");
+        vlog("RightUnsignedShiftOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedAddOperator node, Object data) {
-        logIfVerbose("AddOperator:");
+        vlog("AddOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedSubtractOperator node, Object data) {
-        logIfVerbose("SubtractOperator:");
+        vlog("SubtractOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedMultiplyOperator node, Object data) {
-        logIfVerbose("MultiplyOperator:");
+        vlog("MultiplyOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedDivideByOperator node, Object data) {
-        logIfVerbose("DivideByOperator:");
+        vlog("DivideByOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedModOperator node, Object data) {
-        logIfVerbose("ModOperator:");
+        vlog("ModOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedPowerOperator node, Object data) {
-        logIfVerbose("PowerOperator:");
+        vlog("PowerOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNegateOperator node, Object data) {
-        logIfVerbose("NegateOperator:");
+        vlog("NegateOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedBitflipOperator node, Object data) {
-        logIfVerbose("BitflipOperator:");
+        vlog("BitflipOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedLogicalNotOperator node, Object data) {
-        logIfVerbose("LogicalNotOperator:");
+        vlog("LogicalNotOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedTypeOperator node, Object data) {
-        logIfVerbose("TypeOperator:");
+        vlog("TypeOperator:");
         return handleNode(node, data);
     }
     public Object visit(ParsedIntegerLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedFloatingPointLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedCharLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedStringLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedBooleanLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedNullLiteral node, Object data) {
-        logIfVerbose("Literal:");
+        vlog("Literal:");
         return handleNode(node, data);
     }
     public Object visit(ParsedArguments node, Object data) {
-        logIfVerbose("ArgumentList:");
+        vlog("ArgumentList:");
         return handleNode(node, data);
     }
     public Object visit(ParsedIndex node, Object data) {
-        logIfVerbose("CollectionIndex:");
+        vlog("CollectionIndex:");
         return handleNode(node, data);
     }
     public Object visit(ParsedTableElement node, Object data) {
-        logIfVerbose("TableElement:");
+        vlog("TableElement:");
         return handleNode(node, data);
     }
     public Object visit(ParsedTypeList node, Object data) {
-        logIfVerbose("TypeList:");
+        vlog("TypeList:");
         return handleNode(node, data);
     }
     public Object visit(ParsedEllipsis node, Object data) {

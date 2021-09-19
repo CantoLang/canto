@@ -2,7 +2,7 @@
  * 
  * CantoCompiler.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -21,7 +21,7 @@ import canto.lang.Instantiation;
 import canto.lang.Redirection;
 import canto.lang.SiteLoader;
 import canto.runtime.Context;
-import canto.runtime.SiteBuilder;
+import canto.runtime.CantoLogger;
 
 /**
  * canto compiler.
@@ -224,7 +224,7 @@ public class CantoCompiler {
                     recursive = true;
                     break;
                 case 'v':
-                    SiteBuilder.verbosity = SiteBuilder.VERBOSE;
+                    CantoLogger.verbosity = CantoLogger.VERBOSE;
                     break;
                 case '?':
                     showHelp();

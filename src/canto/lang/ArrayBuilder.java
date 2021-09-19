@@ -2,7 +2,7 @@
  * 
  * ArrayBuilder.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -12,7 +12,7 @@ import java.util.*;
 
 import canto.runtime.Context;
 import canto.runtime.CantoObjectWrapper;
-import canto.runtime.Logger;
+import canto.runtime.CantoLogger;
 
 
 /**
@@ -367,7 +367,7 @@ class ArrayInstance implements CantoArray, DynamicObject {
 
     private void init_array() {
         if (data == null) {
-            Logger.vlog("data for array instance is null; initializing to empty array");
+            CantoLogger.vlog("data for array instance is null; initializing to empty array");
             array = new FixedArray(new Object[0]);
         } else {
             Object obj = data;

@@ -2,18 +2,18 @@
  * 
  * SiteBuilder.java
  *
- * Copyright (c) 2018 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
 package canto.runtime;
 
 import java.util.*;
+import java.io.*;
 
 import canto.lang.*;
 import canto.parser.*;
 
-import java.io.*;
 
 public class SiteBuilder {
 
@@ -27,72 +27,6 @@ public class SiteBuilder {
 
     protected Core core;
 
-    public static boolean echoSystemOut = true;
-
-    /** Verbosity setting to minimize the information displayed on the console. **/
-    public final static int TERSE = 0;
-
-    /** Middle setting for verbosity; some but not all information is displayed on the console. **/
-    public final static int MODERATE = 1;
-
-    /** Verbosity setting to output all available information to the console. **/
-    public final static int VERBOSE = 2;
-
-    public static int verbosity = TERSE;
-    private static PrintStream ps = null;
-    private static String logFile = "(none)";
-    
-    
-    
-    public static void log(String str) {
-        log(str, false);
-    }
-    
-    public static void log(String str, boolean urgent) {
-    	if (echoSystemOut || urgent) {
-            System.out.println(str);
-        }
-        if (ps != null) {
-            ps.println(str);
-        }
-    }
-
-    public static void err(String str) {
-        System.err.println(str);
-        if (ps != null) {
-            ps.println("ERROR: " + str);
-        }
-    }
-
-    public static void setLogFile(String logFileName, boolean append) throws FileNotFoundException {
-        logFile = logFileName;
-        ps = new PrintStream(new FileOutputStream(logFileName, append));
-        Date now = new Date();
-        log("\n=========== begin logging " + now.toString() + " ============");
-    }
-
-    public static String getLogFile() {
-        return logFile;
-    }
-
-    public static void setPrintStream(PrintStream printStream) {
-        ps = printStream;
-        if (ps.equals(System.out)) {
-            echoSystemOut = false;
-        }
-    }
-
-    public static void vlog(String str) {
-        if (verbosity >= VERBOSE) {
-            log(str);
-        }
-    }
-
-    public static void mlog(String str) {
-        if (verbosity >= MODERATE) {
-            log(str);
-        }
-    }
 
     public SiteBuilder(Core core) {
         this.core = core;
@@ -110,16 +44,16 @@ public class SiteBuilder {
         try {
             if ((actions & LOG) != 0) {
                 System.out.println("--- LOGGING PASS ---");
-                parseResult.jjtAccept(new Logger(), null);
+                parseResult.jjtAccept(new CantoLogger(), null);
             }
 
-            log("--- INIT PASS ---");
+            CantoLogger.log("--- INIT PASS ---");
             parseResult.jjtAccept(new Initializer(core), core);
 
-            log("--- RESOLVE PASS ---");
+            CantoLogger.log("--- RESOLVE PASS ---");
             parseResult.jjtAccept(new Resolver(), null);
 
-            log("--- VALIDATE PASS ---");
+            CantoLogger.log("--- VALIDATE PASS ---");
             Validater validater = new Validater();
             parseResult.jjtAccept(validater, null);
             List<String> problems = validater.getProblems();
@@ -137,15 +71,15 @@ public class SiteBuilder {
                 Context context = new Context(core);
 
                 if ((actions & DUMP_SOURCE) != 0) {
-                    log("--- SOURCE DUMPING PASS ---");
+                    CantoLogger.log("--- SOURCE DUMPING PASS ---");
                     parseResult.jjtAccept(new Dumper(), null);
                 }
                 if ((actions & DUMP_TYPES) != 0) {
-                    log("--- TYPE DUMPING PASS ---");
+                    CantoLogger.log("--- TYPE DUMPING PASS ---");
                     parseResult.jjtAccept(new TypeDumper(), context);
                 }
                 if ((actions & DUMP_PAGES) != 0) {
-                    log("--- PAGE DUMPING PASS ---");
+                    CantoLogger.log("--- PAGE DUMPING PASS ---");
                     parseResult.jjtAccept(new PageDumper(), context);
                 }
             }
@@ -162,7 +96,7 @@ public class SiteBuilder {
 
     public class Dumper extends CantoVisitor {
         public Object handleNode(CantoNode node, Object data) {
-            log(node.toString());
+            CantoLogger.log(node.toString());
             return data;
         }
     }
@@ -188,7 +122,7 @@ public class SiteBuilder {
                 if (supername != null) {
                     str = str + "  ^ " + supername;
                 }
-                log(str);
+                CantoLogger.log(str);
             }
             return super.handleNode(node, data);
         }
@@ -204,13 +138,13 @@ public class SiteBuilder {
             } else if (node instanceof NamedDefinition) {
                 NamedDefinition nd = (NamedDefinition) node;
                 if (nd.isSuperType("page")) {
-                    log("\nPage " + pagenum + ": " + nd.getName() + " (" + nd.getFullName() + ")\n");
+                    CantoLogger.log("\nPage " + pagenum + ": " + nd.getName() + " (" + nd.getFullName() + ")\n");
                     //Instantiation instance = new Instantiation(owner, nd);
                     Instantiation instance = new Instantiation(nd);
                     try {
-                        log(instance.getText((Context) data) + "\n");
+                        CantoLogger.log(instance.getText((Context) data) + "\n");
                     } catch (Redirection r) {
-                        log("    ***** Error instantiating page: " + r.getMessage());
+                        CantoLogger.log("    ***** Error instantiating page: " + r.getMessage());
                     }
                     pagenum++;
                     return data;

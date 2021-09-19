@@ -150,7 +150,7 @@ public class Initializer extends CantoVisitor {
             
 
         } catch (Exception e) {
-            SiteBuilder.log("Error handling node " + node.getName() + " owned by " + (def instanceof Core ? "core" : def.getFullName()) + ": " + e);
+            CantoLogger.log("Error handling node " + node.getName() + " owned by " + (def instanceof Core ? "core" : def.getFullName()) + ": " + e);
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }

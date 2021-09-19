@@ -2,7 +2,7 @@
  * 
  * Utils.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -45,7 +45,7 @@ public class Utils {
             
         } catch (InterruptedException ie) {
             String errmsg = "sleep(" + millis + ") interrupted";
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         }
     }
@@ -375,12 +375,12 @@ public class Utils {
                 in.close();
                 text = sb.toString();
             } else {
-                SiteBuilder.log("File " + filename + " not found.");
+                CantoLogger.log("File " + filename + " not found.");
             }
             
         } catch (Exception e) {
             String errmsg = "Exception including " + filename + ": " + e.toString();
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         }
 
@@ -416,11 +416,11 @@ public class Utils {
 
         } catch (MalformedURLException mue) {
             String errmsg = "Malformed URL in include call: " + urlname;
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         } catch (Exception e) {
             String errmsg = "Exception including " + urlname + ": " + e.toString();
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         }
 
@@ -457,11 +457,11 @@ public class Utils {
 
         } catch (MalformedURLException mue) {
             String errmsg = "Malformed URL in include call: " + urlname;
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         } catch (Exception e) {
             String errmsg = "Exception including " + urlname + ": " + e.toString();
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         }
 
@@ -497,7 +497,7 @@ public class Utils {
 
             } catch (UnsupportedEncodingException e) {
                 String errmsg = "unable to url encode " + str;
-                SiteBuilder.log(errmsg);
+                CantoLogger.err(errmsg);
                 throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
             }
 
@@ -753,7 +753,7 @@ public class Utils {
             return lines;
         } catch (Exception e) {
             String errmsg = "Exception reading " + filename + ": " + e.toString();
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         }
     }
@@ -838,7 +838,7 @@ public class Utils {
 
         } catch (Exception e) {
             String errmsg = "Exception processing " + filename + ": " + e.toString();
-            SiteBuilder.log(errmsg);
+            CantoLogger.err(errmsg);
             throw new Redirection(Redirection.STANDARD_ERROR, errmsg);
         } finally  {
             if (in != null) {
@@ -874,7 +874,7 @@ public class Utils {
         try {
             envvar = System.getenv(varname);
         } catch (Throwable t) {
-            SiteBuilder.log("Unable to get environment variable " + varname + ": " + t.toString());
+            CantoLogger.log("Unable to get environment variable " + varname + ": " + t.toString());
         }
         
         return envvar;

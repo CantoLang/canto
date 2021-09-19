@@ -2,7 +2,7 @@
  * 
  * CantoServer.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -427,7 +427,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         
         param = initParams.get("verbose");
         if ("true".equalsIgnoreCase(param)) {
-            SiteBuilder.verbosity = SiteBuilder.VERBOSE;
+            CantoLogger.verbosity = CantoLogger.VERBOSE;
         }
 
         siteName = initParams.get("site");
@@ -450,7 +450,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         String appendLog = initParams.get("log.append");
         appendToLog = isTrue(appendLog);
         if (logFileName != null) {
-            SiteBuilder.setLogFile(logFileName, appendToLog);
+            CantoLogger.setLogFile(logFileName, appendToLog);
         }
 
         cantoPath = initParams.get("cantopath");
@@ -594,7 +594,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
             }
         }    
         // have to relink to catch intersite references and unresolved types
-        SiteBuilder.log("--- SUPERLINK PASS ---");
+        CantoLogger.log("--- SUPERLINK PASS ---");
         link(mainSite.getParseResults());
         if (sites.size() > 0) {
             Iterator<CantoSite> it = sites.values().iterator();
@@ -608,7 +608,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         slog("             cantopath = " + cantoPath);
         slog("             recursive = " + recursive);
         slog("             state file = " + (stateFileName == null ? "(none)" : stateFileName));
-        slog("             log file = " + SiteBuilder.getLogFile());
+        slog("             log file = " + CantoLogger.getLogFile());
         slog("             multithreaded = " + multithreaded);
         slog("             autoloadcore = " + !customCore);
         slog("             sharecore = " + shareCore);
@@ -617,7 +617,7 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
         slog("             file_base = " + fileBase);
         slog("             address = " + showAddress + (port == null ? "" : (":" + port)));
         slog("             timeout = " + (asyncTimeout > 0 ? Long.toString(asyncTimeout) : "none"));
-        slog("             verbosity = " + Integer.toString(SiteBuilder.verbosity));
+        slog("             verbosity = " + Integer.toString(CantoLogger.verbosity));
         slog("             debuggingEnabled = " + debuggingEnabled);
         slog("Site " + siteName + " launched at " + (new Date()).toString());
     }
@@ -810,9 +810,9 @@ public class CantoServer extends HttpServlet implements CantoProcessor {
     
     /** Writes to log file and system out. **/
     static void slog(String msg) {
-        SiteBuilder.log(msg);
+        CantoLogger.log(msg);
         // avoid redundant echo
-        if (!SiteBuilder.echoSystemOut) {
+        if (!CantoLogger.echoSystemOut) {
             System.out.println(msg);
         }
     }

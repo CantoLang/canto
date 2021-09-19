@@ -2,7 +2,7 @@
  * 
  * CantoScript.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2021 by cantolang.org
  * All rights reserved.
  */
 
@@ -65,7 +65,7 @@ public class CantoScript implements canto_processor {
      *
      */
     public static void main(String[] args) {
-        SiteBuilder.echoSystemOut = false;
+        CantoLogger.echoSystemOut = false;
         Map<String, String> initParams = new HashMap<String, String>();
         String[] scriptArgs = processArgs(args, initParams);        
         String problems = initParams.get("problems");
@@ -247,15 +247,15 @@ public class CantoScript implements canto_processor {
         
         param = initParams.get("verbose");
         if ("true".equalsIgnoreCase(param)) {
-            SiteBuilder.verbosity = SiteBuilder.VERBOSE;
-            SiteBuilder.echoSystemOut = true;
+            CantoLogger.verbosity = CantoLogger.VERBOSE;
+            CantoLogger.echoSystemOut = true;
         }
         
         logFileName = initParams.get("log");
         String appendLog = initParams.get("log.append");
         appendToLog = isTrue(appendLog);
         if (logFileName != null) {
-            SiteBuilder.setLogFile(logFileName, appendToLog);
+            CantoLogger.setLogFile(logFileName, appendToLog);
         }
 
         cantoPath = initParams.get("cantopath");
@@ -376,7 +376,7 @@ public class CantoScript implements canto_processor {
     }
 
     static void slog(String msg, boolean urgent) {
-        SiteBuilder.log(msg, urgent);
+        CantoLogger.log(msg, urgent);
     }
 
     /** Load the site files */
