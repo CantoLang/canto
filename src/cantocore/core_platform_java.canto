@@ -328,17 +328,17 @@ core {
     /------ Logging ------/
 
     /** sends a string to log file/console **/
-    dynamic log(str) = canto.runtime.SiteBuilder.log(str)
+    dynamic log(str) = canto.runtime.CantoLogger.log(str)
 
     /** sends a string to log file/console if Canto is running in
      *  verbose mode.
      **/
-    dynamic vlog(str) = canto.runtime.SiteBuilder.vlog(str)
+    dynamic vlog(str) = canto.runtime.CantoLogger.vlog(str)
     
     /** sends a string and a newline to the console, bypasses log file **/
     dynamic console_println(str) = java.lang.System.out.println(str)
     
     /** sends an error message to log file/console **/
-    dynamic err(str) = canto.runtime.SiteBuilder.err(str)
+    dynamic err(str) = canto.runtime.CantoLogger.err(str)
     
 }
