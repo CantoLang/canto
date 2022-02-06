@@ -2,7 +2,7 @@
  * 
  * CantoRunner.java
  *
- * Copyright (c) 2018-2021 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -428,10 +428,6 @@ public class CantoRunner implements canto_processor {
     /** Writes to log file and system out. **/
     static void slog(String msg) {
         CantoLogger.log(msg);
-        // avoid redundant echo
-        if (!CantoLogger.echoSystemOut) {
-            System.out.println(msg);
-        }
     }
 
     /** Load the site files */

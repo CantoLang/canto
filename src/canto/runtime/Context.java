@@ -2,7 +2,7 @@
  * 
  * Context.java
  *
- * Copyright (c) 2018-2021 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -60,7 +60,7 @@ public class Context {
 
     private final static int MAX_POINTER_CHAIN_LENGTH = 10;
     
-    private final static int DEFAULT_MAX_CONTEXT_SIZE = 180;
+    private final static int DEFAULT_MAX_CONTEXT_SIZE = 400;
 
     private final static void vlog(String str) {
         CantoLogger.vlog(str);
@@ -907,7 +907,7 @@ public class Context {
             push(definition, params, args, true);
             pushedContext = true;
         }
-if ("serialize".equals(definition.getName())) {
+if ("obj1".equals(definition.getName()) || definition.getName().startsWith("show")) {
   System.out.println(definition.getName() + " at ctx 911");
 }
         
@@ -3714,12 +3714,12 @@ if (name.equals("c")) {
 
         if (size >= maxSize) {
             throw new RuntimeException("blown context");
+        } else if (size == 300) {
+            System.err.println("**** context exceeding 300 ****");
         } else if (size == 200) {
             System.err.println("**** context exceeding 200 ****");
         } else if (size == 100) {
             System.err.println("**** context exceeding 100 ****");
-        } else if (size == 50) {
-            System.err.println("**** context exceeding 50 ****");
         }
 
         if (rootEntry == null) {

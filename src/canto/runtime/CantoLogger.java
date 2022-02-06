@@ -2,7 +2,7 @@
  * 
  * Logger.java
  *
- * Copyright (c) 2018-2021 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -20,7 +20,7 @@ import canto.parser.*;
 
 public class CantoLogger implements CantoParserVisitor {
 
-    public static boolean echoSystemOut = true;
+    public static boolean echoSystemOut = false;
 
     /** Verbosity setting to minimize the information displayed on the console. **/
     public final static int TERSE = 0;
@@ -35,7 +35,8 @@ public class CantoLogger implements CantoParserVisitor {
     private static PrintStream ps = null;
     private static String logFile = "(none)";
     
-    
+    private static Logger logger = LoggerFactory.getLogger(CantoServer.class);
+
     
     // global Instantiation logging
     public static void logInstantiation(Definition definition) {
@@ -115,6 +116,11 @@ public class CantoLogger implements CantoParserVisitor {
         if (ps != null) {
             ps.println(str);
         }
+        if (urgent) {
+            logger.warn(str);
+        } else {
+            logger.info(str);
+        }
     }
 
     public static void err(String str) {
@@ -122,6 +128,7 @@ public class CantoLogger implements CantoParserVisitor {
         if (ps != null) {
             ps.println("ERROR: " + str);
         }
+        logger.error(str);
     }
 
     public static void setLogFile(String logFileName, boolean append) throws FileNotFoundException {
