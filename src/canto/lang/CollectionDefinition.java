@@ -2,7 +2,7 @@
  * 
  * CollectionDefinition.java
  *
- * Copyright (c) 2018-2021 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -377,7 +377,7 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
     protected Object instantiateCollectionObject(Context context, Object collection) throws Redirection {
         //Type st = getSuper();
         // this seems to be unnecessary
-        boolean resolveOnly = true; //!(st == null || st.isPrimitive() || st.isExternal());
+        boolean resolveOnly = false; //!(st == null || st.isPrimitive() || st.isExternal());
 
         if (collection == null) {
             return null;
@@ -427,10 +427,12 @@ public class CollectionDefinition extends ComplexDefinition /* implements Dynami
     }
     
     private static Object getUnresolvedObjectValue(Context context, Object element) {
-        //if (!(element instanceof ResolvedInstance) && !(element instanceof CantoObjectWrapper)) {
-            return getObjectValue(context, element);
-        //}
-        //return element;
+        Object obj = getObjectValue(context, element);          
+        if (element instanceof ResolvedInstance || element instanceof CantoObjectWrapper) {
+            return element;
+        } else {
+            return obj;
+        }
     }
     
     private Object resolveElement(Context context, Object element) {

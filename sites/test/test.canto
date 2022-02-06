@@ -2364,32 +2364,30 @@ public dat {
 
 public dtcet {
   
-  obj {
-      nm [?]
-      child [?]
-  }
-  
-  obj obj1 {
-      nm = "o1"
-      child = "1"
-  }
+    obj(char z) {
+        char child = z
+    }
 
-  obj obj2 {
-      nm = "o2"
-      child = "2"
-  }
-  
-  obj[] objs = [ obj1, obj2 ]
-  
-  obj{} obj_table = { for obj o in objs { (o.nm): o } }
-  
-  obj o1 = "o1"
-  obj o2 = obj_table["o2"]
-  
-  
-  obj_table[o1].child;
-  o2.child;
+    obj[] objs = [ for char r from 'G' through 'I' {
+                       obj(r)
+                   }
+                 ]
+    
+    show(x) {
+        x;
+    }
 
+    showchild(obj o) {
+        o.child;
+    }
+
+    shownth(obj[] oo, int n) {
+        oo[n].child;
+    }
+
+    show(objs[0].child);
+    showchild(objs[1]);
+    shownth(objs, 2);
 }
 
     public test_case recursive_dynamic_array_test {    
@@ -3217,6 +3215,7 @@ public stij {
         serializable ijobj {
             keep: i = "x"
             keep: j = "x"
+            this;
         }
         
         serializable obj1 {
@@ -3234,11 +3233,13 @@ public stij {
         }
 
         obj1.serialize;
-        
-        //obj2.deserialize(obj1.serialize);
-        
-        //obj2.ij[0].i;
-        //obj2.ij[1].j;
+        hr;
+        obj1.ij;
+        hr;
+        obj2.deserialize(obj1.serialize);
+        obj2.serialize;
+        hr;
+        obj2.ij;
 
 }  
 
@@ -3368,7 +3369,7 @@ public dstij {
         }
 
         serializable obj2 {
-            ijobj[] ij = []            
+            keep: ijobj[] ij = []            
         }
 
         obj1;
@@ -3393,11 +3394,12 @@ public dstij {
         obj11.serialize;
         hr;
 
-        obj2.deserialize(obj1.serialize);
+        obj2.deserialize(str);
         dash;
-        //obj2.ij[0].i;
-        //obj2.ij[1].j;
-
+        obj2.ij[0].i;
+        obj2.ij[1].j;
+        hr;
+        obj2.serialize;
 }  
 
 public ij1 {
@@ -3407,11 +3409,11 @@ public ij1 {
         }
 
         serializable obj1 {
-            keep: ijobj iobj {
+            ijobj iobj {
                 keep: i(y) = y
                 i("I");
             }
-            keep: ijobj jobj {
+            ijobj jobj {
                 keep: j(z) = z
                 j("J");
             }
@@ -3434,13 +3436,13 @@ public ij2 {
         }
 
         serializable obj11 {
-            keep: ijobj iiobj {
+            ijobj iiobj {
                 keep: i(y) = y
 
                 eval(i("I"));
                 this;
             }
-            keep: ijobj jjobj {
+            ijobj jjobj {
                 keep: j(z) = z
 
                 eval(j("J"));
@@ -3452,9 +3454,93 @@ public ij2 {
         }
 
         obj11;
+        dash;
+        obj11.ji[0].i;
         hr;
         obj11.serialize;
 }  
+
+public ijx {
+        serializable ijobj {
+            keep: i [/]
+            keep: j [/]
+        }
+
+        serializable obj1 {
+            ijobj iobj {
+                keep: i(y) = y
+                i("I");
+            }
+            ijobj jobj {
+                keep: j(z) = z
+                j("J");
+            }
+            keep: ijobj[] ij = [ iobj, jobj ]
+            
+            ij;
+        }
+        serializable obj11 {
+        
+            ijobj iiobj {
+                keep: i(y) = y
+
+                i("I");
+            }
+            ijobj jjobj {
+                keep: j(z) = z
+
+                j("J");
+            }
+            keep: ijobj[] ji = [ iiobj, jjobj ]
+            
+            if (ji) {
+                "X";
+            } else {
+                "Z";
+            }
+        }
+
+        obj1;
+        dash;
+        obj1.ij[0].i;
+        hr;
+        obj11;
+        dash;
+        obj11.ji[0].i;
+}
+
+public ijx2 {
+        serializable ijobj {
+            keep: i [/]
+            keep: j [/]
+        }
+
+        serializable obj11 {
+        
+            ijobj iiobj {
+                keep: i(y) = y
+
+                i("I");
+            }
+            ijobj jjobj {
+                keep: j(z) = z
+
+                j("J");
+            }
+            keep: ijobj[] ji = [ iiobj, jjobj ]
+            
+            if (ji) {
+                "X";
+            } else {
+                "Z";
+            }
+        }
+
+        obj11;
+        dash;
+        obj11.ji[0].i;
+}
+
 
 public evala {
     
