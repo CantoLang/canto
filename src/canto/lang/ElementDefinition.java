@@ -2,7 +2,7 @@
  * 
  * ElementDefinition.java
  *
- * Copyright (c) 2018, 2019 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -248,10 +248,11 @@ public class ElementDefinition extends AnonymousDefinition {
             Definition def = elementInstance.getDefinition(context);
             if (def != null) {
                 ArgumentList elementArgs = elementInstance.getArguments();
-                ParameterList elementParams = def.getParamsForArgs(elementArgs, context);
-                context.push(def, elementParams, elementArgs, false);
-                data = def.getChildData(childName, type, context, args);
-                context.pop();
+                Context resolutionContext = (elementInstance instanceof ResolvedInstance ? ((ResolvedInstance) elementInstance).getResolutionContext() : context);
+                ParameterList elementParams = def.getParamsForArgs(elementArgs, resolutionContext);
+                resolutionContext.push(def, elementParams, elementArgs, false);
+                data = def.getChildData(childName, type, resolutionContext, args);
+                resolutionContext.pop();
             }
         } else if (element instanceof Value) {
             String name = childName.getName();

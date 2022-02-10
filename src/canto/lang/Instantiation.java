@@ -2,7 +2,7 @@
  * 
  * Instantiation.java
  *
- * Copyright (c) 2018-2020 by cantolang.org
+ * Copyright (c) 2018-2022 by cantolang.org
  * All rights reserved.
  */
 
@@ -1788,10 +1788,10 @@ public class Instantiation extends AbstractConstruction implements ValueGenerato
 
             } else if (isParam) {
                 data = context.getParameterInstance(nameNode, false, isContainerParameter(context), getOwner());
-                
+
             } else if (isParamChild) {
                 data = context.getParameterInstance(nameNode, true, isContainerParameter(context), getOwner());
- 
+                    
             // for now we don't handle passed definitions with multipart names.  To do so, we would
             // need to push intermediate definitions on the context stack before instantiating.  So for
             // now we defer to lookup(), which handles all the necessary context adjustments.     

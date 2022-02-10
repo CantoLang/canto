@@ -3564,7 +3564,7 @@ if (name.equals("c")) {
 
     public void push(Definition def, ParameterList params, ArgumentList args, boolean newFrame) throws Redirection {
         DefinitionInstance defInstance = getContextDefInstance(def, args);
-        if (defInstance.args != null && defInstance.args != args) {
+        if (defInstance.args != null && (defInstance.args != args || params == null)) {
             args = defInstance.args;
             params = defInstance.def.getParamsForArgs(args, this);
         }
