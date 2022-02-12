@@ -907,7 +907,7 @@ public class Context {
             push(definition, params, args, true);
             pushedContext = true;
         }
-if ("obj1".equals(definition.getName()) || definition.getName().startsWith("show")) {
+if (definition.getName().equals("add")) {
   System.out.println(definition.getName() + " at ctx 911");
 }
         
@@ -1558,9 +1558,6 @@ if (name.equals("i")) {
     }
         
     synchronized public void putData(String name, Holder holder, List<Index> indexes) throws Redirection {
-if (name.equals("c")) {
-  System.out.println(name + " at ctx 1559");
-}
         if (holder.data != null || holder.resolvedInstance != null) {
             CantoLogger.vlog(" - - - storing " + name + " in cache - - - ");
         }
@@ -2331,12 +2328,17 @@ if (name.equals("c")) {
                             numUnpushes++;
                         }
                     }
+                    if (instance instanceof ResolvedInstance) {
+                        resolutionContext = ((ResolvedInstance) instance).getResolutionContext();
+                    }
                     //if (instance.getIndexes() == null && argIndexes != null) {
                     //    instance.setIndexes(argIndexes);
                     //}
                     if (instance.isParameterChild()) {
                         NameNode compName = new ComplexName(instance.getReferenceName(), childName);
                         data = resolutionContext.getParameter(compName, instance.isContainerParameter(resolutionContext), Object.class);
+                    } else {
+                        fallbackContext = resolutionContext;
                     }
                 }
             }        

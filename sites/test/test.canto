@@ -2281,7 +2281,7 @@ public dat {
         name = "Dynamic Array Element Child Test"
         key = "dynamic_array_element_child"
     
-        expected = "ABCDEF" 
+        expected = "ABCDEFGHIJK" 
 
         obj {
             a = "A"
@@ -2357,8 +2357,36 @@ public dat {
                        =}
                   ]
                   
+        ghiobj(char z) {
+            char child = z
+        }
+    
+        ghiobj[] ghiobjs = [ for char r from 'G' through 'I' {
+                                 ghiobj(r)
+                             }
+                           ]
+        ghiobj[] jkobjs = [ for char r from 'J' through 'K' {
+                                ghiobj(r)
+                            }
+                          ]
+        
+        dynamic showchild(ghiobj o) {
+            o.child;
+        }
+
+        dynamic shownth(ghiobj[] oo, int n) {
+            oo[n].child;
+        }
+
+
         for item in items {
             item;
+        }
+        ghiobjs[0].child;
+        showchild(ghiobjs[1]);
+        shownth(ghiobjs, 2);
+        for ghiobj jk in jkobjs {
+            showchild(jk);
         }
     }
 
@@ -2373,21 +2401,13 @@ public dtcet {
                    }
                  ]
     
-    show(x) {
-        x;
+    dynamic add(obj ob) {
+        ob.child;
+    }
+    for obj o in objs {
+        add(o);
     }
 
-    showchild(obj o) {
-        o.child;
-    }
-
-    shownth(obj[] oo, int n) {
-        oo[n].child;
-    }
-
-    show(objs[0].child);
-    showchild(objs[1]);
-    shownth(objs, 2);
 }
 
     public test_case recursive_dynamic_array_test {    
