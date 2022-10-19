@@ -28,6 +28,12 @@ else
     CANTO_RELEASE_FILE="$TARGET_DIR/canto-$VERSION-$BRANCH.zip"
 fi
 
+function get_javacc() {
+    mkdir -p javacc
+    curl https://github.com/javacc/javacc/archive/javacc-7.0.10.zip
+    unzip javacc-7.0.10.zip javacc
+}
+
 function get_jetty () {
     mkdir -p lib
     curl https://repo1.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/9.4.49.v20220914/jetty-all-9.4.49.v20220914-uber.jar --output lib/jetty-all.jar
@@ -43,6 +49,7 @@ function make_jar() {
     jar cvf lib/canto.jar -C classes canto -C classes cantocore bin *.sh LICENSE README.md
 }
 
+get_javacc
 get_jetty
 compile_all
 make_jar
