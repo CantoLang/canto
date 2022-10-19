@@ -30,8 +30,8 @@ fi
 
 function get_javacc() {
     mkdir -p javacc
-    curl https://github.com/javacc/javacc/archive/javacc-7.0.10.zip
-    unzip javacc-7.0.10.zip javacc
+    curl https://github.com/javacc/javacc/archive/javacc-7.0.10.zip --output javacc.zip
+    unzip javacc.zip -d javacc
 }
 
 function get_jetty () {
